@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5">
+		<meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta content="telephone=no" name="format-detection">
+		<title>配送计划</title>
+		<link rel="stylesheet" href="css/common/common.css" />
+		<link rel="stylesheet" href="css/point.css" />
+		<script type="text/javascript" src="js/common/jQuery-1.11.3.js" ></script>
+		<script type="text/javascript" src="js/common/jWeChat-Adaptive.js" ></script>
+	</head>
+	<body class="bg_gray">
+		<div class="zoomer">
+			<div class="order_list">
+				<ul id="ul">
+					
+				</ul>
+				<a class="add" href="javascript:;">点击新增配送计划</a>
+			</div>
+		</div>
+		<script type="text/javascript">
+		$("#ul").html("");
+			$.ajax({
+				url:"/zsh/distribution/query.do",
+				type:"get",
+				success:function(data){
+					if(data.status==0){			
+						var html = "";
+						$.each(data.data,function(i,field){
+							html +="<li distributionId="+field.id+">" +
+								"<p>计划"+(i+1)+": <span class='c_black' style='font-size: 28px'>"+field.oilcompany+"配送计划</span></p>" +
+								"<div class='schedule'>" +
+									"<a class='detail' href='javascript:;'>查看详情</a>";
+									if(field.state=="1"){
+										html += "<label class=''>正在进行中</label>";
+									}
+									if(field.state=="2"){
+										html +="<label class='finish'>已完成</label>";
+									}
+								html +="</div></li>";
+							
+						});
+						$("#ul").append(html);
+					}
+					if(data.status==2){
+						window.location.href="/zsh/wc/oauth.do?redUrl=/zsh/order_list.html";
+					}
+					if(data.status==3){
+						window.location.href="/zsh/fail.html";
+					}
+				}
+			});
+		
+		
+			$(".add").click(function(){
+				window.location.href="/zsh/order_form.html";
+			});
+			
+			$("#ul").on("click",".detail",function(){
+				var id = $(this).parents("li").attr("distributionId");
+				window.location.href="/zsh/order_detail.html?id="+id;
+			});
+		</script>
+	</body>
+</html>

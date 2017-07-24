@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>客户信息表</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/wtt.css" />
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+    <script type="text/javascript" src="js/common/m.tool.juxinbox.com.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-1.0.0.js"></script>
+    <!--<script type="text/javascript" src="js/common/common.js"></script>-->
+    <script type="text/javascript">    
+		$(function(){
+            checkLogin();
+            $("#cancel").click(function () {
+		        $(".alertTips1").css("display","none");
+		    })
+		    $(".tip-btns").click(function(){
+		        $(".alertTips2").css("display","none");
+		    })
+		    $(".tip-btns3").click(function(){
+		        $(".alertTips3").css("display","none");
+		    })
+		    $(".cha").click(function(){
+		        $(".cont").css("display","block")
+		        $(".cont_").css("display","none")
+		    })
+		    $(".guan").click(function(){
+		        $(".cont").css("display","none")
+		        $(".cont_").css("display","block")
+		    })
+		    //一户一策弹框上一步下一步
+		    $(".alertTips1 .tip .btn2").on("click",function(){
+		    	var index = $(this).parents(".tip").index();
+    			console.log(index);
+    			if (index<6) {
+    				$(".alertTips1 .tip").hide();
+		    		$(this).parents(".tip").next().show();
+    			}
+		    	
+		    });
+		    $(".alertTips2 .tip .btn2").on("click",function(){
+		    	var index = $(this).parents(".tip").index();
+    			console.log(index);
+    			if (index<4) {
+    				$(".alertTips2 .tip").hide();
+		    		$(this).parents(".tip").next().show();
+    			}
+		    	
+		    });
+		    
+		    $(".alertTips1 .tip .btn1").on("click",function(){
+		    	var index = $(this).parents(".tip").index();
+    			console.log(index);
+    			if (index>2) {
+    				$(".alertTips1 .tip").hide();
+		    		$(this).parents(".tip").prev().show();
+    			}
+		    	
+		    });
+		    $(".alertTips2 .tip .btn1").on("click",function(){
+		    	var index = $(this).parents(".tip").index();
+    			console.log(index);
+    			if (index>2) {
+    				$(".alertTips2 .tip").hide();
+		    		$(this).parents(".tip").prev().show();
+    			}
+		    	
+		    });
+		    //一户一策弹框单选
+		    $(".alertTips1 .input li").on("click",function(){
+		    	$(this).addClass("cur").siblings().removeClass("cur");
+		    })
+		    //关闭弹窗
+		    $(".tips1 .close").on("click",function(){
+		    	$(this).parent().parent().hide();
+		    })
+            //关闭弹窗
+            $(".finishClose").on("click",function(){
+                $(this).parents(".alertTips2").hide();
+                $(".alertTips2 .tip").hide();
+                $(".alertTips2 .tip").eq(0).show();
+            })
+
+			$(".tips1 .tip-btns").click(function () {
+                $(this).parent().parent().hide();
+            })
+			//提交按钮
+            $("#submit").click(function () {
+                var step1 = $("#step1").val();
+				var step2 = $("#step2 li.cur").html();
+                var step3 = $("#step3").val();
+                var step4 = $("#step4").val();
+                var step5 = $("#step5").val();
+                var oneHousehold = step1+"||"+step2+"||"+step3+"||"+step4+"||"+step5;
+                if(DataLength(oneHousehold) < 200){
+                    alert("请输入不少于200字");
+                    return;
+                }
+                $.ajax({
+                    url: "/zsh/customer/updateCustClient.do",
+                    type: "post",
+                    data: {
+                        customerId:globalCustomerId,
+                        oneHousehold:oneHousehold
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if(data.status=="0"){
+                            globalCustomerId="";
+                            alert("修改成功");
+                            $(".alertTips1").hide();
+                            location.reload();
+                        }else{
+                            alert(data.describe);
+                            $(".alertTips1").hide();
+                            location.reload();
+						}
+                    }
+                })
+            })
+		});
+
+		//检查登陆状态
+        function checkLogin(){
+            $.ajax({
+                url:"/zsh/wc/checkWxLoginInfo.do",
+                type:"get",
+                success:function(data){
+                    if(data.status == 0&&data.data == 2||data.status == 0&&data.data == 3){
+                        initCustomerInfo();
+                    }else{
+                        window.location.href="/zsh/fail.html";
+                    }
+                }
+            })
+        }
+    	function which(dom){
+    		$(".cur").removeClass("cur");
+    		$(dom).addClass("cur").removeClass("list");
+    	}
+    	
+		function ziti(dom){
+			var isnNot = $(dom).hasClass("pic");
+			if(isnNot){
+				$(dom).removeClass("pic").addClass("Tpic");
+                $.ajax({
+                    url: "/zsh/customer/updateCustClient.do",
+                    type: "post",
+                    data: {
+                        customerId:$(dom).attr("id"),
+                        oilPush:0
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if(data.status=="0"){
+
+                        }else{
+                            alert(data.describe);
+                        }
+                    }
+                })
+			}else{
+				$(dom).removeClass("Tpic").addClass("pic");
+                $.ajax({
+                    url: "/zsh/customer/updateCustClient.do",
+                    type: "post",
+                    data: {
+                        customerId:$(dom).attr("id"),
+                        oilPush:1
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if(data.status=="0"){
+
+                        }else{
+                            alert(data.describe);
+						}
+                    }
+                })
+			}
+		}
+
+		function initCustomerInfo() {
+			//加载用户信息
+			$.ajax({
+				url: "/zsh/customer/find.do",
+				type: "get",
+				async: false,
+				data:{
+					customerType:1
+				},
+				success: function (data) {
+				    console.log(data);
+					var arr = data.data;
+					if(arr != undefined&&arr.length > 0){
+						var html = "";
+						var html2 = "";
+						$.each(arr,function (i,item) {
+							html += "<div class='cont-li'><div class='con-commer li-name'>"+item.phonePerson+"</div>";
+							html += "<div class='con-commer li-jifen'>"+item.customerIntegral+"</div>";
+							html += "<div class='con-commer li-manger'>"+item.manager+"</div>";
+							html += "<div class='con-commer li-per'><img src='img/look.png' onclick='showPersonInfo(&quot;"+item.customerName+"&quot;,&quot;"+item.hobby+"&quot;,&quot;"+item.oneHousehold+"&quot;)'></div>";
+							html += "<div class='con-commer li-hou'><img src='img/look.png' onclick='showOneHousehold(&quot;"+item.oneHousehold+"&quot;)'></div></div>";
+
+							html2 += "<div class='cont-li'><div class='con-commer2 li-name'>"+item.phonePerson+"</div>";
+							html2 += "<div class='con-commer2 li-jifen'>"+item.customerIntegral+"</div>";
+							html2 += "<div class='con-commer2 li-manger'>";
+                            if(item.oilPush == "0"){
+                                html2 += "<input type='checkbox' id='ziti' checked='checked' hidden='hidden'/><label for='ziti'><div onclick='ziti(this)' class='Tpic' id="+item.customerId+"></div></label>";
+							}else{
+                                html2 += "<input type='checkbox' id='ziti' checked='checked' hidden='hidden'/><label for='ziti'><div onclick='ziti(this)' class='pic' id="+item.customerId+"></div></label>";
+							}
+							html2 += "</div>";
+							html2 += "<div class='con-commer2 li-hou2' onclick='oneHousehold(&quot;"+item.customerId+"&quot;,&quot;"+item.oneHousehold+"&quot;)'><img src='img/edit.png'></div></div>"
+						})
+						$(".cont").append(html);
+						$(".cont_").append(html2);
+					}
+				}
+			})
+		}
+
+	function showPersonInfo(customerName,hobby,oneHousehold){
+		$("#hobby").html("");
+		$(".tip3-txt").html("");
+		if(customerName != null&&customerName != ""){
+			$("#company").html(customerName);
+		}
+		if(hobby != null&&hobby != ""&&hobby != "null"){
+			var arr = hobby.split("、");
+			var html ="";
+			$.each(arr,function (i,item) {
+				html += "<div class='li3'>"+item+"</div>";
+			})
+			$("#hobby").html(html);
+		}
+        if(oneHousehold != null&&oneHousehold != ""&&oneHousehold != "null"){
+            var stepArr = oneHousehold.split("||");
+            $("#price").html(stepArr[1]);
+            $("#service").html(stepArr[2]);
+        }
+		$(".alertTips3").css("display","block");
+	}
+
+	function showOneHousehold(oneHousehold){
+        $("#pStep1").val("");
+        /*$("#pStep2").children().removeClass("cur");
+        $("#pStep3").val("");*/
+        $("#pStep4").val("");
+        $("#pStep5").val("");
+		if(oneHousehold != undefined&&oneHousehold != null&&oneHousehold != "null"&&oneHousehold != ""){
+            var stepArr = oneHousehold.split("||");
+            for(var i = 1;i<stepArr.length+1;i++){
+                if(i == 2||i == 3){
+					continue;
+				}
+				$("#pStep"+i+"").html(stepArr[i-1]);
+            }
+		}
+		$(".alertTips2").css("display","block");
+	}
+
+	var globalCustomerId = "";
+	function oneHousehold(customerId,oneHousehold) {
+		$("#step1").val("");
+        $("#step2").children().removeClass("cur");
+        $("#step3").val("");
+        $("#step4").val("");
+        $("#step5").val("");
+		if(oneHousehold != undefined&&oneHousehold != null&&oneHousehold != "null"&&oneHousehold != ""){
+			var stepArr = oneHousehold.split("||");
+			for(var i = 1;i<stepArr.length+1;i++){
+			    if(i == 2){
+					if(stepArr[i-1] == "-50"){
+                        $("#step2").children().eq(0).addClass("cur");
+					}else if(stepArr[i-1] == "-30"){
+                        $("#step2").children().eq(1).addClass("cur");
+					}else if(stepArr[i-1] == "0"){
+                        $("#step2").children().eq(2).addClass("cur");
+                    }else if(stepArr[i-1] == "+20"){
+                        $("#step2").children().eq(3).addClass("cur");
+                    }else if(stepArr[i-1] == "+50"){
+                        $("#step2").children().eq(4).addClass("cur");
+                    }
+				}else{
+                    $("#step"+i+"").val(stepArr[i-1]);
+				}
+			}
+		}
+		globalCustomerId = customerId;
+		$(".alertTips1").css("display","block");
+        $(".alertTips1 .tip").hide();
+        $(".alertTips1  .tip").eq(0).show();
+	}
+
+	//****************************************************************
+	//* 名　　称：DataLength
+	//* 功    能：计算数据的长度
+	//* 入口参数：fData：需要计算的数据
+	//* 出口参数：返回fData的长度(Unicode长度为2，非Unicode长度为1)
+	//*****************************************************************
+	function DataLength(fData)
+	{
+		var intLength=0
+		for (var i=0;i<fData.length;i++)
+		{
+			if ((fData.charCodeAt(i) < 0) || (fData.charCodeAt(i) > 255))
+				intLength=intLength+2
+			else
+				intLength=intLength+1
+		}
+		return intLength
+}
+	</script>
+	</head>
+	<body>
+		<div class="zoomer">
+			<div class="contents">
+				<div class="barnner"><img src="img/pic1.png"></div>
+				<div class="list">
+					<div class=" commer list1 cha cur" onclick="which(this)">
+						<div class="list-pic"></div>
+						<div class="list1-txt">查询</div>
+					</div>
+					<div class=" commer list1 guan" onclick="which(this)">
+						<div class="list2-pic list-pic"></div>
+						<div class="list1-txt">信息管理</div>
+					</div>
+				</div>
+				<div class="cont">
+					<div class="cont-title">
+						<div class="name">姓名</div>
+						<div class="name">积分</div>
+						<div class="name">客户经理</div>
+						<div class="name">个人信息</div>
+						<div class="name">一户一册</div>
+					</div>
+				</div>
+				<div class="cont_">
+					<div class="cont-title">
+						<div class="name2">姓名</div>
+						<div class="name2">积分</div>
+						<div class="name2">油价推送</div>
+						<div class="name2">一户一册</div>
+					</div>
+					<!--<div class="cont-li">
+						<div class="con-commer2 li-name">王力宏</div>
+						<div class="con-commer2 li-jifen">8888</div>
+						<div class="con-commer2 li-manger">
+							<input type="checkbox" id="ziti" checked="checked" hidden="hidden"/>
+                			<label for="ziti"><div onclick="ziti(this)" class="pic"></div></label>
+						</div>
+						<div class="con-commer2 li-hou2"><img src="img/edit.png"></div>
+					</div>
+					<div class="cont-li">
+						<div class="con-commer2 li-name">王力宏</div>
+						<div class="con-commer2 li-jifen">8888</div>
+						<div class="con-commer2 li-manger">
+							<input type="checkbox" id="ziti" checked="checked" hidden="hidden"/>
+                			<label for="ziti"><div onclick="ziti(this)" class="pic"></div></label>
+						</div>
+						<div class="con-commer2 li-hou2"><img src="img/edit.png"></div>
+					</div>
+					<div class="cont-li">
+						<div class="con-commer2 li-name">王力宏</div>
+						<div class="con-commer2 li-jifen">8888</div>
+						<div class="con-commer2 li-manger">
+							<input type="checkbox" id="ziti" checked="checked" hidden="hidden"/>
+                			<label for="ziti"><div onclick="ziti(this)" class="pic"></div></label>
+						</div>
+						<div class="con-commer2 li-hou2"><img src="img/edit.png"></div>
+					</div>
+					<div class="cont-li">
+						<div class="con-commer2 li-name">王力宏</div>
+						<div class="con-commer2 li-jifen">8888</div>
+						<div class="con-commer2 li-manger">
+							<input type="checkbox" id="ziti" checked="checked" hidden="hidden"/>
+                			<label for="ziti"><div onclick="ziti(this)" class="pic"></div></label>
+						</div>
+						<div class="con-commer2 li-hou2"><img src="img/edit.png"></div>
+					</div>-->
+				</div>
+				</div>
+		</div>
+		<div class="alertTips1">
+		    <div class="tips1">
+		       <div class="close"><img src="img/close.png"></div>
+		        <div class="tip-title">
+					<img src="img/pic6.png">
+		        </div>
+		        <!--第一部-->
+		        <div class="tip" style="display: block;">
+		        	<h1><span>Step1：</span>请针对该客户的兴趣爱好提出相关营销建议</h1>
+		        	<textarea class="tip-con" placeholder="请输入你的营销建议" id="step1"></textarea>
+			        <div class="btns">
+			       		<div class="btn1" id="cancel">取消</div>
+			       		<div class="btn2">下一步</div>
+			        </div>
+		        </div>
+		        <!--第二部-->
+		        <div class="tip">
+		        	<h1><span>Step2：</span>请选择该客户的价格区间</h1>
+		        	<ul class="input" id="step2">
+		        		<li>-50</li>
+		        		<li>-30</li>
+		        		<li>0</li>
+		        		<li>+20</li>
+		        		<li class="cur">+50</li>
+		        	</ul>
+			        <div class="btns">
+			       		<div class="btn1">上一步</div>
+			       		<div class="btn2">下一步</div>
+			        </div>
+		        </div>
+		        <!--第三部-->
+		        <div class="tip">
+		        	<h1><span>Step3：</span>请填写该客户的增值服务</h1>
+		        	<textarea class="tip-con" placeholder="请填写增值服务内容" id="step3"></textarea>
+			        <div class="btns">
+			       		<div class="btn1">上一步</div>
+			       		<div class="btn2">下一步</div>
+			        </div>
+		        </div>
+		        <!--第四部-->
+		        <div class="tip">
+		        	<h1><span>Step4：</span>请简述该客户所属企业性质</h1>
+		        	<textarea class="tip-con" placeholder="请输入企业性质" id="step4"></textarea>
+			        <div class="btns">
+			       		<div class="btn1">上一步</div>
+			       		<div class="btn2">下一步</div>
+			        </div>
+		        </div>
+		        <!--第五部-->
+		        <div class="tip">
+		        	<h1><span>Step5：</span>请填写其他营销意见总汇(例如是否需要政策支持,领导互访)</h1>
+		        	<textarea class="tip-con" placeholder="请输入意" id="step5"></textarea>
+			        <div class="btns">
+			       		<div class="btn1">上一步</div>
+			       		<div class="btn2" id="submit">完成</div>
+			        </div>
+		        </div>
+		        
+		    </div>
+		</div>
+		<div class="alertTips2">
+		    <div class="tips1">
+		       <div class="close"><img src="img/close.png"></div>
+		       <div class="tip-title"><img src="img/pic6.png"></div>
+		       <!--第一部-->
+		        <div class="tip" style="display: block;">
+		        	<h1><span>Step1：</span>请针对该客户的兴趣爱好提出相关营销建议</h1>
+		        	<p id="pStep1"></p>
+			        <div class="btns">
+			       		<div class="btn1" id="">取消</div>
+			       		<div class="btn2">下一步</div>
+			        </div>
+		        </div>
+		        <!--&lt;!&ndash;第二部&ndash;&gt;
+		        <div class="tip">
+		        	<h1><span>Step2：</span>请选择该客户的价格区间</h1>
+		        	<p id="pStep2"></p>
+			        <div class="btns">
+			       		<div class="btn1">上一步</div>
+			       		<div class="btn2">下一步</div>
+			        </div>
+		        </div>
+		        &lt;!&ndash;第三部&ndash;&gt;
+		        <div class="tip">
+		        	<h1><span>Step3：</span>请填写该客户的增值服务</h1>
+		        	<p id="pStep3"></p>
+			        <div class="btns">
+			       		<div class="btn1">上一步</div>
+			       		<div class="btn2">下一步</div>
+			        </div>
+		        </div>-->
+		        <!--第四部-->
+		        <div class="tip">
+		        	<h1><span>Step2：</span>请简述该客户所属企业性质</h1>
+		        	<p id="pStep4"></p>
+			        <div class="btns">
+			       		<div class="btn1">上一步</div>
+			       		<div class="btn2">下一步</div>
+			        </div>
+		        </div>
+		        <!--第五部-->
+		        <div class="tip">
+		        	<h1><span>Step3：</span>请填写其他营销意见总汇(例如是否需要政策支持,领导互访)</h1>
+		        	<p id="pStep5"></p>
+			        <div class="btns">
+			       		<div class="btn1">上一步</div>
+			       		<div class="btn2 finishClose">完成</div>
+			        </div>
+		        </div>
+		       <!--<p id="oneHouse"></p>-->
+		    </div>
+		</div>
+		<div class="alertTips3">
+		    <div class="tips1" >
+		       <div class="close"><img src="img/close.png"></div>
+		       <div class="tip3-li">
+		       	  <div class="tip3pic"><img src="img/pic8.png"></div>
+		       	  <div class="tip3title">所属企业：</div>
+		       	  <div class="tip3-txt" id="company"></div>
+		       </div>
+		       <div class="tip3-li">
+		       	  <div class="tip3pic"><img src="img/pic7.png"></div>
+		       	  <div class="tip3title">爱好：</div>
+		       	  <div class="tip3-txt" id="hobby">
+		
+		       	  </div>
+		       </div>
+		       <div class="tip3-li">
+		       	  <div class="tip3pic"><img src="img/pic24.png"></div>
+		       	  <div class="tip3title">价格区间：</div>
+		       	  <div class="tip3-txt" id="price"></div>
+		       </div>
+		       <div class="tip3-li">
+		       	  <div class="tip3pic"><img src="img/pic25.png"></div>
+		       	  <div class="tip3title">增值服务：</div>
+		       	  <div class="tip3-txt" id="service"></div>
+		       </div>
+		       <div class="tip-btns">确认</div>
+		    </div>
+		</div>
+	</body>
+</html>

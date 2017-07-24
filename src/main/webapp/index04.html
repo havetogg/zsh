@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>推荐办卡</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <!--<link type="text/css" href="css/index.css" rel="stylesheet">-->
+    <!--<script type="text/javascript" src="js/common/jquery-1.7.2.min.js"></script>-->
+    <!--<script type="text/javascript" src="js/common/m.tool.juxinbox.com.js"></script>-->
+
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+    <script type="text/javascript" src="js/common/m.tool.juxinbox.com.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-1.0.0.js"></script>
+
+    <!--<script type="text/javascript" src="js/index.js"></script>-->
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <style>
+    	*{
+    		margin: 0;
+    		padding: 0;
+    	}
+    	.contents{
+    		width: 640px;
+    		min-height: 1065px;
+    		position: absolute;
+    		background: #EDF0F0;
+    	}
+    	.title{
+    		width: 640px;
+    		height: 54px;
+    		font-size: 24px;
+    		line-height: 60px;
+    		text-indent: 1em;
+    		color: #666666;
+    	}
+    	.cont{
+    		width: 640px;
+    		background: #FFFFFF;
+    	}
+    	.xingming{
+			width: 640px;
+			height: 90px;
+			border-bottom: solid #D9D9D9 1px;
+			line-height: 90px;
+    	}
+    	.name{
+    		width: 100px;
+			height: 90px;
+    		font-size: 30px;
+    		margin-left: 30px;
+    		line-height: 90px;
+    		float: left;
+    	}
+    	.name-txt,
+		.add-txt,
+		.sex-txt{
+    		width: 450px;
+    		height: 90px;
+    		font-size: 30px;
+    		border: none;
+			outline: none;
+			line-height: 90px;
+			-webkit-appearance:none;
+    	}
+    	.tel-txt{
+			width: 450px;
+			height: 70px;
+			font-size: 30px;
+			border: none;
+    	}
+    	.btn1{
+    		width:600px;
+    		height: 88px;
+    		margin: 60px auto;
+    	}
+    </style>
+    <script>
+    	var name;
+    	var sex;
+    	var tel;
+    	var add;
+    	$(function(){
+    		$(".btn1").click(function(){
+    			name=$(".name-txt").val();
+                sex=$(".sex-txt").val();
+    			tel=$(".tel-txt").val();
+                add=$(".add-txt").val();
+    			if(name.length<2){
+    				alert("请输入正确姓名");
+    			}else if(sex != "男"&&sex != "女"){
+                    alert("请选择性别")
+    			}else if(tel.length<11||jxTool.isNumber(tel)==false){
+                    alert("请输入正确电话号码")
+                }else if(add.length<2){
+                    alert("请输入住址")
+                }else{
+    				loading("start");
+            	$.ajax({
+            		url:"/zsh/recommend/add.do",
+            		type:"post",
+            		data:{
+            		    "customerName":name,
+						"sex":sex,
+						"telephone":tel,
+						"address":add
+					},
+            		dataType:"json",
+            		success:function(data){
+            			if(data.status==0){
+            				loading("stop");
+            				window.location.href="/zsh/memberCenter.html";
+            			}
+            			if(data.status==1){
+            				loading("stop");
+            				alert(data.describe);
+            			}
+            		}
+            	})
+            }
+        });		
+    		});
+ 
+    </script>
+	</head>
+	<body>
+		<div class="zoomer">
+			<div class="contents">
+				<div class="title">已办卡用户可获得相应积分哦~</div>
+				<div class="cont">
+					<div class="xingming">
+						<div class="name">姓名</div>
+						<input type="text" placeholder="请输入姓名" class="name-txt" maxlength="4"/>
+					</div>
+					<div class="xingming">
+						<div class="name">性别</div>
+						<!--<input type="text" placeholder="请输入性别" class="sex-txt" maxlength="4"/>-->
+						<select class="sex-txt">
+							<option>请选择性别</option>
+							<option value="男">男</option>
+							<option value="女">女</option>
+						</select>
+					</div>
+					<div class="xingming">
+						<div class="name">电话</div>
+						<input type="text" placeholder="请输入电话" class="tel-txt" maxlength="11"/>
+					</div>
+					<div class="xingming">
+						<div class="name">住址</div>
+						<input type="text" placeholder="请输入住址" class="add-txt" maxlength="11"/>
+					</div>
+				</div>
+				<div class="btn1"><img src="img/9.png"></div>
+			</div>
+		</div>
+	</body>
+</html>

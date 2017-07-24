@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+	<script type="text/javascript" src="js/jquery-form.js"></script>
+<meta charset="UTF-8">
+<title>excel表格上传</title>
+</head>
+<body>
+		<form id="myForm" method="post" enctype="multipart/form-data" action="/zsh/excel/upload">
+		选择文件<input type="file" name="excelFile">
+		<input type="button" value="上传" id="submit">
+		</form>
+	
+	<script type="text/javascript">
+		$("#submit").click(function(){
+			$("#myForm").ajaxSubmit({
+				type:"POST",
+				url:"/zsh/excel/upload.do",
+				dataType:"json",
+				success:function(data){
+					if(data.status==0){
+						alert("上传成功");
+					}
+					if(data.status==1){
+						alert(data.describe);
+					}
+				}
+			})
+		});
+	</script>
+</body>
+</html>

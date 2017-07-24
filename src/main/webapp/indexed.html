@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>客户信息表</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+    <script type="text/javascript" src="js/common/m.tool.juxinbox.com.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-1.0.0.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <script type="text/JavaScript" src="My97DatePicker/WdatePicker.js"></script> 
+    <style>
+    	*{
+    		margin: 0;
+    		padding: 0;
+    	}
+    	.contents{
+    		width: 640px;
+    		min-height: 1065px;
+    		position: absolute;
+    	}
+    	.barnner{
+    		width: 557px;
+    		height: 112px;
+    		margin: 40px auto 60px;
+    	}
+    	.time{
+    		width: 600px;
+    		height: 80px;
+    		background: #fff;
+    		margin: 0px auto;
+    		border-radius: 10px;
+    	}
+    	.time-title{
+    		font-size: 28px;
+    		line-height: 80px;
+    		margin-left: 20px;
+    		height: 80px;
+    		float: left;
+    	}
+    	.Wdate{
+    		width: 363px;
+    		height: 80px;
+    		font-size: 28px;
+    		border: none;
+    		color: #777777;
+    		background: url(img/pic10.png) no-repeat right ;
+    	}
+    	.list{
+    		width: 598px;
+    		height: 60px;
+    		margin: 60px auto 0px;
+    		border: solid 2px #e53037;
+    		border-radius: 10px;
+    	}
+    	.list1{
+    		width: 198px;
+    		height: 56px;
+    		float: left;
+    		border-right: solid 2px #E53037;
+    		/*background: #E53037;*/
+    	}
+    	.list1.cur{
+    		background: #E53037;
+    	}
+    	.list1.cur .list-pic{
+    		background:url(img/pic11_.png);
+    	}
+    	.list1.cur .list1-txt{
+    		color: #fff;
+    	}
+    	.list1.cur .list2-txt{
+    		color: #fff;
+    	}
+    	.list1.cur .list3-txt{
+    		color: #fff;
+    	}
+    	.list1.cur .list2-pic{
+    		background:url(img/pic12_.png);
+    	}
+    	.list1:last-child.cur .list-pic{
+    		background:url(img/pic13_.png);
+    	}
+    	.list-pic{
+    		width: 32px;
+    		height: 30px;
+    		float: left;
+    		margin-left:40px;
+    		margin-top: 13px;
+    		background: url(img/pic11.png);
+    	}
+    	.list1-txt{
+    		width:113px;
+    		height: 60px;
+    		line-height: 58px;
+    		float: left;
+    		font-family: "宋体";
+    		font-size: 30px;
+    		color:#e53037;
+    		margin-left: 10px;
+    	}
+    	.list2-txt{
+    		width:133px;
+    		height: 60px;
+    		line-height: 58px;
+    		float: left;
+    		font-family: "宋体";
+    		font-size: 30px;
+    		color:#e53037;
+    		margin-left: 10px;
+    	}
+    	.list2-pic{
+    		width: 22px;
+    		height: 32px;
+    		float: left;
+    		margin-left:28px;
+    		margin-top: 13px;
+    		background: url(img/pic12.png);
+    	}
+    	.list3-pic{
+    		width: 35px;
+    		height: 34px;
+    		float: left;
+    		margin-left:10px;
+    		margin-top: 13px;
+    		background: url(img/pic13.png);
+    	}
+    	.list3-txt{
+    		width:150px;
+    		height: 60px;
+    		line-height: 58px;
+    		float: left;
+    		font-family: "宋体";
+    		font-size: 30px;
+    		color:#e53037;
+    	}
+    	.cont{
+    		width: 600px;
+    		margin: 40px auto 0px;
+    		display: block;
+    	}
+    	.cont-title{
+    		width: 600px;
+    		height: 70px;
+    		background: #fff;
+    	}
+    	.name{
+    		width: 199px;
+    		height: 70px;
+    		border-right: solid 1px #f6f5f5;
+    		color: #999999;
+    		font-size: 24px;
+    		text-align: center;
+    		line-height: 75px;
+    		float: left;
+    	}
+    	.cont-li:nth-child(2n){
+    		width: 600px;
+    		height: 70px;
+    		background: #e4e6e6;
+    	}
+    	.cont-li:nth-child(2n+1){
+    		width: 600px;
+    		height: 70px;
+    		background: #fff;
+    	}
+    	.con-commer{
+    		width: 199px;
+    		height: 70px;
+    		border-right: solid 1px #f6f5f5;
+    		font-size: 24px;
+    		text-align: center;
+    		line-height: 70px;
+    		float: left;
+    	}
+    	.li-paihang img{
+    		margin-top: 9px;
+    	}
+    	.cont_{
+    		width: 600px;
+    		margin: 40px auto 0px;
+    		display: none;
+    	}
+    	.name2{
+    		width: 119px;
+    		height: 70px;
+    		border-right: solid 1px #f6f5f5;
+    		color: #999999;
+    		font-size: 24px;
+    		text-align: center;
+    		line-height: 75px;
+    		float: left;
+    	}
+    	.con-commer2{
+    		width: 119px;
+    		height: 70px;
+    		border-right: solid 1px #f6f5f5;
+    		font-size: 24px;
+    		text-align: center;
+    		line-height: 70px;
+    		float: left;
+    	}
+    	.cont-{
+    		width: 600px;
+    		margin: 40px auto 0px;
+    		display: none;
+    	}
+    	.name3{
+    		width: 149px;
+    		height: 70px;
+    		border-right: solid 1px #f6f5f5;
+    		color: #999999;
+    		font-size: 24px;
+    		text-align: center;
+    		line-height: 75px;
+    		float: left;
+    	}
+    	.con-commer3{
+    		width: 149px;
+    		height: 70px;
+    		border-right: solid 1px #f6f5f5;
+    		font-size: 24px;
+    		text-align: center;
+    		line-height: 70px;
+    		float: left;
+    	}
+    	.li-money{
+    		color: #E53037;
+    	}
+		.ke{
+			border:none;
+		}
+		.time2{width: 300px; border: none; outline: none; padding: 0 10px; font-size: 14px; background: url(../img/date.png) no-repeat right center; position: relative; display: block; height:42px; margin: 20px 0; font-size: 28px;
+			float: left;}
+    </style>
+    <script>
+    	$(function(){
+            checkLogin();
+    	})
+        function checkLogin(){
+            $.ajax({
+                url:"/zsh/wc/checkWxLoginInfo.do",
+                type:"get",
+                success:function(data){
+                    if(data.status == 0&&data.data == 2||data.status == 0&&data.data == 3){
+                        initDailyInfo();
+                    }else{
+                        window.location.href="/zsh/fail.html";
+                    }
+                }
+            })
+        }
+		var attendanceArr = [];
+    	var dailyArr = [];
+		function initDailyInfo() {
+            $(".wai").click(function(){
+                $(".cont").css("display","block")
+                $(".cont_").css("display","none")
+                $(".cont-").css("display","none")
+            })
+            $(".xiao").click(function(){
+                $(".cont").css("display","none")
+                $(".cont_").css("display","block")
+                $(".cont-").css("display","none")
+            })
+            $(".ke").click(function(){
+                $(".cont").css("display","none")
+                $(".cont_").css("display","none")
+                $(".cont-").css("display","block")
+            })
+            $(".time2").change(function () {
+                initDailyInfo();
+            })
+            dailyArr = [];
+            attendanceArr = [];
+            $(".cont-li").remove();
+
+		    var time = $(".time2").val();
+            //加载用户信息
+            $.ajax({
+                url: "/zsh/daily/query.do",
+                data:{
+                    createDate:time
+				},
+                type: "post",
+                success: function (data) {
+                    if (data.status == 0) {
+                        var arr = data.data[0];
+                        var staff = data.data[1];
+                        var html = "";
+                        var html2 = "";
+                        var html3 = "";
+                        if(arr.length>0) {
+                            var num = 0;
+                            for (var i = 1; i <= arr.length; i++) {
+                                if (num >= 3) {
+                                    break;
+                                }
+                                var levelArr = [];
+                                for (var j = 0; j < arr.length; j++) {
+                                    if (arr[j].attendanceRank == i) {
+                                        levelArr.push(arr[j]);
+                                        num++;
+                                    }
+                                }
+                                attendanceArr.push(levelArr);
+                            }
+
+                            for (var i = 14; i < attendanceArr.length + 14; i++) {
+                                for (var j = 0; j < attendanceArr[i - 14].length; j++) {
+                                    html += "<div class='cont-li'><div class='con-commer li-paihang'><img src='img/pic" + i + ".png'></div>";
+                                    html += "<div class='con-commer li-name'>" + attendanceArr[i - 14][j].customerName + "</div>";
+                                    html += "<div class='con-commer li-num'>" + attendanceArr[i - 14][j].monthAttendance + "%"+"</div></div>";
+                                }
+                            }
+
+
+                            var num2 = 0;
+                            for (var i = 1; i <= arr.length; i++) {
+                                if (num2 >= 3) {
+                                    break;
+                                }
+                                var levelArr = [];
+                                for (var j = 0; j < arr.length; j++) {
+                                    if (arr[j].dailyRank == i) {
+                                        levelArr.push(arr[j]);
+                                        num2++;
+                                    }
+                                }
+                                dailyArr.push(levelArr);
+                            }
+                            for (var i = 14; i < dailyArr.length + 14; i++) {
+                                for (var j = 0; j < dailyArr[i - 14].length; j++) {
+                                    html2 += "<div class='cont-li'><div class='con-commer2 li-paihang'><img src='img/pic" + i + ".png'></div>";
+                                    html2 += "<div class='con-commer2 li-name'>" + dailyArr[i - 14][j].customerName + "</div>";
+                                    html2 += "<div class='con-commer2 li-day'>" + dailyArr[i - 14][j].todayDaily + "</div>";
+                                    html2 += "<div class='con-commer2 li-mouth'>" + dailyArr[i - 14][j].monthDaily + "</div>";
+                                    html2 += "<div class='con-commer2 li-suce'>" + dailyArr[i - 14][j].dailyRate + "</div></div>";
+                                }
+                            }
+
+
+                            for (var i = 0; i < arr.length; i++) {
+                                html3 += "<div class='cont-li'>";
+                                html3 += "<div class='con-commer3 li-name'>" + arr[i].customerName + "</div>";
+                                html3 += "<div class='con-commer3 li-day'>" + arr[i].monthDevelop + "</div>";
+                                html3 += "<div class='con-commer3 li-money'>" + arr[i].reward + "</div>";
+                                html3 += "<div class='con-commer3 li-txt'>" + arr[i].remark + "</div></div>";
+                            }
+
+                        }
+                        if(staff != null){
+                            html += "<div class='cont-li'><div class='con-commer li-paihang'>"+staff.attendanceRank+"</div>";
+                            html += "<div class='con-commer li-name'>" + staff.customerName + "</div>";
+                            html += "<div class='con-commer li-num'>" + staff.monthAttendance + "%"+"</div></div>";
+
+                            html2 += "<div class='cont-li'><div class='con-commer2 li-paihang'>"+staff.dailyRank+"</div>";
+                            html2 += "<div class='con-commer2 li-name'>" + staff.customerName + "</div>";
+                            html2 += "<div class='con-commer2 li-day'>" + staff.todayDaily + "</div>";
+                            html2 += "<div class='con-commer2 li-mouth'>" + staff.monthDaily + "</div>";
+                            html2 += "<div class='con-commer2 li-suce'>" + staff.dailyRate + "</div></div>";
+
+                            /*html3 += "<div class='cont-li'>";
+                            html3 += "<div class='con-commer3 li-name'>" + staff.customerName + "</div>";
+                            html3 += "<div class='con-commer3 li-day'>" + staff.monthDevelop + "</div>";
+                            html3 += "<div class='con-commer3 li-money'>" + staff.reward + "</div>";
+                            html3 += "<div class='con-commer3 li-txt'>" + staff.remark + "</div></div>";*/
+						}
+                        $(".cont").append(html);
+                        $(".cont_").append(html2);
+                        $(".cont-").append(html3);
+                    }else{
+                        $(".cont-li").remove();
+					}
+                }
+            })
+        }
+        function which(dom){
+            $(".cur").removeClass("cur")
+            $(dom).addClass("cur").removeClass("list")
+        }
+    </script>
+	</head>
+	<body>
+		<div class="zoomer">
+			<div class="contents">
+				<div class="barnner"><img src="img/pic9.png"></div>
+				<div class="time">
+					<div class="time-title">选择查询日期：</div>
+					<!--<input class="Wdate" type="text" id="d15" onFocus="WdatePicker({isShowClear:false,readOnly:true})"/>-->
+					<input class="time2" type="date" />
+				</div>
+				<div class="list">
+					<div class=" commer list1 wai cur" onclick="which(this)">
+						<div class="list-pic"></div>
+						<div class="list1-txt">成交率</div>
+					</div>
+					<div class=" commer list1 xiao" onclick="which(this)">
+						<div class="list2-pic list-pic"></div>
+						<div class="list2-txt">销售日报</div>
+					</div>
+					<div class=" commer list1 ke" onclick="which(this)">
+						<div class="list3-pic list-pic"></div>
+						<div class="list3-txt">新客户开发</div>
+					</div>
+				</div>
+				<div class="cont">
+					<div class="cont-title">
+						<div class="name">排行</div>
+						<div class="name">姓名</div>
+						<div class="name">当月</div>
+					</div>
+					<!--<div class="cont-li">
+						<div class="con-commer li-paihang"><img src="img/pic14.png"></div>
+						<div class="con-commer li-name">唐军</div>
+						<div class="con-commer li-num">888</div>
+					</div>
+					<div class="cont-li">
+						<div class="con-commer li-paihang"><img src="img/pic15.png"></div>
+						<div class="con-commer li-name">唐军</div>
+						<div class="con-commer li-num">888</div>
+					</div>
+					<div class="cont-li">
+						<div class="con-commer li-paihang"><img src="img/pic16.png"></div>
+						<div class="con-commer li-name">唐军</div>
+						<div class="con-commer li-num">888</div>
+					</div>-->
+				</div>
+				<div class="cont_">
+					<div class="cont-title">
+						<div class="name2">排行</div>
+						<div class="name2">姓名</div>
+						<div class="name2">当日</div>
+						<div class="name2">当月</div>
+						<div class="name2">完成率</div>
+					</div>
+					<!--<div class="cont-li">
+						<div class="con-commer2 li-paihang"><img src="img/pic14.png"></div>
+						<div class="con-commer2 li-name">唐军</div>
+						<div class="con-commer2 li-day">888</div>
+						<div class="con-commer2 li-mouth">8188</div>
+						<div class="con-commer2 li-suce">90%</div>
+					</div>
+					<div class="cont-li">
+						<div class="con-commer2 li-paihang"><img src="img/pic15.png"></div>
+						<div class="con-commer2 li-name">唐军</div>
+						<div class="con-commer2 li-day">888</div>
+						<div class="con-commer2 li-mouth">8188</div>
+						<div class="con-commer2 li-suce">90%</div>
+					</div>
+					<div class="cont-li">
+						<div class="con-commer2 li-paihang"><img src="img/pic16.png"></div>
+						<div class="con-commer2 li-name">唐军</div>
+						<div class="con-commer2 li-day">888</div>
+						<div class="con-commer2 li-mouth">8188</div>
+						<div class="con-commer2 li-suce">90%</div>
+					</div>-->
+				</div>
+				<div class="cont-">
+					<div class="cont-title">
+						<div class="name3">姓名</div>
+						<div class="name3">当月</div>
+						<div class="name3">拟奖励</div>
+						<div class="name3">备注</div>
+					</div>
+					<!--<div class="cont-li">
+						<div class="con-commer3 li-name">朱军</div>
+						<div class="con-commer3 li-day">4</div>
+						<div class="con-commer3 li-money">8488</div>
+						<div class="con-commer3 li-txt">20吨以下</div>
+					</div>
+					<div class="cont-li">
+						<div class="con-commer3 li-name">朱军</div>
+						<div class="con-commer3 li-day">4</div>
+						<div class="con-commer3 li-money">8488</div>
+						<div class="con-commer3 li-txt">20吨以下</div>
+					</div>
+					<div class="cont-li">
+						<div class="con-commer3 li-name">朱军</div>
+						<div class="con-commer3 li-day">4</div>
+						<div class="con-commer3 li-money">8488</div>
+						<div class="con-commer3 li-txt">20吨以下</div>
+					</div>-->
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

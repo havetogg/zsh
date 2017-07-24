@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.jumutang.zsh.dao.RecommendCardDaoI">
+	<resultMap id="BaseResultMap" type="org.jumutang.zsh.model.RecommendCard">
+		<id column="recommendid" property="recommendId" jdbcType="VARCHAR"></id>
+		<result column="customername" property="customerName" jdbcType="VARCHAR"/>
+		<result column="sex" property="sex" jdbcType="VARCHAR"/>
+		<result column="telephone" property="telephone" jdbcType="VARCHAR"/>
+		<result column="address" property="address" jdbcType="VARCHAR"/>
+		<result column="recommendstatus" property="recommendStatus" jdbcType="SMALLINT"/>
+		<result column="recommendate" property="recommenDate" jdbcType="DATE"/>
+		<result column="openid" property="openId" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="insertys">
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="recommendId != null">
+				recommendid,
+			</if>
+			<if test="customerName != null">
+				customername,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="openId !=null">
+				openid,
+			</if>
+			<if test="telephone !=null">
+				telephone,
+			</if>
+			<if test="address !=null">
+				address,
+			</if>
+			<if test="recommendStatus !=null">
+				recommendstatus,
+			</if>
+			<if test="recommenDate !=null">
+				recommendate,
+			</if>
+		</trim>
+	</sql>
+	<sql id="insertValue">
+		<trim prefix="VALUES (" suffix=")" suffixOverrides="," >
+			<if test="recommendId != null">
+				#{recommendId},
+			</if>
+			<if test="customerName != null">
+				#{customerName},
+			</if>
+			<if test="sex != null">
+				#{sex},
+			</if>
+			<if test="openId !=null">
+				#{openId},
+			</if>
+			<if test="telephone !=null">
+				#{telephone},
+			</if>
+			<if test="address !=null">
+				#{address},
+			</if>
+			<if test="recommendStatus !=null">
+				#{recommendStatus},
+			</if>
+			<if test="recommenDate !=null">
+				#{recommenDate},
+			</if>
+		</trim>
+	</sql>
+	
+	<insert id="addRecommendCard" parameterType="org.jumutang.zsh.model.RecommendCard">
+		INSERT INTO recommend_card
+		<include refid="insertys"/>
+		<include refid="insertValue"/>
+	</insert>
+	
+	<sql id="queryWhereCause">
+		<where>
+			<if test="recommendId !=null">
+				AND recommendid = #{recommendId}
+			</if>
+			<if test="customerName !=null">
+				AND customername = #{customerName}
+			</if>
+			<if test="telephone !=null">
+				AND telephone = #{telephone}
+			</if>
+			<if test="recommendStatus !=null">
+				AND recommendstatus = #{recommendStatus}
+			</if>
+			<if test="recommenDate !=null">
+				AND recommendate = #{recommenDate}
+			</if>
+			<if test="openId !=null">
+				AND openid = #{openId}
+			</if>
+		</where>
+	</sql>
+	
+	<update id="updateRecommendCard" parameterType="org.jumutang.zsh.model.RecommendCard">
+		UPDATE recommend_card 
+		<set>
+			recommendstatus = #{recommendStatus}
+		</set>
+		<where>
+			recommendid = #{recommendId}
+		</where>
+	</update>
+	
+	<select id="queryRecommendCard" parameterType="org.jumutang.zsh.model.RecommendCard" resultMap="BaseResultMap">
+		SELECT * FROM recommend_card
+		<include refid="queryWhereCause"/>
+	</select>
+	
+</mapper>
+
+
+

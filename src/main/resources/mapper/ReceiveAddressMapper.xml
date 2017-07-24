@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.jumutang.zsh.dao.ReceiveAddressDaoI" >
+  <resultMap id="BaseResultMap" type="org.jumutang.zsh.model.ReceiveAddress" >
+    <id column="r_id" property="rId" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="r_name" property="rName" jdbcType="VARCHAR" />
+    <result column="r_phone" property="rPhone" jdbcType="VARCHAR" />
+    <result column="r_address" property="rAddress" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+    <result column="is_default" property="isDefault" jdbcType="VARCHAR" />
+    <result column="is_delete" property="isDelete" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    r_id, user_id, r_name, r_phone, r_address, create_time, is_default, is_delete
+  </sql>
+
+  <select id="queryById" resultMap="BaseResultMap" parameterType="org.jumutang.zsh.model.ReceiveAddress" >
+    SELECT * FROM receiveAddress
+    <where>
+      <if test="rId!=null">
+        r_id = #{rId}
+      </if>
+    </where>
+  </select>
+
+  <select id="queryReceiveAddressListByUserId" resultMap="BaseResultMap" parameterType="org.jumutang.zsh.model.ReceiveAddress" >
+    select 
+    <include refid="Base_Column_List" />
+    from receiveAddress
+    where user_id = #{userId,jdbcType=VARCHAR}
+    <if test="rId!=null">
+      and r_id=#{rId}
+    </if>
+    <if test="isDelete!=null">
+      and is_delete=#{isDelete}
+    </if>
+    order by is_default desc,create_time
+  </select>
+  <insert id="addReceiveAddressModel" parameterType="org.jumutang.zsh.model.ReceiveAddress" >
+    insert into receiveAddress
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="rId != null" >
+        r_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="rName != null" >
+        r_name,
+      </if>
+      <if test="rPhone != null" >
+        r_phone,
+      </if>
+      <if test="rAddress != null" >
+        r_address,
+      </if>
+        create_time,
+      <if test="isDefault != null" >
+        is_default,
+      </if>
+      <if test="isDelete != null" >
+        is_delete,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="rId != null" >
+        #{rId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="rName != null" >
+        #{rName,jdbcType=VARCHAR},
+      </if>
+      <if test="rPhone != null" >
+        #{rPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="rAddress != null" >
+        #{rAddress,jdbcType=VARCHAR},
+      </if>
+       now(),
+      <if test="isDefault != null" >
+        #{isDefault,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateReceiveAddressModel" parameterType="org.jumutang.zsh.model.ReceiveAddress" >
+    update receiveAddress
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="rName != null" >
+        r_name = #{rName,jdbcType=VARCHAR},
+      </if>
+      <if test="rPhone != null" >
+        r_phone = #{rPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="rAddress != null" >
+        r_address = #{rAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null" >
+        is_default = #{isDefault,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        is_delete = #{isDelete,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where r_id = #{rId,jdbcType=VARCHAR}
+  </update>
+</mapper>

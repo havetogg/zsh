@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>积分总数</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <link type="text/css" href="css/point.css" rel="stylesheet">
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+	<script>
+        $(function(){
+            initUserInfo();
+            initOrder();
+        });
+        function initUserInfo(){
+            $.ajax({
+                url:"/zsh/customer/query.do",
+                type:"post",
+                dataType:"json",
+                success:function(data){
+                    var data=data.data[0];
+                    $("#integer").html(data.customerIntegral);
+                }
+            });
+        }
+        function initOrder(){
+            $.ajax({
+                url: "/zsh/exchange/queryByUser.do",
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    var arr = data.data;
+                    if(arr.length!=0){
+                        var str='';
+                        $.each(arr,function(index,item){
+                            str+="<li><label>-"+item.integration+"</label>";
+                            str+="<p>购买了"+item.goodName+"</p>";
+                            str+="<span>"+item.exchangeDate+"</span></li>";
+                        })
+                        $("#show").append(str);
+                    }
+                }
+            })
+        }
+	</script>
+</head>
+
+<body>
+<div class="zoomer">
+	<div class="integral_detail">
+		<h1>积分总数:<span id="integer"></span></h1>
+		<ul id="show">
+			<li class="add">
+				<label>+70000</label>
+				<p>新手礼包积分</p>
+				<span>2017/02/21</span>
+			</li>
+		</ul>
+	</div>
+</div>
+</body>
+	
+</html>

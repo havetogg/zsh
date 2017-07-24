@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5">
+		<meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta content="telephone=no" name="format-detection">
+		<title>今日秒杀</title>
+		<link rel="stylesheet" href="css/common/common.css" />
+		<link rel="stylesheet" href="css/point.css" />
+		<script type="text/javascript" src="js/common/jQuery-1.11.3.js" ></script>
+		<script type="text/javascript" src="js/common/jWeChat-Adaptive.js" ></script>
+		<script type="text/javascript" src	="js/jquery.countdown.js" ></script>
+		<script>
+            $(function(){
+                initUserInfo();
+                initDeliver();
+                $("#conform").click(function () {
+                    window.location.href="/zsh/shouhuodizhi-list3.html?activityId="+activityId+"&openId="+openId;
+                })
+
+                
+                //我的奖品
+				$(".prize").on("click",function(){
+					$(".my_special").show();
+	                $("body,html").css({"overflow":"hidden"});
+				});
+				$(".close").on("click",function(){
+					$(".my_special").hide();
+	                $("body,html").css({"overflow":""});
+				});
+                
+                //点击秒杀按钮
+                $("#rob").click(function(){
+                    if(parseInt(customerIntegral)<parseInt(integral)){
+                        alert("您的积分不足");
+                        return;
+                    }
+                    $.ajax({
+                        url: "/zsh/rob/query.do",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            activityId: activityId,
+                            openId:openId
+                        },
+                        success: function (data) {
+							var arr=data.data;
+							if(arr.length>0){
+							    alert("您已经参与过这个活动了！");
+							}else{
+                                $.ajax({
+                                    url: "/zsh/rob/add.do",
+                                    type: "post",
+                                    dataType: "json",
+                                    data: {
+                                        activityId: activityId
+                                    },
+                                    success: function (data) {
+                                        if(data.status==0){
+                                            $(".special_success").show();
+                                            $("body,html").css({"overflow":"hidden"});
+                                        }else{
+                                            alert("秒杀失败请重试");
+                                        }
+                                    }
+                                })
+							}
+                        }
+                    })
+                });
+            })
+            //客户积分
+            var customerIntegral="";
+            //openId
+			var openId="";
+            function initUserInfo(){
+                $.ajax({
+                    url:"/zsh/customer/query.do",
+                    type:"post",
+                    dataType:"json",
+                    success:function(data){
+                        var data=data.data[0];
+                        customerIntegral = data.customerIntegral;
+                        openId = data.customerOpenId;
+                    }
+                });
+                initActivityInfo();
+            }
+            //活动id
+            var activityId ="";
+            var integral = "";
+            function initActivityInfo(){
+                $.ajax({
+                    url:"/zsh/activity/queryActivity.do",
+                    type:"post",
+                    dataType:"json",
+                    success:function(data){
+                        var arr = data.data;
+                        if(arr.length > 0){
+                            var item = arr[0];
+                            activityId = item.activityId;
+                            integral = item.integral;
+                            $.ajax({
+                                url: "/zsh/rob/query.do",
+                                type: "post",
+                                dataType: "json",
+                                data: {
+                                    activityId: activityId,
+                                    openId: openId
+                                },
+                                success: function (data) {
+                                    var arr = data.data;
+                                    if (arr.length > 0) {
+                                        alert("您已经参与过这个活动了！");
+                                        $(".countdown_over").show();
+                                        $("#rob").hide();
+                                    }else{
+                                        if(tab(new Date(item.activityDate)) == "0"){
+                                            $(".countdown_over").show();
+										}else{
+                                            $("#time").attr("datetime",item.activityDate+"+0800");
+                                            $("time").countDown({
+                                                with_labels: false,
+                                                css_class: 'countdown-alt-1',
+                                            });
+                                            //倒计时结束触发
+                                            $('time').on('time.elapsed', function () {
+                                                $(".countdown").hide();
+                                                $(".countdown_over").show();
+                                                $("#rob").removeAttr("disabled");
+                                            });
+										}
+									}
+                                }
+                            })
+                            var picUrl = item.picurl;
+                            var url = document.location.href;
+                            url = url.substring(0,url.indexOf("zsh")+3);
+                            var urlArr = JSON.parse(item.detailPicUrl);
+                            var html ="";
+                            $.each(urlArr,function(i,obj){
+                                html+="<img src="+url+obj+" />";
+                            })
+                            $(".special_img").append(html);
+                            $("#illustrate").html(item.illustrate);
+                            $("#banner").attr("src",url+picUrl);
+
+						}
+                        /*if(arr.length!=0){
+                            $.each(arr,function(index,item){
+                                if(tab(item.activityDate,nowStr)==0){
+                                    var picUrl = item.picurl;
+                                    var url = document.location.href;
+                                    url = url.substring(0,url.indexOf("zsh")+3);
+                                    var urlArr = JSON.parse(item.detailPicUrl);
+                                    console.log(urlArr);
+                                    var html ="";
+                                    $.each(urlArr,function(i,obj){
+                                        html+="<img src="+url+obj+" />";
+                                    })
+									$(".special_img").append(html);
+                                    $("#illustrate").html(item.illustrate);
+                                    activityId = item.activityId;
+                                    integral = item.integral;
+
+                                    $("#banner").attr("src",url+picUrl);
+                                    return false;
+                                }
+                            })
+                        }*/
+                    }
+                });
+            }
+            function tab(date2){
+                var oDate1 = new Date();
+                //var oDate2 = new Date(date2);
+                if(oDate1.getTime() >= date2.getTime()){
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+            function initDeliver(){
+                $.ajax({
+                    url: "/zsh/rob/queryAll.do",
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        if(data.status=="0"){
+                            var arr=data.data;
+                            var html="";
+                            $.each(arr,function(i,item){
+                                html+="<tr><td>"+item.activityName+"</td>";
+                                html+="<td>"+item.robDate+"</td>";
+                                if(item.robStatus=="1"){
+                                    html+="<td>未兑换</td>";
+								}else if(item.robStatus=="2"){
+                                    html+="<td>已兑换</td>";
+                                }else if(item.robStatus=="3"){
+                                    html+="<td>已发货</td>";
+                                }
+                                html+="<td>"+item.address+"</td></tr>";
+							})
+							$("#tb").append(html);
+						}
+                    }
+                })
+			}
+		</script>
+	</head>
+	<body>
+		<div class="zoomer">
+			<!--弹窗/秒杀成功-->
+			<div class="pop special_success">
+				<div class="centerDiv">
+					<h1>恭喜您，秒杀成功!!!</h1>
+					<a id="conform">确认</a>
+				</div>
+			</div>
+			<!--弹窗/我的奖品-->
+			<div class="pop my_special">
+				<div class="centerDiv">
+					<!--关闭按钮-->
+					<a class="close" href="javascript:;"></a>
+					<table>
+						<thead>
+							<tr>
+								<td>秒杀主题</td>
+								<td>秒杀时间</td>
+								<td>状态</td>
+								<td>地址</td>
+							</tr>
+						</thead>
+						<tbody id="tb">
+
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="special_banner">
+				<img src="" id="banner"/>
+			</div>
+			<div class="special_time">
+				<h1>倒计时</h1>
+				<div class="countdown">
+					<!--时间后+0800是北京时间-->
+					<time datetime="2017-05-11 18:00:00+0800" id="time"></time>
+					<!--<div class="time">00:00:05</div>-->
+				</div>
+				<!--倒计时结束-->
+				<div class="countdown_over">
+					<a href="javascript:;" id="rob">我要抢</a>
+					<a class="prize" href="javascript:;">我的奖品</a>
+				</div>
+				<h2>活动说明</h2>
+				<p id="illustrate"></p>
+			</div>
+			<div class="special_img">
+
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.jumutang.zsh.dao.TopDaoI">
+	<resultMap id="BaseResultMap" type="org.jumutang.zsh.model.TopModel">
+		<id column="top_id" property="topId" jdbcType="VARCHAR"></id>
+		<result column="employee_name" property="employeeName" jdbcType="VARCHAR"/>
+		<result column="employee_head" property="employeeHead" jdbcType="VARCHAR"/>
+		<result column="employee_top" property="employeeTop" jdbcType="SMALLINT"/>
+		<result column="top_type" property="topType" jdbcType="SMALLINT"/>
+	</resultMap>
+	
+	<select id="queryAll" parameterType="short" resultMap="BaseResultMap">
+		SELECT * FROM top
+		<where>
+			top_status = #{status} 
+		</where>
+		order by employee_top
+	</select>
+	
+	<select id="queryTopByType" parameterType="map" resultMap="BaseResultMap">
+		SELECT * FROM top
+		<where>
+			top_status = #{status} AND top_type=#{type}
+		</where>
+		order by employee_top
+	</select>
+	
+	<insert id="batchInsertTop" parameterType="list">
+		INSERT INTO top
+		(top_id,employee_name,employee_head,employee_top,top_type,top_date,top_status)
+		VALUES
+		<foreach collection="list" item="i"  separator="," >
+			(#{i.topId},
+			#{i.employeeName},
+			#{i.employeeHead},
+			#{i.employeeTop},
+			#{i.topType},
+			#{i.topDate},
+			#{i.topStatus}
+			)
+		</foreach>
+	</insert>
+	
+	<update id="updateTop" parameterType="map">
+		UPDATE top
+			<set>
+				top_status = #{osEfficacy}
+			</set>
+			<where>
+				top_status =#{now}
+			</where>
+	</update>
+	
+</mapper>
+
+
+

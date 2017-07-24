@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>个人中心</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <link type="text/css" href="css/app.css" rel="stylesheet">
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+    <script>
+        $(function(){
+            checkLogin()
+        })
+
+        function checkLogin(){
+            $.ajax({
+                url:"/zsh/wc/checkWxLoginInfo.do",
+                type:"get",
+                success:function(data){
+                    if(data.status == 0&&data.data == 1){
+                        init();
+                    }else{
+                        window.location.href="/zsh/fail.html";
+                    }
+                }
+            })
+        }
+        function init(){
+            //加载用户信息
+            $.ajax({
+                url:"/zsh/customer/query.do",
+                type:"get",
+                success:function(data){
+                    if(data.status==0){
+                        var customer = data.data[0];
+                        if(customer.hobby==""||customer.birthday==""||customer.hobby==null||customer.birthday==null){
+                            alert("请完善个人信息");
+                            window.location.href="/zsh/supplement.html";
+                        }
+                        var html=
+                            "<div class='memberCenter_icon'>" +
+                            "<img src='"+customer.customerHead+"' ><img class='lv' src='img/lv.png' />" +
+                            "</div>" +
+                            "<div class='memberCenter_name'>" +
+                            "<span>"+customer.phonePerson+"</span>" ;
+                        /*if(customer.customerType){
+                         html +="<span><img src='img/goldIcon.png'></span>";
+                         }*/
+
+                        html +="</div>" +
+                            "<div class='memberCenter_score'>"+
+                            "油滴持有量: <a>"+customer.customerIntegral+"</a>"+
+                            "</div>";
+                        $(".memberCenter_top").append(html);
+                    }else{
+                        window.location.href="/zsh/wc/oauth.do?redUrl=/zsh/memberCenter.html";
+                    }
+                }
+            });
+
+
+            $("#recommend").find("img").click(function(){
+
+                window.location.href="/zsh/index04.html";
+
+            });
+            $("#change").find("img").click(function(){
+
+                window.location.href="/zsh/exchange.html";
+
+            });
+            $("#mx").find("img").click(function(){
+
+                window.location.href="/zsh/specialOffer.html";
+            });
+
+            $("#user").find("img").click(function(){
+                window.location.href="/zsh/user.html";
+            });
+            $("#gz").find("img").click(function(){
+                window.location.href="/zsh/integral.html";
+            });
+            $("#order").find("img").click(function(){
+                window.location.href="/zsh/dingdan-chaxun.html";
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="zoomer">
+    <div class="memberCenter">
+        <div class="memberCenter_top">
+        	<!--<div class="memberCenter_icon">
+                <img src="img/22.png" />
+                <img class="lv" src="img/lv.png" />
+            </div>
+            <div class="memberCenter_name">
+                <span>111</span>
+            </div>
+            <div class="memberCenter_score">油滴持有量: <a>888888</a></div>-->
+        </div>
+        <div class="memberCenter_list">
+            <ul>
+                <li id="mx">
+                    <img src="img/memberCenter_1.png" alt="">
+                </li>
+                <li id="change">
+                    <img src="img/memberCenter_2.png" alt="">
+                </li>
+                <li id="user">
+                    <img src="img/memberCenter_3.png" alt="">
+                </li>
+                <li id="order">
+                    <img src="img/memberCenter_4.png" alt="">
+                </li>
+                <li id="gz">
+                    <img src="img/memberCenter_5.png" alt="">
+                </li>
+                <li id="recommend">
+                    <img  src="img/memberCenter_6.png" alt="">
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

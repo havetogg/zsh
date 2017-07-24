@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+	<link rel="stylesheet" href="css/backstage.css" />
+	<script type="text/javascript" src="js/jQuery-1.11.3.js" ></script>
+    <title>登陆页</title>
+    <script type="text/javascript">
+        function login(){
+            if($("#name").val().trim()==""||$("#pwd").val().trim()==""){
+                alert("用户名或密码为空!");
+                return;
+			}
+            $.ajax({
+                url: "/zsh/wc/PCLogin.do",
+                type: "post",
+				data:{
+                    username:$("#name").val().trim(),
+                    password:$("#pwd").val().trim()
+				},
+                dataType: "json",
+                success: function (data) {
+					if(data.status == 0){
+						if(data.data.role == 0){
+                            window.location.href="/zsh/manager/index.html";
+						}else if(data.data.role == 1){
+
+						}
+					}else{
+					    alert("用户名或密码错误");
+					}
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+	<!--head-->
+	<div class="head"></div>
+	<div class="login">
+		<div class="centerDiv">
+			<p>
+				<label>用户名</label>
+				<input class="input" type="text" placeholder="请输入用户名" id="name"/>
+			</p>
+			<p>
+				<label>密码</label>
+				<input class="input" type="password" placeholder="请输入密码" id="pwd"/>
+			</p>
+			<a href="javascript:login();">登录</a>
+		</div>
+	</div>
+</body>
+</html>

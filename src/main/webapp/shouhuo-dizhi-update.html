@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>收货地址</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <!--<link type="text/css" href="css/common.css" rel="stylesheet">-->
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+    <script type="text/javascript" src="js/common/m.tool.juxinbox.com.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-1.0.0.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <style>
+        .contents {
+            width: 640px;
+            min-height: 1065px;
+            background: #edf0f0;
+        }
+
+        .head {
+            position: absolute;
+            width: 640px;
+            height: 77px;
+            background: white;
+        }
+
+        .head-pic {
+            width: 26px;
+            height: 32px;
+            margin: 24px 20px;
+            float: left;
+        }
+
+        .head-txt {
+            width: 180px;
+            height: 30px;
+            float: left;
+            font-size: 30px;
+            color: #666666;
+            margin: 27px 0;
+        }
+
+        .quxiao {
+            width: 60px;
+            height: 30px;
+            font-size: 27px;
+            color: #E53037;
+            float: left;
+            margin-top: 27px;
+            margin-left: 308px;
+        }
+
+        .cont {
+            position: absolute;
+            width: 640px;
+            height: 355px;
+            background: white;
+            margin: 120px 0;
+        }
+
+        .name {
+            width: 600px;
+            height: 50px;
+            margin: 20px 20px;
+            font-size: 30px;
+            color: #666666;
+            border: none;
+        }
+
+        .tel {
+            width: 587px;
+            height: 50px;
+            margin: 20px 20px;
+            font-size: 30px;
+            color: #666666;
+            border: none;
+        }
+
+        .location-txt {
+            width: 600px;
+            height: 50px;
+            margin: 20px 20px;
+            font-size: 30px;
+            color: #666666;
+            border: none;
+        }
+
+        .fengexian {
+            width: 600px;
+            margin: 0px 20px;
+            border: solid 1px #E4E4E4;
+        }
+
+        .anniu {
+            width: 208px;
+            height: 48px;
+            margin: 0 20px;
+        }
+
+        .button {
+            width: 100%;
+            height: 88px;
+            background: #E53037;
+            position: fixed;
+            /*margin:1080px 0;*/
+            bottom: 0;
+            text-align: center;
+            font-size: 34px;
+            line-height: 90px;
+            color: white;
+        }
+
+        /*自提默认选中状态样式*/
+        .quan {
+            width: 41px;
+            height: 41px;
+            background: url("img/moren.png");
+            position: absolute;
+            margin: 21px 17px;
+        }
+
+        /*自提未选择状态样式*/
+        .notQuan {
+            width: 50px;
+            height: 50px;
+            background: url("img/nomoren.png");
+            position: absolute;
+            margin: 17px 14px;
+        }
+
+        .mo {
+            font-size: 26px;
+            position: absolute;
+            margin: 29px 78px;
+        }
+
+        #alerw_div {
+            min-height: 200px;
+        }
+    </style>
+    <script type="text/javascript">
+        var name;
+        var tel;
+        var dizhi;
+        var isDefault = 1;
+        $(function () {
+            var id=getUrlParam("rId");
+            $.ajax({
+                url: "/zsh/customer/queryReceiveAddress.do",
+                type: "post",
+                data:{"rId":id},
+                dataType: "json",
+                success: function (data) {
+                    var res = data.data[0];
+                    $(".name").val(res.rName);
+                    $(".tel").val(res.rPhone);
+                    $(".location-txt").val(res.rAddress);
+                }
+            });
+
+            $(".button").click(function () {
+                name = $(".name").val();
+                tel = $(".tel").val();
+                dizhi = $(".location-txt").val();
+//        	    dizhi = document.getElementById("select1").options[document.getElementById("select1").selectedIndex].text;
+                if (name.length < 2) {
+                    alerw("请填写姓名！");
+                } else if (tel.length < 11 || jxTool.isMobile(tel) == false) {
+                    alerw("请填写正确的手机号码!");
+                } else if (dizhi.length < 2) {
+                    alerw("请填写详细地址!");
+                } else {
+                    var address = new Object();
+                    address.rName = name;
+                    address.rPhone = tel;
+                    address.rAddress = dizhi;
+                    address.isDefault = isDefault;
+                    address.rId=id;
+                    $.ajax({
+                        url: "/zsh/customer/updateReceiveAddress.do",
+                        type: "post",
+                        data: address,
+                        dataType: "json",
+                        success: function (data) {
+                            if(data.data=='1'){
+                                alert("修改成功");
+                                window.history.go(-1);
+                                //location.href="shouhuodizhi-list.html";
+                            }
+                        }
+                    });
+                }
+            });
+        });
+        function ziti(dom) {
+            var isnNot = $(dom).hasClass("quan");
+            if (isnNot) {
+                $(dom).removeClass("quan").addClass("notQuan");
+                isDefault = 0;
+            } else {
+                $(dom).removeClass("notQuan").addClass("quan");
+                isDefault = 1;
+            }
+
+        }
+    </script>
+</head>
+<body>
+<div class="zoomer">
+    <div class="contents">
+        <div class="head">
+            <div class="head-pic"><img src="img/40.png"></div>
+            <div class="head-txt">我的收货地址</div>
+            <div class="quxiao" onclick="javascript:history.back(-1);">取消</div>
+        </div>
+        <div class="cont">
+            <input type="text" class="name" placeholder="收货人姓名"/>
+            <div class="fengexian"></div>
+            <input type="text" class="tel" maxlength="11" placeholder="手机号"/>
+            <div class="fengexian"></div>
+            <input type="text" class="location-txt" placeholder="详细地址"/>
+
+            <div class="fengexian"></div>
+            <div class="tip22">
+                <input type="checkbox" id="ziti" checked="checked" hidden="hidden"/>
+                <label for="ziti">
+                    <div onclick="ziti(this)" class="quan"></div>
+                </label>
+                <div class="mo">设为默认地址</div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<div class="button">确定</div>
+</body>
+</html>

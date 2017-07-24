@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5">
+		<meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta content="telephone=no" name="format-detection">
+		<title>配送计划</title>
+		<link rel="stylesheet" href="css/common/common.css" />
+		<link rel="stylesheet" href="css/point.css" />
+		<script type="text/javascript" src="js/common/jQuery-1.11.3.js" ></script>
+		<script type="text/javascript" src="js/common/jWeChat-Adaptive.js" ></script>
+	</head>
+	<body class="bg_gray">
+		<div class="zoomer">
+			<form method="post">
+			<div class="order_form">
+				<ul>
+					<li>
+						<label>收油单位</label>
+						<input id="company" type="text" placeholder="请输入收油单位" />
+					</li>
+					<li>
+						<label>客户编码</label>
+						<input id="code" type="text" placeholder="请输入客户编码" />
+					</li>
+					<li>
+						<label>收油地址</label>
+						<input id="address" type="text" placeholder="请输入收油地址" />
+					</li>
+					<li>
+						<label>收油地<br>固定电话</label>
+						<input id="phone" type="number" placeholder="请输入固定电话" />
+					</li>
+					<li>
+						<label>收油<br>联系人</label>
+						<input id="person" type="text" placeholder="请输入收油联系人" />
+					</li>
+					<li>
+						<label>品种</label>
+						<select id="oil">
+							<option >92号汽油</option>
+							<option >95号汽油</option>
+						</select>
+					</li>
+					<li>
+						<label>数量(吨)</label>
+						<input id="num" type="number" placeholder="请输入数量" />
+					</li>
+					<li>
+						<label>送货时间</label>
+						<input id="time" type="date" placeholder="请选择时间" />
+					</li>
+					<li>
+						<label>运费结算</label>
+						<select id="money">
+							<option>自付</option>
+							<option>到付</option>
+						</select>
+					</li>
+					<li>
+						<label>业务经理</label>
+						<input id="jl" type="text" placeholder="请输入业务经理" />
+					</li>
+				</ul>
+			</div>
+			<a class="btn_submit" href="javascript:;" id="submit">提交</a>
+			</form>
+		</div>
+		<script type="text/javascript">
+			
+		//初始化页面数据
+		$.ajax({
+			url:"/zsh/distribution/getUserInfo.do",
+			type:"get",
+			dataType:"json",
+			success:function(data){
+				if(data.status==2){
+					window.location.href="window.location.href=/zsh/wc/oauth.do?redUrl=/zsh/index.html";
+				}
+				if(data.status==3){
+					window.location,href="/zsh/fail.html";
+				}
+			}
+		});
+				
+		
+			$("#submit").click(function(){
+				var json = {};
+				var dw = $("#company").val();
+				var code = $("#code").val();
+				var address = $("#address").val();
+				var phone = $("#phone").val();
+				var person = $("#person").val();
+				var oil = $("#oil").val();
+				console.log(oil);
+				var num = $("#num").val();
+				var time = $("#time").val();
+				var money = $("#money").val();
+				var jl = $("#jl").val();
+				if(dw ==""){
+					alert("请输入配送单位");
+					return;
+				}
+				json.oilcompany=dw;
+				if(code ==""){
+					alert("请输入编码");
+					return;
+				}
+				json.customercode = code;
+				if(address==""){
+					alert("请输入收油地址");
+					return;
+				}
+				json.oiladdress = address;
+				if(phone==""){
+					alert("请输入联系电话");
+					return;
+				}
+				json.oiltel = phone;
+				if(person==""){
+					alert("请输入收油人");
+					return;
+				}
+				json.oilcontacts=person;
+				if(oil==""){
+					alert("请选择油品种");
+					return;
+				}
+				json.vars = oil;
+				if(num==""){
+					alert("请输入油数量");
+					return;
+				}
+				json.amount = num;
+				if(time==""){
+					alert("请输入送油时间");
+					return;
+				}
+				json.time = time;
+				if(money==""){
+					alert("请选择结算方式");
+					return;
+				}
+				json.balance=money;
+				if(jl!=""){
+					json.manager = jl;
+				}
+				$.ajax({
+					url:"/zsh/distribution/add.do",
+					type:"post",
+					data:json,
+					dataType:"json",
+					success:function(data){
+						if(data.status==0){
+							window.location.href="/zsh/order_list.html";
+						}
+						if(data.status==1){
+							alert(data.describe);
+						}
+						if(data.status==2){
+							window.location.href="/zsh/wc/oauth.do?redUrl=/zsh/order_form.html";
+						}
+					}
+				});
+				
+			});
+			$("#code").change(function(){
+				var code = $("#code").val();
+				$.ajax({
+					url:"/zsh/customer/find.do",
+					type:"post",
+					data:{"customerCode":code},
+					dataType:"json",
+					success:function(data){
+						if(data.status==0){
+							console.log(data);
+							var customer = data.data;
+							$("#address").val(customer[0].customerAddress);
+							$("#phone").val(customer[0].phone);
+							$("#person").val(customer[0].phonePerson);
+						}
+						if(data.status==1){
+							alert("用户编码错误");
+						}
+					}
+					
+				});
+			});
+		</script>
+	</body>
+</html>

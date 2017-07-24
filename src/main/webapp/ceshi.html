@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="js/jquery-3.1.0.min.js"></script>
+<script type="text/javascript">
+		$(function(){
+			$("#submit").click(function(){
+				
+			});
+		});
+</script>
+</head>
+<body>
+			<div>
+				<p>
+				姓名&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:<input type="text" id="i1" />
+				</p>
+				<p>
+				部门&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:<select id="s1">
+																<option value="员工">员工</option>
+																<option value="普通用户">普通用户</option>
+																<option value="会员用户">会员用户</option>
+															</select>
+				</p>
+				<div style="border: 1px solid red; width: 300px">
+					<span style="color: red;margin-left: 100px;">
+						*必选其一
+					</span>
+					<p>
+					邮箱&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:<input type="text" id="i3"/>
+					</p>
+					<p>
+					手机号码:<input type="text" id="i4"/>
+					</p>
+					<p>
+					微信号&nbsp;&nbsp;&nbsp;:<input type="text" id="i5"/>
+					</p>
+				</div>
+				<p>
+					<input type="button" value="提交" id="submit">
+				</p>
+				</div>
+</body>
+
+</html>

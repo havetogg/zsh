@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>订单提交</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <!--<link type="text/css" href="css/common.css" rel="stylesheet">-->
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+    <script type="text/javascript" src="js/common/m.tool.juxinbox.com.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-1.0.0.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+		<style>
+			.contents{
+				width: 640px;
+				min-height:1065px ;
+				background: #edf0f0;
+			}
+			.head{
+				display: none;
+				width: 640px;
+				height: 150px;
+				background: white;
+			}
+			.name{
+				width: 239px;
+				height: 50px;
+				font-size: 30px;
+				float:left;
+			}
+			.name-pic{
+				width: 28px;
+				height: 32px;
+				margin: 20px 20px;
+				float: left;
+			}
+			.name-txt{
+				width: 127px;
+				height: 32px;
+				float: left;
+				margin: 25px 0;
+				color: #666666;
+			}
+			.tel{
+				width: 400px;
+				height: 50px;
+				font-size: 30px;
+				float:left;
+			
+			}
+			.tel-pic{
+				width: 31px;
+				height: 31px;
+				margin: 20px 20px;
+				float: left;
+			}
+			.tel-txt{
+				width: 266px;
+				height: 32px;
+				float: left;
+				margin: 25px 0;
+				color: #666666;
+			}
+			.location{
+				position: absolute;
+				width: 600px;
+				height: 50px;
+				margin: 80px 20px;
+			}
+			.location-pic{
+				width:32px ;
+				height: 32px;
+				float: left;
+			}
+			.location-txt{
+				width: 538px;
+				height: 50px;
+				font-size: 30px;
+				margin: -2px 40px;
+				color: #666666;
+				    overflow: auto;
+    line-height: 43px;
+			}
+			.cont{
+				/*position: absolute;*/
+				width: 640px;
+				height: 355px;
+				margin: 25px 0;
+				background: white;
+			}
+			.list{
+				width: 600px;
+				height: 100px;
+				margin: 20px 20px;
+				float: left;
+			}
+			.list-pic{
+				width: 209px;
+				height: 209px;
+				float: left;
+				border: solid 1px #D9D9D9;
+			}
+			.list-title{
+				width: 372px;
+				height: 81px;
+				font-size: 30px;
+				line-height: 40px;
+				float: left;
+				color: #666666;
+				overflow: auto;
+				margin-left: 16px;
+			}
+			.jifen{
+				height: 40px;
+				font-size: 30px;
+				color: #e53037;
+				float: left;
+				margin-left: 16px;
+				margin-top: 20px;
+			}
+			.jifen1{
+				font-size: 18px;
+				color: #e53037;
+				margin: 20px 4px;
+				float: left;
+				display: inline-block;
+			}
+			.change{
+            width: 184px;
+            height: 60px;
+            overflow: hidden;
+            margin: -5px 413px;
+            border-radius: 10px;
+        }
+        .jian{
+            border: solid 1px #cfcfcf;
+            font-size: 100px;
+            color: #777777;
+            text-align: center;
+            line-height: 42px;
+            width: 56px;
+            height: 60px;
+            float: left;
+        }
+        .num{
+            text-align: center;
+            line-height: 61px;
+            width: 67px;
+            height: 60px;
+            float: left;
+            font-size: 30px;
+        }
+        .jia{
+             border: solid 1px #cfcfcf;
+            font-size: 56px;
+            text-align: center;
+            color: #777777;
+            line-height:55px;
+            width: 56px;
+            height: 60px;
+            float: left;
+        }
+        .zonge{
+        	position: absolute;
+        	margin: 22px 228px;
+        	width: 120px;
+        	height: 30px;
+        	color: #777777;
+        	font-size: 30px;
+        	
+        }
+        .zonge-jifen{
+        	width: 115px;
+			font-size: 30px;
+			float: left;
+			color: #e53037;
+        }
+        .jifen2{
+			font-size: 18px;
+			color: #e53037;
+        }
+        .header{
+        	width: 640px;
+        	height: 80px;
+        	background: white;
+        	display: block;
+        }
+        .title{
+        	width: 556px;
+        	height: 30px;
+        	margin: 26px 20px;
+        	font-size: 30px;
+        	color: #666666;
+        	float: left;
+        }
+        .jiantou{
+        	    width: 17px;
+    height: 30px;
+    position: absolute;
+    top: 2px;
+    left: 583px;
+    float: left;
+        }
+        .jiantou2{
+        	 width: 17px;
+    height: 30px;
+    position: absolute;
+    top: 23px;
+    left: 595px;
+    float: left;
+        }
+        .button{
+        	    width: 100%;
+    height: 90px;
+    background: #e53037;
+    position: fixed;
+    /* margin: 1080px 0; */
+    bottom: 0;
+    text-align: center;
+    font-size: 34px;
+    line-height: 90px;
+    color: white;
+        }
+        .tips{
+        	width: 300px;
+        	height: 80px;
+        	font-size: 30px;
+        	text-align: center;
+        	line-height: 80px;
+        }
+        .tips2{
+        	width: 100%;
+        	height: 50px;
+        	font-size: 30px;
+        	padding: 0 20px;
+        	line-height: 50px;
+        }
+        .tips2 span{
+        	font-size: 30px;
+        	line-height: 79px;
+        }
+        .tip-button{
+        	width: 300px;
+        	height: 50px;
+        	background: #e53037;
+        	margin: 50px auto 0;
+        	border-radius: 10px;
+        	text-align: center;
+        	font-size: 30px;
+        	color: white;
+        	line-height: 55px;
+        }
+
+
+			.tip-buttons{
+				width: 298px;
+				height: 60px;
+				text-align: center;
+				float: left;
+				border: 1px solid #444;
+				line-height: 64px;
+				font-size: 25px;
+				margin: 140px 0px;
+				background: #e53037;
+				color: white;
+			}
+			.beizhu{
+				width: 640px;
+				/*height: 80px;*/
+				background: white;
+				margin-top: 254px;
+				position: absolute;
+			}
+			.beizhu-name{
+				width: 150px;
+				height: 49px;
+				font-size: 26px;
+				color: #777777;
+				margin: 20px 20px;
+				line-height: 40px;
+			}
+			.beizhu-con{
+				position: absolute;
+    			top: 6px;
+    			left: 152px;
+    			width: 463px;
+    			height: 62px;
+    			background: #edf0f0;
+    			font-size: 28px;
+    			color: #666666;
+    			text-indent: 15px;
+    			overflow-x: hidden;
+    			overflow-y: auto;
+    			word-wrap: break-word;
+    			border: none;
+    			line-height: 58px;
+			}
+			.test_box {
+        		width: 459px;
+    		min-height: 30px;
+    max-height:77px;
+    margin-left: 150px;
+    margin-top: -66px;
+    margin-right: auto;
+    padding: 3px;
+    outline: 0;
+    background: #f5f1f4;
+    font-size: 28px;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    overflow-y: auto;
+    }
+    .tip-button3{
+    			width: 298px;
+				height: 60px;
+				text-align: center;
+				float: left;
+				border: 1px solid #444;
+				line-height: 64px;
+				font-size: 25px;
+				margin-top: 162px;
+				background: #6B1686;
+				color: white;
+    }
+    .pic1{
+    	width:49px;
+    	height: 49px;
+    	position: absolute;
+    	margin-left:32px;
+    	
+    }
+    .pic2{
+    	width:49px;
+    	height: 49px;
+    	/*background: url(img/nomoren.png);*/
+    	position: absolute;
+    	margin-left:32px;
+    	margin-top: 65px;
+    }
+    .cann{
+    	background: url(img/nomoren.png);
+    }
+    .cann_{
+    	background: url(img/moren.png);
+    }
+		</style>
+		<script type="text/javascript">
+            $(function(){
+                initUserInfo();
+                initGoodInfo();
+				//兑换按钮
+				$(".button").click(function(){
+					if(customerIntegral<parseInt($(".zonge-jifen").html())){
+                        alert("积分不够无法兑换");
+                        return;
+					}else if(parseInt($(".num").html())>inventory){
+                        alert("库存不够无法兑换");
+                        return;
+
+					}else{
+					    var data = {
+                            goodId: globalGoodId,
+                            exchangeCount:parseInt($(".num").html()),
+						};
+					    if(addressType=='1'){
+                            data.receiveStatus = 1;
+					        data.pickupAddress = $(".location-txt").html();
+						}else{
+                            data.receiveStatus = 2;
+                            data.addressId = addressId;
+						}
+                        $.ajax({
+                            url: "/zsh/exchange/add.do",
+                            type: "post",
+                            dataType: "json",
+                            data: data,
+                            success: function (data) {
+                            }
+                        })
+                        $(".alertTips1").css("display","block");
+					}
+				})
+
+                //查看订单
+                $(".tip-button").click(function(){
+                    window.location.href = getRootPath() + "/dingdan-chaxun.html";
+                });
+
+				//收货地址按钮
+                $(".header").click(function(){
+                    window.location.href = getRootPath() + "/shouhuodizhi-list2.html";
+                })
+                $(".head").click(function(){
+                    window.location.href = getRootPath() + "/shouhuodizhi-list2.html";
+                })
+
+            });
+            var globalGoodId = "";
+            var customerIntegral=0;
+            var customerName="";
+            var phone=0;
+			function initUserInfo(){
+                $.ajax({
+                    url: "/zsh/customer/query.do",
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+                        var data = data.data[0];
+						customerIntegral = data.customerIntegral;
+                        customerName = data.customerName;
+                        phone = data.phone;
+                        if(data.manager==""||data.manager==null){
+                            $(".tips2").html("您的客户经理将与您电话联系");
+                        }else{
+                            $(".tips2").html("客户经理"+data.manager+"将与您电话联系");
+                        }
+                        initAddressInfo();
+                    }
+                })
+			}
+			var inventory = 0;
+			function initGoodInfo(){
+                var goodId = getUrlParam("goodId") != null?getUrlParam("goodId"):localStorage.getItem("goodId");
+                var goodName = getUrlParam("goodName") != null?getUrlParam("goodName"):localStorage.getItem("goodName");
+                var num = getUrlParam("num") != null?getUrlParam("num"):localStorage.getItem("num");
+                globalGoodId = goodId;
+                localStorage.setItem("goodId",goodId);
+                localStorage.setItem("goodName",goodName);
+                localStorage.setItem("num",num);
+                $.ajax({
+                    url:"/zsh/good/queryGood.do",
+                    type:"post",
+                    dataType:"json",
+                    data:{
+                        pageIndex:1,
+                        pageSize:10,
+                        goodId:globalGoodId
+                    },
+                    success:function(data){
+                        if(data.data.list.length>0){
+                            var picUrl = data.data.list[0].picUrl;
+                            var url = document.location.href;
+                            url = url.substring(0,url.indexOf("zsh")+3);
+                            $("#pic").attr("src",url+picUrl);
+							inventory = data.data.list[0].inventory;
+							var integration = data.data.list[0].integration;
+                            $(".list-title").html(goodName);
+                            $(".jifen").html(integration);
+                            $(".num").html(num);
+                            $(".zonge-jifen").html(parseInt(num)*parseInt(integration));
+                        }
+                    }
+                })
+			}
+            var addressType = "";
+			var addressId="";
+			function initAddressInfo(){
+                var addressStr =localStorage.getItem("address");
+			    if(addressStr != undefined){
+					var address = JSON.parse(addressStr);
+                    if(address.type=='2'){
+                        $(".title").html("选择收货地址");
+                        $(".name-txt").html(address.data.name);
+                        $(".tel-txt").html(address.data.telNum);
+                        $(".location-txt").html(address.data.address);
+                        addressId=address.data.rId;
+                        addressType = '2';
+					}else if(address.type=='1'){
+                        $(".title").html("我要自提");
+                        $(".name-txt").html(customerName);
+                        $(".tel-txt").html(phone);
+                        $(".location-txt").html(address.data.address);
+                        addressType = '1';
+					}
+                    $(".head").css("display","block");
+				}else{
+                    $.ajax({
+                        url: "/zsh/customer/queryReceiveAddress.do",
+                        type: "post",
+                        dataType: "json",
+                        success: function (data) {
+                            var address = {};
+                            var flag = true;
+                            if(data.data.length>0){
+                                $.each(data.data,function(index,item){
+                                    if(item.isDefault=="1"){
+                                        address=item;
+                                        flag=false;
+                                    }
+                                })
+                                if(flag){
+                                    address = data.data[0];
+                                }
+                                addressId = address.rId;
+                                $(".title").html("选择收货地址");
+                                $(".name-txt").html(address.rName);
+                                $(".tel-txt").html(address.rPhone);
+                                $(".location-txt").html(address.rAddress);
+                                addressType = '2';
+                                $(".head").css("display","block");
+                            }
+                        }
+                    })
+				}
+			}
+
+			function jia(){
+                var num = parseInt($(".num").html());
+				num+=1;
+                $(".num").html(num);
+                var total=parseInt($(".jifen").html())*num;
+                $(".zonge-jifen").html(total)
+            }
+            function jian(){
+                var num = parseInt($(".num").html());
+                if(num>1){
+                    num-=1;
+                    $(".num").html(num);
+                    var total=parseInt($(".jifen").html())*num;
+                    $(".zonge-jifen").html(total)
+                }
+            }
+			function which(dom){
+				$(".cann_").removeClass("cann_");
+				$(dom).addClass("cann_");
+			}
+
+		</script>
+	</head>
+	<body>
+		<div class="zoomer">
+			<div class="contents">
+				<div class="head">
+				   <div class="name">
+				   	<div class="name-pic"><img src="img/37.png"></div>
+				   	<div class="name-txt"></div>
+				   </div>
+				   <div class="tel">
+				   	<div class="tel-pic"><img src="img/38.png"></div>
+				   	<div class="tel-txt"></div>
+				   </div>
+				   <div class="location">
+				   	<div class="location-pic"><img src="img/36.png"></div>
+				   	<div class="location-txt"></div><div class="jiantou"><img src="img/99.png"></div>
+				   </div>
+				</div>
+				
+				<div class="header">
+					<div class="title"></div><div class="jiantou2"><img src="img/99.png"></div>
+				</div>
+
+				<div class="cont" style="display: none;">
+					<div class="list">
+						<div class="list-pic"><img style="width: 208px;height: 209px;" src="img/39.png"></div>
+						<div class="list-title"></div>
+						<div style="margin: 40px 0px;">
+							<div class="jifen"></div>
+							<span class="jifen1">积分</span>
+							<div class="change">
+								<div class="jian" onclick="jian(this)">-</div>
+								<div class="num">1</div>
+								<div class="jia" onclick="jia(this)">+</div>
+							</div>
+							<div class="zonge">总额：</div>
+							<div style="position: absolute;margin: 25px 446px;width:151px;text-align: right;">
+								<div class="zonge-jifen"></div>
+								<span class="jifen2">积分</span>
+							</div>
+						</div>
+					</div>
+					<div class="beizhu">
+						<div class="beizhu-name">买家留言</div>
+						<textarea rows="5" class="beizhu-con" placeholder="选填：如颜色"></textarea>
+					</div>
+				
+				</div>
+				<div class="cont" style="display: block;">
+					<div class="list">
+						<div class="list-pic"><img style="width: 208px;height: 209px;" src="" id="pic"></div>
+						<div class="list-title"></div>
+						<div style="margin: 40px 0px;">
+							<div class="jifen"></div>
+							<span class="jifen1">积分</span>
+							<div class="change">
+                				<div class="jian" onclick="jian(this)">-</div>
+                				<div class="num">1</div>
+                				<div class="jia" onclick="jia(this)">+</div>
+            				</div>
+            				<div class="zonge">总额：</div>
+							<div style="position: absolute;margin: 25px 446px;width: 151px;text-align: right;">
+								<div class="zonge-jifen"></div>
+								<span class="jifen2">积分</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="alertTips1"style="background-color: rgba(10, 10, 10, 0.6); width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 1100; display: none;">
+          <div class="tips1" style="background: #f8f8f8; width: 600px; height: 251px; border-radius: 10px; position: absolute; top: 50%; left: 50%; margin: -220px -300px">
+          <div class="tips">恭喜您,兑换成功！</div>
+          <div class="tips2"></div>
+          <div class="tip-button">查看订单</div>
+          </div>
+		</div>
+
+		<div class="alertTips2"style="background-color: rgba(10, 10, 10, 0.6); width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 1100; display:none ;">
+			<div class="tips2" style=" background: #f8f8f8; width: 600px; height: 251px; border-radius: 10px; position: absolute; top: 50%; left: 50%; margin: -220px -300px;overflow: hidden">
+				<div class="tips" style="    width: 602px;height: 50px;font-size: 30px;text-align: center;line-height: 179px;">恭喜您,兑换成功！</div>
+				<div class="tip-buttons">查看订单</div>
+				<div class="tip-buttons">查看订单</div>
+			</div>
+		</div>
+
+		<div class="alertTips3"style="background-color: rgba(10, 10, 10, 0.6); width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 1100; display:none ;">
+			<div class="tips3" style=" background: #f8f8f8; width: 600px; height: 325px; border-radius: 10px; position: absolute; top: 50%; left: 50%; margin: -220px -300px;overflow: hidden">
+				<div class="tips" style="width: 602px;height: 50px;font-size: 30px;text-align: center;line-height: 49px;color: #666666;">请确认</div>
+				<p style="width: 602px;height: 50px;font-size: 30px;text-indent: 1em;">你需要支付<span style="font-size: 30px;color: #6B1686;">XX</span>元，请选择支付方式</p>
+				<div class="pic1 cann" onclick="which(this)"></div>
+				<div class="pic1-name" style="width: 200px;height: 20px;font-size: 30px;position: absolute;margin-left: 91px;">微信支付</div>
+				<div class="pic2 cann" onclick="which(this)"></div>
+				<div class="pic1-name" style="width: 200px;height: 20px;font-size: 30px;position: absolute;margin-left: 91px;margin-top: 66px;">光大电子支付</div>
+				<div class="tip-button3" style="background:none ;color: black;">取消</div>
+				<div class="tip-button3">确认</div>
+			</div>
+		</div>
+
+
+<div class="button">立即兑换</div>
+</body>
+</html>

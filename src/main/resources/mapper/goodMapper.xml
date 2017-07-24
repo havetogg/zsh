@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.jumutang.zsh.dao.GoodDaoI">
+	<resultMap id="BaseResultMap" type="org.jumutang.zsh.model.GoodModel">
+		<id column="good_id" property="goodId" jdbcType="VARCHAR"></id>
+		<result column="good_name" property="goodName" jdbcType="VARCHAR"/>
+		<result column="inventory" property="inventory" jdbcType="INTEGER"/>
+		<result column="receive" property="receive" jdbcType="INTEGER"/>
+		<result column="good_state" property="goodState" jdbcType="INTEGER"/>
+		<result column="integration" property="integration" jdbcType="INTEGER"/>
+		<result column="create_time" property="createTime" jdbcType="DATE"/>
+		<result column="end_time" property="endTime" jdbcType="DATE"/>
+		<result column="pic_url" property="picUrl" jdbcType="VARCHAR"/>
+		<result column="detail_pic_url" property="detailPicUrl" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<insert id="addGood" parameterType="org.jumutang.zsh.model.GoodModel">
+		INSERT INTO good 
+		<trim prefix="(" suffixOverrides="," suffix=")">
+			<if test="goodId !=null">
+				good_id,
+			</if>
+			<if test="goodName !=null">
+				good_name,
+			</if>
+			<if test="inventory !=null">
+				inventory,
+			</if>
+			<if test="receive !=null">
+				receive,
+			</if>
+			<if test="goodState !=null">
+				good_state,
+			</if>
+			<if test="integration !=null">
+				integration,
+			</if>
+			<if test="createTime !=null">
+				create_time,
+			</if>
+			<if test="endTime !=null">
+				end_time,
+			</if>
+			<if test="picUrl !=null">
+				pic_url,
+			</if>
+			<if test="detailPicUrl !=null">
+				detail_pic_url,
+			</if>
+		</trim>
+		<trim prefix="VALUES(" suffixOverrides="," suffix=")">
+			<if test="goodId !=null">
+				#{goodId},
+			</if>
+			<if test="goodName !=null">
+				#{goodName},
+			</if>
+			<if test="inventory !=null">
+				#{inventory},
+			</if>
+			<if test="receive !=null">
+				#{receive},
+			</if>
+			<if test="goodState !=null">
+				#{goodState},
+			</if>
+			<if test="integration !=null">
+				#{integration},
+			</if>
+			<if test="createTime !=null">
+				#{createTime},
+			</if>
+			<if test="endTime !=null">
+				#{endTime},
+			</if>
+			<if test="picUrl !=null">
+				#{picUrl},
+			</if>
+			<if test="detailPicUrl !=null">
+				#{detailPicUrl},
+			</if>
+	  </trim>
+	</insert>
+	
+	<!-- 更新物品信息 -->
+	<update id="updateGood" parameterType="org.jumutang.zsh.model.GoodModel">
+			UPDATE good
+			<set>
+				<if test="goodName !=null">
+					good_name = #{goodName},
+				</if>
+				<if test="inventory !=null">
+					inventory = #{inventory},
+				</if>
+				<if test="receive !=null">
+					receive = #{receive},
+				</if>
+				<if test="goodState !=null">
+					good_state = #{goodState},
+				</if>
+				<if test="integration !=null">
+					integration = #{integration},
+				</if>
+				<if test="endTime !=null">
+					end_time = #{endTime},
+				</if>
+				<if test="picUrl !=null">
+					pic_url = #{picUrl},
+				</if>
+				<if test="detailPicUrl !=null">
+					detail_pic_url = #{detailPicUrl},
+				</if>
+			</set>
+			<where>
+				good_id = #{goodId}
+			</where>
+	</update>
+	
+	<!-- 分页查询兑换礼物信息 -->
+	<select id="queryGood" parameterType="map" resultMap="BaseResultMap">
+		SELECT * FROM good 
+		<where>
+			<if test="goodId !=null">
+				AND good_id = #{goodId}
+			</if>
+			<if test="goodState !=null">
+				AND good_state = #{goodState}
+			</if>
+			AND good_state = 1
+		</where>
+		<if test="mark !=null">
+			ORDER BY ${mark}
+		</if>
+		LIMIT #{pageIndex},#{pageSize}
+	</select>
+	
+	<!-- 统计信息条数 -->
+	<select id="countGood" parameterType="map" resultType="int">
+			SELECT COUNT(1) FROM good
+			<where>
+			<if test="goodId !=null">
+				AND good_id = #{goodId}
+			</if>
+			<if test="goodState !=null">
+				AND good_state = #{goodState}
+			</if>
+				AND good_state = 1
+		</where>
+	</select>
+	
+	<!-- 查询兑换奖品是否存在 -->
+	<select id="queryGoodInfo" parameterType="org.jumutang.zsh.model.GoodModel" resultMap="BaseResultMap">
+		SELECT * FROM good
+		<where>
+			<if test="goodName !=null">
+				AND good_name like concat('%',#{goodName},'%')
+			</if>
+			<if test="inventory !=null">
+				AND inventory = #{inventory}
+			</if>
+			<if test="integration !=null">
+				AND integration = #{integration}
+			</if>
+			<if test="goodId !=null">
+				AND good_id = #{goodId}
+			</if>
+		</where>
+	</select>
+</mapper>
+
+
+

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.jumutang.zsh.dao.OilDaoI">
+	<resultMap id="BaseResultMap" type="org.jumutang.zsh.model.OilModel">
+		<id column="oil_id" property="oilId" jdbcType="VARCHAR"></id>
+		<result column="oil_date" property="oilDate" jdbcType="DATE"/>
+		<result column="oil_type" property="oilType" jdbcType="SMALLINT"/>
+		<result column="customer_type" property="customerType" jdbcType="SMALLINT"/>
+		<result column="oil_category" property="oilCategory" jdbcType="VARCHAR"/>
+		<result column="oil_status" property="oilStatus" jdbcType="SMALLINT"/>
+		<result column="oil_price" property="oilPrice" jdbcType="DOUBLE"/>
+		<result column="remarks" property="remarks" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<!-- 查询所有油价 -->
+	<select id="queryOilAll" resultMap="BaseResultMap">
+		SELECT * FROM oil
+		ORDER BY oil_type,customer_type,FIELD(`oil_category`, '92#', '95#', '0#普柴', '0#车柴','布伦特期货','WTI期货','阿曼期货','原油波动变化率','轻质燃油料')
+	</select>
+
+	<!-- 查询今日油价 -->
+	<select id="queryOil" parameterType="short" resultMap="BaseResultMap">
+		SELECT * FROM oil
+		<where>
+			<if test="oilStatus !=null">
+				and oil_status = #{oilStatus}
+			</if>
+			<if test="oilType !=null">
+				and oil_type = #{oilType}
+			</if>
+			<if test="customerType !=null">
+				and customer_type = #{customerType}
+			</if>
+		</where>
+		ORDER BY oil_type,customer_type,FIELD(`oil_category`, '92#', '95#', '0#普柴', '0#车柴','布伦特期货','WTI期货','阿曼期货','原油波动变化率','轻质燃油料')
+	</select>
+
+	<update id="updateOilAll" parameterType="org.jumutang.zsh.model.OilModel" >
+		UPDATE oil
+		<set>
+			<if test="oilStatus !=null">
+				oil_status = #{oilStatus},
+			</if>
+			<if test="oilPrice !=null">
+				oil_price = #{oilPrice},
+			</if>
+			<if test="remarks !=null">
+				remarks = #{remarks},
+			</if>
+		</set>
+		<where>
+			<if test="oilType !=null">
+				and oil_type = #{oilType}
+			</if>
+			<if test="customerType !=null">
+				and customer_type = #{customerType}
+			</if>
+			<if test="oilCategory !=null">
+			and oil_category = #{oilCategory}
+		    </if>
+		</where>
+	</update>
+
+
+
+	<!-- 批量插入油价信息 -->
+	<insert id="batchInsertOil" parameterType="list">
+		INSERT INTO oil
+		(oil_id,oil_date,oil_type,customer_type,oil_category,oil_status,oil_price)
+		VALUES
+		<foreach collection="list" item="i"  separator="," >
+			(#{i.oilId},
+			#{i.oilDate},
+			#{i.oilType},
+			#{i.customerType},
+			#{i.oilCategory},
+			#{i.oilStatus},
+			#{i.oilPrice})
+		</foreach>
+	</insert>
+	
+	<update id="updateOil" parameterType="map" >
+			UPDATE oil 
+			<set>
+				oil_status = #{Invalid}
+			</set>
+			<where>
+				oil_status = #{normal}
+			</where>
+	
+	</update>
+</mapper>
+
+
+

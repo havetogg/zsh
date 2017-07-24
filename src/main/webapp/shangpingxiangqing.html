@@ -1,0 +1,377 @@
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>订单提交</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <!--<link type="text/css" href="css/common.css" rel="stylesheet">-->
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+    <script type="text/javascript" src="js/common/m.tool.juxinbox.com.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-1.0.0.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <script src="js/jquery.flexslider-min.js"></script>
+    <link rel="stylesheet" href="css/flexslider.css" />
+    <style>
+        .contents{
+            background-color: #f5f1f4;
+            width: 640px;
+            min-height: 1008px;
+        }
+        body{
+            width: 640px !important;
+        }
+        .proName{
+            color: #666666;
+            font-size: 30px;
+            width: 530px;
+            margin: 0px 32px;
+
+        }
+        .sta{
+            width: 26px;
+            height: 26px;
+            background: #DBD235;
+            position: absolute;
+            top: 433px;
+            left: 588px;
+            font-size: 20px;
+            color: white;
+            text-align: center;
+        }
+        .need{
+            color: #E53037;
+            font-size: 32px;
+            width: 384px;
+            margin: 12px 32px;
+        }
+        .yishou{
+            color: #999999;
+            font-size: 22px;
+                width: 200px;
+    margin: -42px 418px;
+    text-align: right;
+    position: absolute;
+        }
+        .xq{
+            font-size: 26px;
+            color: #666666;
+            width: 400px;
+            margin: 18px 31px
+        }
+        .xiangqing{
+            font-size: 26px;
+            color: #999;
+            width: 578px;
+            margin: 0px auto;
+        }
+        .shuxing{
+            width: 600px;
+            margin: 12px auto;
+            border-top: 1px solid #DFACF0;
+        }
+        .part3{
+            font-size: 26px;
+            color: #666;
+            margin: 26px 1px;
+        }
+        .part3s{
+            width: 620px;
+            margin: -26px -18px;
+
+        }
+        .weixuanze{
+            float: left;
+            width: 60px;
+            height: 39px;
+            color: #E53037;
+            font-size: 26px;
+            text-align: center;
+            margin: 8px 12px;
+            border: 1px solid #c77bcf;
+        }
+        .xuanze{
+            float: left;
+            width: 60px;
+            height: 39px;
+            color: white;
+            font-size: 26px;
+            text-align: center;
+            margin: 8px 12px;
+            background: #c77bcf;
+            border: 1px solid #c77bcf;
+        }
+
+
+        .part2{
+            width: 600px;
+            margin: -4px 0px;
+            display: inline-block;
+
+        }
+        .shuliang{
+        	width: 400px;
+            margin: 54px 0px
+        }
+        .shuliang p{
+            font-size: 26px;
+            color: #666;
+            margin: 26px 33px;
+        }
+        .change{
+            width: 186px;
+            height: 60px;
+            position: absolute;
+            overflow: hidden;
+            margin: -65px 413px;
+            border-radius: 10px;
+        }
+        .jian{
+            border: solid 1px #D9D9D9;
+            font-size: 100px;
+            color: #777777;
+            text-align: center;
+            line-height: 42px;
+            width: 56px;
+            height: 60px;
+            float: left;
+        }
+        .num{
+            text-align: center;
+            line-height: 61px;
+            width: 67px;
+            height: 60px;
+            float: left;
+            font-size: 30px;
+        }
+        .jia{
+            border: solid 1px #D9D9D9;
+            font-size: 56px;
+            color: #777777;
+            text-align: center;
+            line-height: 50px;
+            width: 56px;
+            height: 60px;
+            float: left;
+        }
+        .button-button{
+            width: 100%;
+            height: 60px;
+            float: left;
+        }
+        .sure{
+        	 width: 100%;
+            height: 88px;
+            background: #E53037;
+            position: fixed;
+            bottom: 0;
+            text-align: center;
+            font-size: 30px;
+            line-height: 90px;
+            color: white;
+            float: right;
+            border-left: 2px solid #fff;
+        }
+        .sure2{
+            width: 100%;
+            height: 88px;
+            background: #E53037;
+            position: fixed;
+            bottom: 0;
+            text-align: center;
+            font-size: 30px;
+            line-height: 90px;
+            color: white;
+            float: right;
+            border-left: 2px solid #fff;
+            display: none;
+        }
+       
+        .zoomer{
+            background: #f5f1f4 !important;
+        }
+
+        .tel1{
+            margin: 18px auto;
+            width: 457px;
+            font-size: 30PX;
+
+        }
+        .tel2{
+            color: #E53037;
+            text-decoration: underline;
+        }
+        
+   .shichang{
+   	width: 300px;
+   	height: 30px;
+   	color: #999999;font-size: 25px;
+   	position: absolute;
+   }
+    </style>
+    <script type="text/javascript">
+        //初始化商品信息
+        $(function(){
+            initUserInfo();
+            //图片效果
+            $(".flexslider").flexslider({
+                animation: "slide", //String: Select your animation type, "fade" or "slide"图片变换方式：淡入淡出或者滑动
+                slideshowSpeed: 255000, //展示时间间隔ms
+                animationSpeed: 1500, //滚动时间ms
+                touch: true //是否支持触屏滑动
+            });
+        })
+        function initUserInfo(){
+            $.ajax({
+                url:"/zsh/customer/query.do",
+                type:"post",
+                dataType:"json",
+                success:function(data){
+                    var data=data.data[0];
+                    var customerIntegral = data.customerIntegral;
+                    var goodId=getUrlParam("goodId");
+                    if(data.manager==""||data.manager==null){
+                        $(".kefu").hide();
+                    }else{
+                        $("#manager").html(data.manager);
+                        $(".kefu .img").attr("href","tel:"+data.managerPhone);
+                    }
+                    initGoodInfo(goodId);
+
+                    //点击按钮
+                    $(".sure").click(function(){
+                        if(customerIntegral<total){
+                            alert("积分不够无法兑换");
+                            return;
+                        }else{
+                            var url = getRootPath() + "/dingdan-tijiao.html?goodId="+goodId+"&goodName="+$(".proName").text()+"&num="+num;
+                            location.href = encodeURI(encodeURI(url));
+                        }
+                    })
+                }
+            });
+        }
+
+        var num = 1;
+        var total = 1;
+        function initGoodInfo(goodId){
+            $.ajax({
+                url:"/zsh/good/queryGood.do",
+                type:"post",
+                dataType:"json",
+                data:{
+                    pageIndex:1,
+                    pageSize:10,
+                    goodId:goodId
+                },
+                success:function(data){
+                    if(data.data.list.length>0){
+                        var picUrl = data.data.list[0].picUrl;
+                        var url = document.location.href;
+                        url = url.substring(0,url.indexOf("zsh")+3);
+                        var urlArr = JSON.parse(data.data.list[0].detailPicUrl);
+                        var html ="";
+                        $.each(urlArr,function(i,obj){
+                            html+="<img src="+url+obj+"  width='600' alt=''/>";
+                        })
+                        $(".shuxing").append(html);
+                        $("#pic").attr("src",url+picUrl);
+                        $(".proName").html(data.data.list[0].goodName);
+                        $(".need").html(data.data.list[0].integration+"<span style='font-size: 24px;color: #E53037;'>分</span>");
+                        $(".yishou").html("已售："+data.data.list[0].receive+"件");
+                        $(".sure").html("积分："+data.data.list[0].integration+" 立即兑换");
+                    }
+                }
+            })
+        }
+
+        function jia(){
+            num = parseInt($(".num").html());
+            num+=1;
+            $(".num").html(num);
+            total=parseInt($(".need").html())*num;
+            $(".sure").html("积分："+total+" 立即兑换")
+
+        }
+        function jian(){
+            num = parseInt($(".num").html());
+            if(num>1){
+                num-=1;
+                $(".num").html(num);
+                total=parseInt($(".need").html())*num;
+                $(".sure").html("积分："+total+" 立即兑换")
+            }
+        }
+
+        function tel(x){
+            window.location.href='tel:'+x
+        }
+
+        /*function chose(dom){
+            var ischange = $(dom).hasClass("xuanze");
+            if(!ischange){
+                $(dom).addClass("xuanze");
+                $(dom).siblings().removeClass("xuanze");
+            }
+
+        }*/
+        /*//下拉刷新功能
+         window.onscroll = function(){
+         var iH = $(window).scrollTop() + $(window).height();
+         var oIH = $(".zoomer").height();
+         console.log(iH)
+         //苹果和安卓滑动判定地步像素差10
+         // alert(iH+"////"+oIH)
+         if(iH>=oIH-10){
+         alerw(1)
+         }
+         };*/
+    </script>
+</head>
+<body>
+<div class="zoomer">
+    <div class="contents">
+        <div class="flexslider">
+            <ul class="slides">
+                <li><img src="" width="450" height="654" alt="1" id="pic"/></li>
+            </ul>
+        </div>
+        <div class="proName"></div>
+        <div class="sta">新</div>
+        <div class="part1">
+            <div class="need"></div>
+            <div class="yishou"></div>
+        </div>
+        <div class="shuliang">
+            <p>购买数量</p>
+            <div class="change">
+                <div class="jian" onclick="jian()">-</div>
+                <div class="num">1</div>
+                <div class="jia" onclick="jia()">+</div>
+            </div>
+        </div>
+        <div class="xq">商品详情</div>
+        <!--<div class="xiangqing">商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情商品详情
+        </div>-->
+        <div class="shuxing" >
+            <!--此处追加商品详情图片-->
+        </div>
+    </div>
+</div>
+<div class="kefu" style="width:277px; height: 75px; position: fixed; bottom: 90px; float: left;">
+	<a class="img" href="tel:13855668899">
+    	客户经理：<span id="manager">XXX</span>
+    </a>
+</div>
+<div class="button-button">
+    <div class="sure"></div>
+</div>
+</body>
+</html>

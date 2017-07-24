@@ -1,0 +1,397 @@
+	<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>油价管理</title>
+		<link rel="stylesheet" href="css/backstage.css" />
+		<script type="text/javascript" src="js/jQuery-1.11.3.js" ></script>
+		<!--分页-->
+		<script type="text/javascript" src="js/query.js" ></script>
+		<script type="text/javascript" src="js/paging.js" ></script>
+		
+		<script type="text/javascript" src="js/index.js" ></script>
+
+		<script>
+			var category = ["92#","95#","0#普柴","0#车柴","轻质燃油料"];
+			var internationalCategory = ["布伦特期货","WTI期货","阿曼期货","原油波动变化率",""];
+            $(function(){
+                checkLogin();
+            })
+            function checkLogin(){
+                $.ajax({
+                    url:"/zsh/wc/checkPCLoginInfo.do",
+                    type:"get",
+                    success:function(data){
+                        if(data.status == 0){
+                            if(data.data.role == 0){
+                                initOil();
+                            }
+                        }else{
+                            window.location.href="/zsh/fail.html";
+                        }
+                    }
+                })
+            }
+			function initOil(){
+                $("#benchmark_edit").click(function () {
+                    oilArr = [];
+                    for(var i=0;i<2;i++){
+                        for(var j=0;j<5;j++){
+                            var oilObj= {};
+                            var oilId = "oil"+i+j;
+                            if(isNaN(($("#"+oilId).val()*1).toFixed(2))){
+                                oilObj.oilPrice = 0;
+                            }else{
+                                oilObj.oilPrice = ($("#"+oilId).val()*1	).toFixed(2);
+                            }
+                            if(i == 0){
+                                oilObj.oilCategory = category[j];
+                            }else{
+                                if(j==0){
+                                    oilObj.remarks = $("#remarks").val();
+                                }else if(j==1){
+                                    oilObj.remarks = $("#notes").val();
+								}
+                                oilObj.oilCategory = internationalCategory[j];
+                            }
+                            oilObj.oilType = i;
+                            oilArr.push(oilObj);
+                        }
+                    }
+                    $.ajax({
+                        url: "/zsh/oil/updateOilAll.do",
+                        type: "post",
+                        dataType: "json",
+                        data:{
+                            'oilModels':JSON.stringify(oilArr)
+                        },
+                        success: function (data) {
+                            if(data.status=="0"){
+                                alert("保存成功");
+                                location.reload();
+                            }
+                        }
+                    })
+                })
+                $("#edit_oil").click(function () {
+                    oilArr = [];
+                    for(var i=2;i<7;i++){
+                        for(var j=0;j<5;j++){
+                            var oilObj= {};
+                            var oilId = "oil"+i+j;
+                            if(isNaN($("#"+oilId).val()*1)){
+                                oilObj.oilPrice = 0;
+                            }else{
+                                oilObj.oilPrice = $("#"+oilId).val()*1;
+                            }
+                            oilObj.oilCategory = category[j];
+                            oilObj.oilType = 2;
+                            oilObj.customerType = i-2;
+                            oilArr.push(oilObj);
+                        }
+                    }
+                    $.ajax({
+                        url: "/zsh/oil/updateOilAll.do",
+                        type: "post",
+                        dataType: "json",
+                        data:{
+                            'oilModels':JSON.stringify(oilArr)
+                        },
+                        success: function (data) {
+                        }
+                    })
+                })
+                $.ajax({
+                    url: "/zsh/oil/queryAll.do",
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+						var arr = data.data;
+						if(arr.length>0){
+						    $.each(arr,function (i,item) {
+                                var oilId = "oil"+parseInt(i/5)+""+i%5;
+                                var benchmark = "oil0"+i%5;
+						        if(parseInt(i/5)==2||parseInt(i/5)==3||parseInt(i/5)==4||parseInt(i/5)==5||parseInt(i/5)==6){
+                                    $("#"+oilId).val((item.oilPrice*1).toFixed(2));
+								}else{
+						            if(parseInt(i/5) == 1){
+						                if(i%5 == 0){
+                                            $("#remarks").val(item.remarks);
+										}else if(i%5 == 1){
+                                            $("#notes").val(item.remarks);
+										}
+									}
+                                    $("#"+oilId).val((item.oilPrice*1).toFixed(2));
+								}
+                            })
+						}
+                    }
+                })
+			}
+		</script>
+	</head>
+	<body>
+		<!--head-->
+		<div class="head">
+			<a href="javascript:logout();">注销</a>
+			<!--<a href="javascript:;">登录</a>-->
+			<p>欢迎<span id="userName">管理员</span></p>
+		</div>
+		<!--main-->
+		<div class="main">
+			<!--main-left-->
+			<div class="main_left">
+				<ul>
+					<li>
+						<a href="javascript:;">人员管理</a>
+						<ul>
+							<li><a href="index.html">员工管理</a></li>
+							<li><a href="customer_manage.html">客户管理</a></li>
+						</ul>
+					</li>
+					<li class="active"><a href="javascript:;">油价管理</a></li>
+					<li>
+						<a href="javascript:;">秒杀管理</a>
+						<ul>
+							<li><a href="seckill.html">活动名单</a></li>
+							<li><a href="seckill_manage.html">活动编辑</a></li>
+							<li><a href="seckill_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">积分管理</a>
+						<ul>
+							<li><a href="prize.html">奖品管理</a></li>
+							<li><a href="prize_order.html">订单管理</a></li>
+							<li><a href="prize_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:;">签到管理</a></li>
+					<li><a href="javascript:;">配送管理</a></li>
+					<li><a href="javascript:;">明星榜单</a></li>
+					<li><a href="daily.html">日报管理</a></li>
+					<li><a href="recommend.html">客户推荐</a></li>
+				</ul>
+			</div>
+			<!--main-right-->
+			<div class="main_right">
+				<div class="bread">
+					<div class="operate">
+						<a href="javascritp:;">油价管理</a>
+					</div>
+				</div>
+				<div class="price">
+					<!--变动价格-->
+					<div class="vip_price">
+						<div class="tip">
+							<h1>普通客户变动价格 (元/每升)</h1>
+							<ul>
+								<li>
+									<label>92#</label>
+									<input type="number" step="10" id="oil20" disabled/>
+								</li>
+								<li>
+									<label>95#</label>
+									<input type="number" step="10" id="oil21" disabled/>
+								</li>
+								<li>
+									<label>0#普柴</label>
+									<input type="number" step="10" id="oil22" disabled/>
+								</li>
+								<li>
+									<label>0#车柴</label>
+									<input type="number" step="10" id="oil23" disabled/>
+								</li>
+								<!--<li>
+									<label>轻质燃油料</label>
+									<input type="number" min="-100" max="100" step="10" id="oil24" disabled/>
+								</li>-->
+							</ul>
+						</div>
+						<div class="tip">
+							<h1>VIP客户变动价格 (元/每升)</h1>
+							<ul>
+								<li>
+									<label>92#</label>
+									<input type="number" step="10" id="oil30" disabled/>
+								</li>
+								<li>
+									<label>95#</label>
+									<input type="number" step="10" id="oil31" disabled/>
+								</li>
+								<li>
+									<label>0#普柴</label>
+									<input type="number" step="10" id="oil32" disabled/>
+								</li>
+								<li>
+									<label>0#车柴</label>
+									<input type="number" step="10" id="oil33" disabled/>
+								</li>
+								<!--<li>
+									<label>轻质燃油料</label>
+									<input type="number" min="-100" max="100" step="10" id="oil44" disabled/>
+								</li>-->
+							</ul>
+						</div>
+						<div class="tip">
+							<h1>白银客户变动价格 (元/每升)</h1>
+							<ul>
+								<li>
+									<label>92#</label>
+									<input type="number" step="10" id="oil40" disabled/>
+								</li>
+								<li>
+									<label>95#</label>
+									<input type="number" step="10" id="oil41" disabled/>
+								</li>
+								<li>
+									<label>0#普柴</label>
+									<input type="number" step="10" id="oil42" disabled/>
+								</li>
+								<li>
+									<label>0#车柴</label>
+									<input type="number" step="10" id="oil43" disabled/>
+								</li>
+								<!--<li>
+									<label>轻质燃油料</label>
+									<input type="number" min="-100" max="100" step="10" id="oil34" disabled/>
+								</li>-->
+							</ul>
+						</div>
+
+
+						<div class="tip">
+							<h1>黄金客户变动价格 (元/每升)</h1>
+							<ul>
+								<li>
+									<label>92#</label>
+									<input type="number" step="10" id="oil50" disabled/>
+								</li>
+								<li>
+									<label>95#</label>
+									<input type="number" step="10" id="oil51" disabled/>
+								</li>
+								<li>
+									<label>0#普柴</label>
+									<input type="number" step="10" id="oil52" disabled/>
+								</li>
+								<li>
+									<label>0#车柴</label>
+									<input type="number" step="10" id="oil53" disabled/>
+								</li>
+								<!--<li>
+									<label>轻质燃油料</label>
+									<input type="number" min="-100" max="100" step="10" id="oil54" disabled/>
+								</li>-->
+							</ul>
+						</div>
+						<div class="tip">
+							<h1>钻石客户变动价格 (元/每升)</h1>
+							<ul>
+								<li>
+									<label>92#</label>
+									<input type="number" step="10" id="oil60" disabled/>
+								</li>
+								<li>
+									<label>95#</label>
+									<input type="number" step="10" id="oil61" disabled/>
+								</li>
+								<li>
+									<label>0#普柴</label>
+									<input type="number" step="10" id="oil62" disabled/>
+								</li>
+								<li>
+									<label>0#车柴</label>
+									<input type="number" step="10" id="oil63" disabled/>
+								</li>
+								<!--<li>
+									<label>轻质燃油料</label>
+									<input type="number" min="-100" max="100" step="10" id="oil54" disabled/>
+								</li>-->
+							</ul>
+						</div>
+						<div class="btn">
+							<a class="btn1 save" href="javascript:;" id="edit_oil">保存</a>
+							<a class="btn2 revise" href="javascript:;">编辑</a>
+						</div>
+					</div>
+					<!--基础价格-->
+					<div class="base_price">
+						<div class="tip">
+							<h1>基准油价 (元/每升)</h1>
+							<ul>
+								<li>
+									<label>92#</label>
+									<input type="number" min="-10000" max="10000" step="1" id="oil00" disabled/>
+								</li>
+								<li>
+									<label>95#</label>
+									<input type="number" min="-10000" max="10000" step="1" id="oil01" disabled/>
+								</li>
+								<li>
+									<label>0#普柴</label>
+									<input type="number" min="-10000" max="10000" step="1" id="oil02" disabled/>
+								</li>
+								<li>
+									<label>0#车柴</label>
+									<input type="number" min="-10000" max="10000" step="1" id="oil03" disabled/>
+								</li>
+								<!--<li>
+									<label>轻质燃油料</label>
+									<input type="number" min="0" max="10" step="0.01" id="oil04" disabled/>
+								</li>-->
+							</ul>
+						</div>
+						<div class="tip">
+							<h1>国际油价 (元/每升)</h1>
+							<ul>
+								<li>
+									<label>布伦特期货</label>
+									<input type="number" min="-10000" max="10000" step="1" id="oil10" disabled/>
+								</li>
+								<li>
+									<label>WTI期货</label>
+									<input type="number" min="-10000" max="10000" step="1" id="oil11" disabled/>
+								</li>
+								<li>
+									<label>阿曼期货</label>
+									<input type="number" min="-10000" max="10000" step="1" id="oil12" disabled/>
+								</li>
+								<li>
+									<label>原油波动变化率</label>
+									<input type="number" min="-10000" max="10000" step="1" id="oil13" disabled/>
+								</li>
+								<!--<li>
+									<label>轻质燃油料</label>
+									<input type="number" min="0" max="10" step="0.01" id="oil14" disabled/>
+								</li>-->
+							</ul>
+						</div>
+						<div class="tip">
+							<h1>用户提示</h1>
+							<ul>
+								<li>
+									<label>提示文字</label>
+									<textarea rows="3" disabled id="remarks"></textarea>
+								</li>
+							</ul>
+						</div>
+						<div class="tip">
+							<h1>注释文字</h1>
+							<ul>
+								<li>
+									<label>注释文字</label>
+									<textarea rows="3" disabled id="notes"></textarea>
+								</li>
+							</ul>
+						</div>
+						<div class="btn">
+							<a class="btn1 save" href="javascript:;" id="benchmark_edit">保存</a>
+							<a class="btn2 revise" href="javascript:;">编辑</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

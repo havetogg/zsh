@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+
+		<meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta content="telephone=no" name="format-detection">
+		<title>订单详情</title>
+		<link type="text/css" href="css/common/common.css" rel="stylesheet">
+		<!--<link type="text/css" href="css/common.css" rel="stylesheet">-->
+		<script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+		<script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+		<script type="text/javascript" src="js/common/m.tool.juxinbox.com.js"></script>
+		<script type="text/javascript" src="js/common/jWeChat-1.0.0.js"></script>
+		<script type="text/javascript" src="js/common/common.js"></script>
+			<style>
+				.contents{
+					width: 640px;
+					min-height:1065px ;
+					background: #edf0f0;
+				}
+				.head{
+					display: block;
+					width: 640px;
+					height: 150px;
+					background: white;
+				}
+				.name{
+					width: 239px;
+					height: 50px;
+					font-size: 30px;
+					float:left;
+				}
+				.name-pic{
+					width: 28px;
+					height: 32px;
+					margin: 20px 20px;
+					float: left;
+				}
+				.name-txt{
+					width: 127px;
+					height: 32px;
+					float: left;
+					margin: 25px 0;
+				}
+				.tel{
+					width: 400px;
+					height: 50px;
+					font-size: 30px;
+					float:left;
+
+				}
+				.tel-pic{
+					width: 31px;
+					height: 31px;
+					margin: 20px 20px;
+					float: left;
+				}
+				.tel-txt{
+					width: 266px;
+					height: 32px;
+					float: left;
+					margin: 25px 0;
+				}
+				.location{
+					position: absolute;
+					width: 600px;
+					height: 50px;
+					margin: 80px 20px;
+				}
+				.location-pic{
+					width:32px ;
+					height: 32px;
+					float: left;
+				}
+				.location-txt{
+					width: 538px;
+					height: 50px;
+					font-size: 30px;
+					margin: -2px 40px;
+						overflow: auto;
+		line-height: 43px;
+				}
+				.cont{
+					/*position: absolute;*/
+					width: 640px;
+					height: 255px;
+					margin: 25px 0;
+					background: white;
+				}
+				.list{
+					width: 600px;
+					height: 189px;
+					margin: 20px 20px;
+					float: left;
+				}
+				.list-pic{
+					width: 209px;
+					height: 209px;
+					float: left;
+					border: solid 1px #D9D9D9;
+				}
+				.list-title{
+					width: 372px;
+					height: 81px;
+					font-size: 30px;
+					line-height: 40px;
+					float: left;
+					overflow: auto;
+					margin-left: 16px;
+				}
+				.jifen{
+					height: 40px;
+					font-size: 30px;
+					color: #e53037;
+					float: left;
+					margin-left: 16px;
+					margin-top: 20px;
+				}
+				.jifen1{
+					font-size: 18px;
+					color: #e53037;
+					margin: 20px 4px;
+					float: left;
+					display: inline-block;
+				}
+				.change{
+				width: 180px;
+				height: 60px;
+				position: absolute;
+				overflow: hidden;
+				margin: -5px 413px;
+				border-radius: 10px;
+				border: 1px solid  #c77bcf;
+			}
+			.jian{
+				background: #c77bcf;
+				font-size: 100px;
+				color: white;
+				text-align: center;
+				line-height: 42px;
+				width: 56px;
+				height: 60px;
+				float: left;
+			}
+			.num{
+				text-align: center;
+				line-height: 61px;
+				width: 67px;
+				height: 60px;
+				float: left;
+				font-size: 30px;
+				color: #c77bcf;
+			}
+			.jia{
+				background: #c77bcf;
+				font-size: 56px;
+				color: white;
+				text-align: center;
+				line-height: 50px;
+				width: 56px;
+				height: 60px;
+				float: left;
+			}
+			.zonge{
+				position: absolute;
+				margin: 150px 228px;
+				width: 120px;
+				height: 30px;
+				color: #777777;
+				font-size: 30px;
+
+			}
+			.zonge-jifen{
+				width: 115px;
+				font-size: 30px;
+				float: left;
+				color: #e53037;
+			}
+			.jifen2{
+				font-size: 18px;
+				color: #e53037;
+			}
+
+			.jiantou{
+					width: 17px;
+		height: 30px;
+		position: absolute;
+		top: 2px;
+		left: 583px;
+		float: left;
+			}
+			.jiantou2{
+				 width: 17px;
+		height: 30px;
+		position: absolute;
+		top: 23px;
+		left: 595px;
+		float: left;
+			}
+			.header{
+				width: 640px;
+				height: 80px;
+				background: white;
+				display: block;
+			}
+			.title{
+				width: 556px;
+				height: 30px;
+				margin: 26px 20px;
+				font-size: 30px;
+				float: left;
+			}
+			.jifen1 span{
+				font-size: 23px;
+				color: #999999;
+			}
+			.xiangzi-list{
+				width: 640px;
+				height: 200px;
+				background: white;
+			}
+			.list-zonge-name{
+				width: 150px;
+				height: 30px;
+				margin: 20px 20px;
+				font-size: 28px;
+				color: #999999;
+				float: left;
+			}
+			.list-zonge{
+				width: 640px;
+				height: 50px;
+			}
+			.list-zonge-txt{
+				width: 430px;
+				height: 30px;
+				font-size: 26px;
+				float: left;
+				margin-top: 20px;
+				text-align: right;
+			}
+			.list-bianhao-name{
+				position: absolute;
+				width: 150px;
+				height: 30px;
+				margin: 20px 20px;
+				font-size: 28px;
+				color: #999999;
+				float: left;
+			}
+			.list-bianhao{
+				width: 640px;
+				height: 50px;
+			}
+			.list-bianhao-txt{
+				width: 430px;
+				height: 30px;
+				font-size: 26px;
+				float: left;
+				margin-top: 20px;
+				text-align: right;
+			}
+			.list-time-name{
+				width: 150px;
+				height: 30px;
+				margin: 20px 20px;
+				font-size: 28px;
+				color: #999999;
+				float: left;
+			}
+			.list-time{
+				width: 640px;
+				height: 50px;
+			}
+			.list-time-txt{
+				width: 430px;
+				height: 30px;
+				font-size: 26px;
+				float: left;
+				margin-top: 20px;
+				text-align: right;
+			}
+			.beizhu{
+					width: 640px;
+					/*height: 80px;*/
+					background: white;
+					margin-top: 207px;
+					position: absolute;
+				}
+				.beizhu-name{
+					width: 150px;
+					height: 49px;
+					font-size: 26px;
+					color: #999999;
+					margin: 20px 230px;
+					line-height: 40px;
+				}
+				.beizhu-con{
+					position: absolute;
+					top: 18px;
+					left: 359px;
+					width: 253px;
+					height: 62px;
+					/*background: #f5f1f4;*/
+					font-size: 26px;
+					color: #666666;
+					/*text-indent: 1em;*/
+					overflow-x: hidden;
+					overflow-y: auto;
+					word-wrap: break-word;
+					border: none;
+					line-height: 45px;
+				}
+			</style>
+			<script type="text/javascript">
+				$(function() {
+					initOrder();
+				})
+				function initOrder(){
+                    $.ajax({
+                        url: "/zsh/exchange/queryByExchangeId.do",
+                        type: "post",
+                        dataType: "json",
+                        data:{exchangeId:getUrlParam("goodId")},
+                        success: function (data) {
+							var data = data.data;
+							$(".list-title").html(data.goodName);
+                            $(".jifen").html(data.integration/data.exchangeCount);
+                            $("#count").html("x"+data.exchangeCount);
+                            $(".zonge-jifen").html(data.integration);
+                            $(".list-zonge-txt").html(data.integration+"积分");
+                            $(".list-bianhao-txt").html(data.exchangeId);
+                            $(".list-time-txt").html(data.exchangeDate);
+                            if(data.receiveStatus=="2"){
+                                initAddress(data.addressId);
+							}else if(data.receiveStatus=="1"){
+								pickupAddress(data.pickupAddress);
+							}
+                        }
+                    })
+				}
+				function initAddress(addressId){
+                    $.ajax({
+                        url: "/zsh/customer/queryReceiveAddress.do",
+                        type: "post",
+                        dataType: "json",
+                        data:{rId:addressId
+						},
+                        success: function (data) {
+                            var data = data.data[0];
+                            $(".name-txt").html(data.rName);
+                            $(".tel-txt").html(data.rPhone);
+                            $(".location-txt").html(data.rAddress);
+                        }
+                    })
+				}
+				function pickupAddress(pickupAddress){
+                    $(".location-txt").html(pickupAddress);
+                    $.ajax({
+                        url: "/zsh/customer/query.do",
+                        type: "post",
+                        dataType: "json",
+                        success: function (data) {
+                            var data = data.data[0];
+                            $(".name-txt").html(data.customerName);
+                            $(".tel-txt").html(data.phone);
+                        }
+                    })
+				}
+
+					/*//买家留言
+					var beizhu_con=$(".beizhu-con").val();
+					$.ajax({
+						url: getRootPath() + "/weixinMng/ManageC/productBuySave.htm",     //购买商品
+						data: {"beizhu_con": beizhu_con},
+						dataType: "json",
+						type: "post",
+						success: function (data) {
+
+						}
+					})*/
+
+			</script>
+	</head>
+	<body>
+		<div class="zoomer">
+			<div class="contents">
+				<div class="head" style="display: block;">
+					<div class="name">
+						<div class="name-pic"><img src="img/37.png"></div>
+						<div class="name-txt"></div>
+					</div>
+					<div class="tel">
+						<div class="tel-pic"><img src="img/38.png"></div>
+						<div class="tel-txt"></div>
+					</div>
+					<div class="location">
+						<div class="location-pic"><img src="img/36.png"></div>
+						<div class="location-txt"></div>
+						<div class="jiantou"><img src="img/99.png"></div>
+					</div>
+				</div>
+
+				<div class="header" style="display: none;">
+					<div class="title">我要自提</div>
+					<div class="jiantou2"><img src="img/99.png"></div>
+				</div>
+
+				<div class="cont">
+					<div class="list">
+						<div class="list-pic"><img width="208" height="209" src="img/39.png"></div>
+						<div class="list-title"></div>
+						<div class="jifen">7000</div>
+						<span class="jifen1">积分　 <span id="count"></span></span>
+						<div class="zonge">总额：</div>
+						<div style="position: absolute;margin: 154px 446px;width:151px;text-align: right;">
+							<div class="zonge-jifen"></div>
+							<span class="jifen2">积分</span>
+						</div>
+					</div>
+				</div>
+				<div class="xiangzi-list">
+					<div class="list-zonge">
+						<div class="list-zonge-name">订单总额：</div>
+						<div class="list-zonge-txt"></div>
+					</div>
+					<div class="list-bianhao">
+						<div class="list-bianhao-name">订单编号：</div>
+						<div class="list-bianhao-txt"></div>
+					</div>
+					<div class="list-time">
+						<div class="list-time-name">成交时间：</div>
+						<div class="list-time-txt"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

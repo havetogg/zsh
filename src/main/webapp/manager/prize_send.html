@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>积分发货管理</title>
+		<link rel="stylesheet" href="css/backstage.css" />
+		<script type="text/javascript" src="js/jQuery-1.11.3.js" ></script>
+		<!--分页-->
+		<script type="text/javascript" src="js/query.js" ></script>
+		<script type="text/javascript" src="js/paging.js" ></script>
+		
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script>
+            var totalArr = [];
+            $(function () {
+                checkLogin();
+                $(".magnifier").click(function () {
+                    if(totalArr.length>0&&$.trim($("#search").val()) != ""){
+                        var html="";
+                        $.each(totalArr,function(i,item) {
+                            if(item.goodName.indexOf($.trim($("#search").val()))>=0) {
+                                html+="<tr>";
+                                //html+="<td><input type='checkbox' /><label class='check'></label></td>";
+                                html+="<td>"+item.goodName+"</td>"
+                                html+="<td>"+item.consignee+"</td>";
+                                html+="<td>"+item.phone+"</td>";
+                                html+="<td>"+item.type+"</td>";
+                                html+="<td>"+item.address+"</td>";
+                                if (item.exchangeStatus == "3") {
+                                    html+="<td><a class='btn1 not' href='javascript:;'>已发货</a>";
+                                    html+="</td></tr>";
+                                }
+                                if (item.exchangeStatus == "2") {
+                                    html+="<td><a class='btn1' href='javascript:translate(&quot;"+item.exchangeId+"&quot;);'>发货</a>";
+									/*html+="<a class='btn2 add' href='javascript:showEdit(&quot;"+item.exchangeId+"&quot;);'>编辑</a>";*/
+                                    html+="</td></tr>";
+                                }
+                            }
+                        })
+                        $("#tb1").html("");
+                        $("#tb1").html(html);
+                    }else{
+                        initDeliver();
+                    }
+                })
+                $('.tab li').on("click",function () {
+                    var index = $(this).index();
+                    if(index == 0){
+                        $("#search").show();
+                        $(".magnifier").show();
+                    }else{
+                        $("#search").hide();
+                        $(".magnifier").hide();
+                    }
+                })
+            })
+            function checkLogin(){
+                $.ajax({
+                    url:"/zsh/wc/checkPCLoginInfo.do",
+                    type:"get",
+                    success:function(data){
+                        if(data.status == 0){
+                            if(data.data.role == 0){
+                                initDeliver();
+                            }
+                        }else{
+                            window.location.href="/zsh/fail.html";
+                        }
+                    }
+                })
+            }
+			function initDeliver() {
+                $.ajax({
+                    url: "/zsh/exchange/queryAll.do",
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
+						var arr = data.data;
+                        totalArr = arr;
+						if(arr.length>0){
+                            var html ="";
+                            var html2="";
+                            var html3="";
+                            $.each(arr,function(i,item){
+                                html+="<tr>";
+                                //html+="<td><input type='checkbox' /><label class='check'></label></td>";
+                                html+="<td>"+item.goodName+"</td>"
+								html+="<td>"+item.consignee+"</td>";
+                                html+="<td>"+item.phone+"</td>";
+                                html+="<td>"+item.type+"</td>";
+								html+="<td>"+item.address+"</td>";
+                                if(item.exchangeStatus=="3"){
+                                    html2+="<tr>";
+                                    //html2+="<td><input type='checkbox' /><label class='check'></label></td>";
+                                    html2+="<td>"+item.goodName+"</td>"
+                                    html2+="<td>"+item.consignee+"</td>";
+                                    html2+="<td>"+item.phone+"</td>";
+                                    html2+="<td>"+item.type+"</td>";
+                                    html2+="<td>"+item.address+"</td>";
+                                    html2+="<td><a class='btn1 not' href='javascript:;'>已发货</a>";
+                                    html2=="</td></tr>";
+                                    html+="<td><a class='btn1 not' href='javascript:;'>已发货</a>";
+                                    html+="</td></tr>";
+                                }
+                                if(item.exchangeStatus=="2"){
+                                    html3+="<tr>";
+                                    //html3+="<td><input type='checkbox' /><label class='check'></label></td>";
+                                    html3+="<td>"+item.goodName+"</td>"
+                                    html3+="<td>"+item.consignee+"</td>";
+                                    html3+="<td>"+item.phone+"</td>";
+                                    html3+="<td>"+item.type+"</td>";
+                                    html3+="<td>"+item.address+"</td>";
+                                    /*html3+="<td><a class='btn2 delete' href='javascript:cancel(&quot;"+item.exchangeId+"&quot;);'>删除</a>";*/
+                                    html3+="<td><a class='btn1' href='javascript:translate(&quot;"+item.exchangeId+"&quot;);'>发货</a>";
+                                    /*html3+="<a class='btn2 add' href='javascript:;'>编辑</a>";*/
+                                    html3=="</td></tr>"
+                                    /*html+="<td><a class='btn2 delete' href='javascript:cancel(&quot;"+item.exchangeId+"&quot;);'>删除</a>";*/
+                                    html+="<td><a class='btn1' href='javascript:translate(&quot;"+item.exchangeId+"&quot;);'>发货</a>";
+                                    /*html+="<a class='btn2 add' href='javascript:showEdit(&quot;"+item.exchangeId+"&quot;);'>编辑</a>";*/
+                                    html+="</td></tr>";
+                                }
+                            })
+                            $("#tb1").html("");
+                            $("#tb2").html("");
+                            $("#tb3").html("");
+							$("#tb1").html(html);
+                            $("#tb2").html(html2);
+                            $("#tb3").html(html3);
+						}
+                    }
+                })
+            }
+            function translate(exchangeId){
+                $.ajax({
+                    url: "/zsh/exchange/updateExchange.do",
+                    type: "post",
+                    data: {
+                        exchangeId: exchangeId,
+                        exchangeStatus: '3',
+                        deliveryDate:getNowFormatDate()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        console.log(data);
+                        if(data.status=="0"){
+                            alert("发货成功");
+                            location.reload();
+						}else{
+                         	alert("发货失败请重试");
+						}
+                    }
+                })
+            }
+		 	function showEdit(exchangeId) {
+                $(".edit").show();
+            }
+            function getNowFormatDate() {
+                var date = new Date();
+                var seperator1 = "-";
+                var seperator2 = ":";
+                var month = date.getMonth() + 1;
+                var strDate = date.getDate();
+                if (month >= 1 && month <= 9) {
+                    month = "0" + month;
+                }
+                if (strDate >= 0 && strDate <= 9) {
+                    strDate = "0" + strDate;
+                }
+                var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+                    + " " + date.getHours() + seperator2 + date.getMinutes()
+                    + seperator2 + date.getSeconds();
+                return currentdate;
+            }
+
+		</script>
+	</head>
+	<body>
+		<!--编辑/新增弹框-->
+		<div class="pop edit">
+			<div class="centerDiv">
+				<a class="close" href="javascript:;"></a>
+				<div class="tip">
+					<label>收货人</label>
+					<input type="text" />
+				</div>
+				<div class="tip">
+					<label>收货人手机号</label>
+					<input type="text" />
+				</div>
+				<div class="tip">
+					<label>派发方式</label>
+					<select>
+						<option>自提</option>
+						<option>物流派送</option>
+					</select>
+				</div>
+				<div class="tip">
+					<label>收货地址</label>
+					<input type="text" />
+				</div>
+				<div class="btn">
+					<a class="btn1" href="javascript:;">新增</a>
+					<a class="btn2" href="javascript:;">取消</a>
+				</div>
+			</div>
+		</div>
+		<!--提示弹框-->
+		<div class="pop hint">
+			<div class="centerDiv">
+				<a class="close" href="javascript:;"></a>
+				<h1>是否要产出该信息</h1>
+				<div class="btn">
+					<a class="btn2" href="javascript:;">否</a>
+					<a class="btn1" href="javascript:;">是</a>
+				</div>
+			</div>
+		</div>
+		
+		<!--head-->
+		<div class="head">
+			<a href="javascript:logout();">注销</a>
+			<!--<a href="javascript:;">登录</a>-->
+			<p>欢迎<span id="userName">管理员</span></p>
+		</div>
+		<!--main-->
+		<div class="main">
+			<!--main-left-->
+			<div class="main_left">
+				<ul>
+					<li>
+						<a href="javascript:;">人员管理</a>
+						<ul>
+							<li><a href="index.html">员工管理</a></li>
+							<li><a href="customer_manage.html">客户管理</a></li>
+						</ul>
+					</li>
+					<li><a href="price.html">油价管理</a></li>
+					<li>
+						<a href="javascript:;">秒杀管理</a>
+						<ul>
+							<li><a href="seckill.html">活动名单</a></li>
+							<li><a href="seckill_manage.html">活动编辑</a></li>
+							<li><a href="seckill_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li class="active">
+						<a href="javascript:;">积分管理</a>
+						<ul style="display: block;">
+							<li><a href="prize.html">奖品管理</a></li>
+							<li><a href="prize_order.html">订单管理</a></li>
+							<li><a class="cur" href="javascript:;">发货管理</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:;">签到管理</a></li>
+					<li><a href="javascript:;">配送管理</a></li>
+					<li><a href="javascript:;">明星榜单</a></li>
+					<li><a href="daily.html">日报管理</a></li>
+					<li><a href="recommend.html">客户推荐</a></li>
+				</ul>
+			</div>
+			<!--main-right-->
+			<div class="main_right">
+				<div class="bread">
+					<div class="operate">
+						<a href="javascritp:;">积分管理</a>
+						<a href="javascript:;">发货管理</a>
+					</div>
+				</div>
+				<div class="search">
+					<input type="text" placeholder="输入关键字查询" id="search"/>
+					<button class="magnifier"></button>
+					<!--<a class="btn2" href="javascript:;">批量导出</a>
+					<a class="btn2" href="javascript:;">批量删除</a>-->
+				</div>
+				<ul class="tab">
+					<li class="cur" id="sec2">全部</li>
+					<li id="sec1">已发货</li>
+					<li id="sec3">未发货</li>
+				</ul>
+				<!--第一页-->
+				<div class="page" style="display: block;">
+					<table class="staff">
+						<colgroup>
+							<!--<col width="8%" />-->
+							<col width="13%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="20%" />
+							<col width="23%" />
+						</colgroup>
+						<thead>
+							<tr>
+								<!--<th>
+									<input type="checkbox" />
+									<label class="check"></label>
+								</th>-->
+								<th>名称</th>
+								<th>收货人</th>
+								<th>收货人手机号</th>
+								<th>派送方式</th>
+								<th>收货地址</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tb1">
+
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbara"></div>-->
+				</div>
+				<!--第一页 end-->
+				<!--第二页-->
+				<div class="page">
+					<table class="staff">
+						<colgroup>
+							<!--<col width="8%" />-->
+							<col width="13%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="20%" />
+							<col width="23%" />
+						</colgroup>
+						<thead>
+						<tr>
+							<!--<th>
+								<input type="checkbox" />
+								<label class="check"></label>
+							</th>-->
+							<th>名称</th>
+							<th>收货人</th>
+							<th>收货人手机号</th>
+							<th>派送方式</th>
+							<th>收货地址</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody id="tb2">
+						
+							
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbarb"></div>-->
+				</div>
+				<!--第二页 end-->
+				<!--第三页-->
+				<div class="page">
+					<table class="staff">
+						<colgroup>
+							<!--<col width="8%" />-->
+							<col width="13%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="20%" />
+							<col width="23%" />
+						</colgroup>
+						<thead>
+						<tr>
+							<!--<th>
+								<input type="checkbox" />
+								<label class="check"></label>
+							</th>-->
+							<th>名称</th>
+							<th>收货人</th>
+							<th>收货人手机号</th>
+							<th>派送方式</th>
+							<th>收货地址</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody id="tb3">
+
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbarc"></div>-->
+				</div>
+				<!--第三页 end-->
+			</div>
+		</div>
+	</body>
+</html>

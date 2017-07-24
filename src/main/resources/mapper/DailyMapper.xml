@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.jumutang.zsh.dao.DailyDaoI">
+    <resultMap id="BaseResultMap" type="org.jumutang.zsh.model.DailyModel">
+        <id column="daily_id" property="dailyId" jdbcType="VARCHAR"></id>
+        <result column="customer_name" property="customerName" jdbcType="VARCHAR"/>
+        <result column="month_attendance" property="monthAttendance" jdbcType="VARCHAR"/>
+        <result column="attendance_rank" property="attendanceRank" jdbcType="VARCHAR"/>
+        <result column="today_daily" property="todayDaily" jdbcType="VARCHAR"/>
+        <result column="month_daily" property="monthDaily" jdbcType="VARCHAR"/>
+        <result column="daily_rate" property="dailyRate" jdbcType="VARCHAR"/>
+        <result column="daily_rank" property="dailyRank" jdbcType="VARCHAR"/>
+        <result column="month_develop" property="monthDevelop" jdbcType="VARCHAR"/>
+        <result column="reward" property="reward" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="DATE"/>
+    </resultMap>
+
+    <sql id="insertYs">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dailyId !=null">
+                daily_id,
+            </if>
+            <if test="customerName !=null">
+                customer_name,
+            </if>
+            <if test="monthAttendance !=null">
+                month_attendance,
+            </if>
+            <if test="attendanceRank !=null">
+                attendance_rank,
+            </if>
+            <if test="todayDaily !=null">
+                today_daily,
+            </if>
+            <if test="monthDaily !=null">
+                month_daily,
+            </if>
+            <if test="dailyRate !=null">
+                daily_rate,
+            </if>
+            <if test="dailyRank !=null">
+                daily_rank,
+            </if>
+            <if test="monthDevelop !=null">
+                month_develop,
+            </if>
+            <if test="reward !=null">
+                reward,
+            </if>
+            <if test="remark !=null">
+                remark,
+            </if>
+            <if test="createDate !=null">
+                create_date,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="insertValue">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dailyId !=null">
+                #{dailyId},
+            </if>
+            <if test="customerName !=null">
+                #{customerName},
+            </if>
+            <if test="monthAttendance !=null">
+                #{monthAttendance},
+            </if>
+            <if test="attendanceRank !=null">
+                #{attendanceRank},
+            </if>
+            <if test="todayDaily !=null">
+                #{todayDaily},
+            </if>
+            <if test="monthDaily !=null">
+                #{monthDaily},
+            </if>
+            <if test="dailyRate !=null">
+                #{dailyRate},
+            </if>
+            <if test="dailyRank !=null">
+                #{dailyRank},
+            </if>
+            <if test="monthDevelop !=null">
+                #{monthDevelop},
+            </if>
+            <if test="reward !=null">
+                #{reward},
+            </if>
+            <if test="remark !=null">
+                #{remark},
+            </if>
+            <if test="createDate !=null">
+                #{createDate},
+            </if>
+        </trim>
+    </sql>
+
+    <insert id="saveDaily" parameterType="org.jumutang.zsh.model.DailyModel">
+        INSERT INTO daily
+        <include refid="insertYs"/>
+        VALUES
+        <include refid="insertValue"/>
+    </insert>
+
+    <update id="updateDaily" parameterType="org.jumutang.zsh.model.DailyModel">
+        update daily
+        <set>
+            <if test="customerName !=null">
+                customer_name = #{customerName},
+            </if>
+            <if test="monthAttendance !=null">
+                month_attendance = #{monthAttendance},
+            </if>
+            <if test="attendanceRank !=null">
+                attendance_rank = #{attendanceRank},
+            </if>
+            <if test="todayDaily !=null">
+                today_daily = #{todayDaily},
+            </if>
+            <if test="monthDaily !=null">
+                month_daily = #{monthDaily},
+            </if>
+            <if test="dailyRate!=null">
+                daily_rate = #{dailyRate},
+            </if>
+            <if test="dailyRank!=null">
+                daily_rank = #{dailyRank},
+            </if>
+            <if test="monthDevelop !=null">
+                month_develop = #{monthDevelop},
+            </if>
+            <if test="reward !=null">
+                reward = #{reward},
+            </if>
+            <if test="remark !=null">
+                remark = #{remark},
+            </if>
+            <if test="createDate !=null">
+                create_date = #{createDate},
+            </if>
+        </set>
+        <where>
+            daily_id = #{dailyId}
+        </where>
+    </update>
+
+    <sql id="queryWhere">
+        <where>
+            <if test="dailyId!=null">
+                AND daily_id = #{dailyId}
+            </if>
+            <if test="customerName!=null">
+                AND customer_name = #{customerName}
+            </if>
+            <if test="createDate !=null">
+                AND create_date = #{createDate}
+            </if>
+        </where>
+    </sql>
+
+    <select id="listDaily" parameterType="org.jumutang.zsh.model.DailyModel" resultMap="BaseResultMap">
+        SELECT * FROM daily
+        <include refid="queryWhere"/>
+    </select>
+</mapper>

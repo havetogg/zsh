@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.jumutang.zsh.dao.ExchangeDaoI">
+	<resultMap id="BaseResultMap" type="org.jumutang.zsh.model.Exchange">
+		<id column="exchangeid" property="exchangeId" jdbcType="VARCHAR"></id>
+		<result column="good_id" property="goodId" jdbcType="VARCHAR"/>
+		<result column="goodname" property="goodName" jdbcType="VARCHAR"/>
+		<result column="exchangecount" property="exchangeCount" jdbcType="INTEGER"/>
+		<result column="integration" property="integration" jdbcType="INTEGER"/>
+		<result column="openid" property="openId" jdbcType="VARCHAR"/>
+		<result column="receivestatus" property="receiveStatus" jdbcType="SMALLINT"/>
+		<result column="exchangestatus" property="exchangeStatus" jdbcType="SMALLINT"/>
+		<result column="exchangedate" property="exchangeDate" jdbcType="DATE"/>
+		<result column="deliverydate" property="deliveryDate" jdbcType="DATE"/>
+		<result column="addressid" property="addressId" jdbcType="VARCHAR"/>
+		<result column="pickupaddress" property="pickupAddress" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<insert id="addExchange" parameterType="org.jumutang.zsh.model.Exchange">
+				INSERT INTO exchange
+				<trim prefix="(" suffixOverrides="," suffix=")">
+					<if test = "exchangeId !=null">
+						exchangeid,
+					</if>
+					<if test="goodId !=null">
+						good_id,
+					</if>
+					<if test="goodName !=null">
+						goodname,
+					</if>
+					<if test="exchangeCount !=null">
+						exchangecount,
+					</if>
+					<if test="integration !=null">
+						integration,
+					</if>
+					<if test="openId !=null">
+						openid,
+					</if>
+					<if test="receiveStatus !=null">
+						receivestatus,
+					</if>
+					<if test="exchangeStatus !=null">
+						exchangestatus,
+					</if>
+					<if test="exchangeDate !=null">
+						exchangedate,
+					</if>
+					<if test="deliveryDate !=null">
+						deliverydate,
+					</if>
+					<if test="addressId !=null">
+						addressid,
+					</if>
+					<if test="pickupAddress !=null">
+						pickupaddress,
+					</if>
+				</trim>
+				<trim prefix="VALUES(" suffixOverrides="," suffix=")">
+						<if test = "exchangeId !=null">
+						#{exchangeId},
+					</if>
+					<if test="goodId !=null">
+						#{goodId},
+					</if>
+					<if test="goodName !=null">
+						#{goodName},
+					</if>
+					<if test="exchangeCount !=null">
+						#{exchangeCount},
+					</if>
+					<if test="integration !=null">
+						#{integration},
+					</if>
+					<if test="openId !=null">
+						#{openId},
+					</if>
+					<if test="receiveStatus !=null">
+						#{receiveStatus},
+					</if>
+					<if test="exchangeStatus !=null">
+						#{exchangeStatus},
+					</if>
+					<if test="exchangeDate !=null">
+						#{exchangeDate},
+					</if>
+					<if test="deliveryDate !=null">
+						#{deliveryDate},
+					</if>
+					<if test="addressId !=null">
+						#{addressId},
+					</if>
+					<if test="pickupAddress !=null">
+						#{pickupAddress},
+					</if>
+				</trim>
+	</insert>
+
+	<update id="updateExchange" parameterType="org.jumutang.zsh.model.Exchange">
+		UPDATE exchange
+		<set>
+			<if test="exchangeStatus !=null">
+				exchangestatus = #{exchangeStatus},
+			</if>
+			<if test="deliveryDate !=null">
+				deliverydate = #{deliveryDate},
+			</if>
+		</set>
+		<where>
+			exchangeid =#{exchangeId}
+		</where>
+	</update>
+
+	<!-- 分页查询 -->
+	<select id="queryByPage" parameterType="map" resultMap="BaseResultMap">
+		SELECT * FROM 
+		exchange e
+		LEFT JOIN good g ON e.good_id = g.good_id
+		<where>
+			e.exchangestatus != 4
+		</where>
+		ORDER BY exchangedate DESC
+		limit #{pageIndex},#{pageSize}
+	</select>
+
+	<!-- 根据用户查询 -->
+	<select id="queryByUser" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT * FROM exchange
+		<where>
+			<if test="_parameter !=null">
+				openid = #{_parameter}
+			</if>
+		</where>
+		ORDER BY exchangedate DESC
+	</select>
+
+	<select id="queryByExchangeId" parameterType="java.lang.String" resultMap="BaseResultMap">
+		SELECT * FROM exchange
+		<where>
+			<if test="_parameter !=null">
+				exchangeid = #{_parameter}
+			</if>
+		</where>
+	</select>
+	
+	<!-- 统计信息条数 -->
+	<select id="countExchange" parameterType="map" resultType="int">
+		SELECT COUNT(1) FROM 
+		exchange e
+		LEFT JOIN good g ON e.good_id = g.good_id
+		<where>
+			e.exchangestatus != 4
+		</where>
+	</select>
+
+	<select id="queryAll" resultMap="BaseResultMap">
+		SELECT * FROM exchange
+		<where>
+			exchangestatus != 4
+		</where>
+	</select>
+</mapper>
+
+
+

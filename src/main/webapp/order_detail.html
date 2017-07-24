@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5">
+		<meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta content="telephone=no" name="format-detection">
+		<title>配送计划</title>
+		<link rel="stylesheet" href="css/common/common.css" />
+		<link rel="stylesheet" href="css/point.css" />
+		<script type="text/javascript" src="js/common/jQuery-1.11.3.js" ></script>
+		<script type="text/javascript" src="js/common/jWeChat-Adaptive.js" ></script>
+	</head>
+	<body class="bg_gray">
+		<div class="zoomer">
+			<div class="order_detail">
+				<ul id="ul1">
+					
+				</ul>
+			</div>
+			<a class="more_detail" class="add" href="javascript:;">查看详情</a>
+			<!--隐藏区域-->
+			<div class="order_detail hide">
+				<h1>配送详情</h1>
+				<ul id="ul2">
+					
+				</ul>
+			</div>
+			<div class="order_operate">
+				<a class="cancel" href="javascritp:;">撤回</a>
+				<a class="change" href="javascript:;">修改</a>
+				<p>注：次日单修改，撤回限当日操作。</p>
+			</div>
+		</div>
+		<script>
+			$(".more_detail").click(function(){
+				if(!$(this).hasClass("open")){
+					$(this).addClass("open");
+					$(this).html("收起详情");
+					$(".order_detail.hide").slideDown();
+				}
+				else{
+					$(this).removeClass("open");
+					$(this).html("查看详情");
+					$(".order_detail.hide").slideUp();
+				}
+				
+			})
+			//获取url参数
+			function getQueryString(name) { 
+			    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+			    var r = window.location.search.substr(1).match(reg); 
+			    if (r != null) return decodeURI(r[2]); 
+			    return null; 
+	 		} 
+			var id= getQueryString("id");
+			console.log(id);
+			$("#ul1").html("");
+			$("#ul2").html("");
+			$.ajax({
+				url:"/zsh/distribution/query.do",
+				type:"post",
+				data:{"id":id},
+				dataType:"json",
+				success:function(data){
+					if(data.status==0){
+						var distribution = data.data[0];
+						console.log(distribution);
+						var date= new Date();
+						var year = date.getFullYear();
+						var month = date.getMonth()+1;
+						var day = date.getDate();
+						var nextDay = date.getDate()+1;
+						var today = year+"-"+month+"-"+day;
+						var next = year+"-"+month+"-"+nextDay;
+						if(distribution.state=="1"){
+							var html ="<li>" +
+							"<label>收油单位</label>" +
+							"<span>"+distribution.oilcompany+"</span>" +
+						"</li>" +
+						"<li>" +
+							"<label>客户编码</label>" +
+							"<span>"+distribution.customercode+"</span>" +
+						"</li>" +
+						"<li>" +
+							"<label>收油联系人</label>" +
+							"<span>"+distribution.oilcontacts+"</span>" +
+						"</li>" +
+						"<li>" +
+							"<label>品牌</label>" +
+							"<span>"+distribution.vars+"</span>" +
+						"</li>";
+						$("#ul1").append(html);
+						
+						if(today!=distribution.plandate){
+							$(".cancel").attr("disabled","disabled");
+							}
+						if(distribution.auditstate=="1"){
+							$("#ul2").append("<li>正在审核中<li>");
+							}
+						if(distribution.auditstate=="2"){
+							var html1 = "<li>" +
+								"<label>派送卡号</label>" +
+								"<span>"+distribution.cardno+"</span>" +
+							"</li>" +
+							"<li>" +
+								"<label>实际运输车号</label>" +
+								"<span>"+distribution.driverno+"</span>" +
+							"</li>" +
+							"<li>" +
+								"<label>司机姓名</label>" +
+								"<span>"+distribution.driver+"</span>" + 
+							"</li>" +
+							"<li>" +
+								"<label>SPA提取码</label>" +
+								"<span>"+distribution.no+"</span>" +
+							"</li>";
+							$("#ul2").append(html1);
+						}
+						}
+						if(distribution.state=="2"){
+							$(".cancel").attr("disabled","disabled");
+							$(".change").attr("disabled","disabled");
+							
+							var html ="<li>" +
+							"<label>收油单位</label>" +
+							"<span>"+distribution.oilcompany+"</span>" +
+						"</li>" +
+						"<li>" +
+							"<label>客户编码</label>" +
+							"<span>"+distribution.customercode+"</span>" +
+						"</li>" +
+						"<li>" +
+							"<label>收油联系人</label>" +
+							"<span>"+distribution.oilcontacts+"</span>" +
+						"</li>" +
+						"<li>" +
+							"<label>品牌</label>" +
+							"<span>"+distribution.vars+"</span>" +
+						"</li>";
+						$("#ul1").append(html);
+						
+						var html1 = "<li>" +
+						"<label>派送卡号</label>" +
+						"<span>"+distribution.cardno+"</span>" +
+					"</li>" +
+					"<li>" +
+						"<label>实际运输车号</label>" +
+						"<span>"+distribution.driverno+"</span>" +
+					"</li>" +
+					"<li>" +
+						"<label>司机姓名</label>" +
+						"<span>"+distribution.driver+"</span>" + 
+					"</li>" +
+					"<li>" +
+						"<label>SPA提取码</label>" +
+						"<span>"+distribution.no+"</span>" +
+					"</li>";
+					$("#ul2").append(html1);
+						}
+					}
+					if(data.status==2){
+						window.location.href="/zsh/wc/oauth.do?redUrl=/zsh/order_detail.html";
+					}
+					if(data.status==3){
+						window.location.href="/zsh/fail.html";
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

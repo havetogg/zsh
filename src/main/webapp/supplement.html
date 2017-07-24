@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>补充个人信息</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <link type="text/css" href="css/point.css" rel="stylesheet">
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+	<script>
+        $(function(){
+            $(".like").click(function(){
+                if($(".time").val()==""){
+                    alert("请填写生日");
+                    return;
+                }
+                if($(".cur").text()==""){
+                    alert("请填写爱好");
+                    return;
+                }
+                if($(".time").val()!=""&&$(".cur").text()!=""){
+                    var size = $(".cur").size();
+                    var str = "";
+                    for(var i=0;i<size;i++){
+                        if(i==size-1){
+                            str += $(".cur:eq("+i+")").text();
+						}else{
+                            str += $(".cur:eq("+i+")").text()+"、";
+						}
+					}
+                    $.ajax({
+                        url: "/zsh/customer/updateCust.do",
+                        type: "post",
+                        dataType: "json",
+                        data: {
+                            birthday: $(".time").val(),
+                            hobby:str,
+                        },
+                        success: function (data) {
+                            if(data.status=="0"){
+                                window.location.href="/zsh/memberCenter.html";
+							}else{
+                                alert("请重新填写");
+							}
+                        }
+                    })
+				}
+            })
+        })
+	</script>
+</head>
+
+<body>
+<div class="zoomer">
+	<div class="hobby">
+		<h1>选择你的生日日期</h1>
+		<input class="time" type="date" />
+		<h1>选择你的爱好吧 (可多选)</h1>
+		<ul>
+			<li>足球</li>
+			<li class="cur">篮球</li>
+			<li>排球</li>
+			<li>画画</li>
+			<li>游泳</li>
+			<li>钓鱼</li>
+			<li>影视音乐</li>
+			<li>绘画</li>
+			<li>书法</li>
+			<li>读书</li>
+			<li>棋牌</li>
+			<li>登山</li>
+			<li class="cur">美食烹饪</li>
+			<li>摄影</li>
+			<li>跑步</li>
+			<li>兵乓</li>
+		</ul>
+		<a class="btn" href="user.html">取消</a>
+		<a class="btn like">喜欢</a>
+	</div>
+</div>
+<script>
+	$(".hobby li").click(function(){
+		$(this).toggleClass("cur");
+	})
+</script>
+</body>
+	
+</html>

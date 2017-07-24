@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>秒杀发货管理</title>
+		<link rel="stylesheet" href="css/backstage.css" />
+		<script type="text/javascript" src="js/jQuery-1.11.3.js" ></script>
+		<!--分页-->
+		<script type="text/javascript" src="js/query.js" ></script>
+		<script type="text/javascript" src="js/paging.js" ></script>
+		
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script>
+            var totalArr = [];
+            $(function () {
+                checkLogin();
+                $(".magnifier").click(function () {
+                    if(totalArr.length>0&&$.trim($("#search").val()) != ""){
+                        var html ="";
+                        var html2="";
+                        var html3="";
+                        $.each(totalArr,function(i,item){
+                            if(item.consignee.indexOf($.trim($("#search").val()))>=0){
+                                html+="<tr><td><input type='checkbox' /><label class='check'></label></td>";
+                                html+="<td>"+item.activityName+"</td>"
+                                html+="<td>"+item.consignee+"</td>";
+                                html+="<td>"+item.phone+"</td>";
+                                html+="<td>"+item.type+"</td>";
+                                html+="<td>"+item.address+"</td>";
+                                if(item.robStatus=="3"){
+                                    html2+="<tr><td><input type='checkbox' /><label class='check'></label></td>";
+                                    html2+="<td>"+item.activityName+"</td>"
+                                    html2+="<td>"+item.consignee+"</td>";
+                                    html2+="<td>"+item.phone+"</td>";
+                                    html2+="<td>"+item.type+"</td>";
+                                    html2+="<td>"+item.address+"</td>";
+                                    html2+="<td><a class='btn1 not' href='javascript:;'>已发货</a>";
+                                    html2=="</td></tr>";
+                                    html+="<td><a class='btn1 not' href='javascript:;'>已发货</a>";
+                                    html=="</td></tr>"
+                                }
+                                if(item.robStatus=="2"){
+                                    html3+="<tr><td><input type='checkbox' /><label class='check'></label></td>";
+                                    html3+="<td>"+item.activityName+"</td>"
+                                    html3+="<td>"+item.consignee+"</td>";
+                                    html3+="<td>"+item.phone+"</td>";
+                                    html3+="<td>"+item.type+"</td>";
+                                    html3+="<td>"+item.address+"</td>";
+									/*html3+="<td><a class='btn2 delete' href='javascript:cancel(&quot;"+item.exchangeId+"&quot;);'>删除</a>";*/
+                                    html3+="<td><a class='btn1' href='javascript:translate(&quot;"+item.robId+"&quot;);'>发货</a>";
+									/*html3+="<a class='btn2 add' href='javascript:;'>编辑</a>";*/
+                                    html3=="</td></tr>"
+									/*html+="<td><a class='btn2 delete' href='javascript:cancel(&quot;"+item.exchangeId+"&quot;);'>删除</a>";*/
+                                    html+="<td><a class='btn1' href='javascript:translate(&quot;"+item.robId+"&quot;);'>发货</a>";
+									/*html+="<a class='btn2 add' href='javascript:showEdit(&quot;"+item.exchangeId+"&quot;);'>编辑</a>";*/
+                                    html=="</td></tr>"
+                                }
+                            }
+                        })
+                        $("#tb1").html("");
+                        $("#tb1").append(html);
+                        $("#tb2").html("");
+                        $("#tb2").append(html2);
+                        $("#tb3").html("");
+                        $("#tb3").append(html3);
+                    }else{
+                        initDeliver();
+                    }
+                })
+            })
+            function checkLogin(){
+                $.ajax({
+                    url:"/zsh/wc/checkPCLoginInfo.do",
+                    type:"get",
+                    success:function(data){
+                        if(data.status == 0){
+                            if(data.data.role == 0){
+                                initDeliver();
+                            }
+                        }else{
+                            window.location.href="/zsh/fail.html";
+                        }
+                    }
+                })
+            }
+            function initDeliver() {
+                $.ajax({
+                    url: "/zsh/rob/queryAll.do",
+                    type: "post",
+                    data:{
+                        type:1
+					},
+                    dataType: "json",
+                    success: function (data) {
+                        var arr = data.data;
+                        if(arr.length>0){
+                            totalArr = arr;
+                            var html ="";
+                            var html2="";
+                            var html3="";
+                            $.each(arr,function(i,item){
+                                html+="<tr><td><input type='checkbox' /><label class='check'></label></td>";
+                                html+="<td>"+item.activityName+"</td>"
+                                html+="<td>"+item.consignee+"</td>";
+                                html+="<td>"+item.phone+"</td>";
+                                html+="<td>"+item.type+"</td>";
+                                html+="<td>"+item.address+"</td>";
+                                if(item.robStatus=="3"){
+                                    html2+="<tr><td><input type='checkbox' /><label class='check'></label></td>";
+                                    html2+="<td>"+item.activityName+"</td>"
+                                    html2+="<td>"+item.consignee+"</td>";
+                                    html2+="<td>"+item.phone+"</td>";
+                                    html2+="<td>"+item.type+"</td>";
+                                    html2+="<td>"+item.address+"</td>";
+                                    html2+="<td><a class='btn1 not' href='javascript:;'>已发货</a>";
+                                    html2=="</td></tr>";
+                                    html+="<td><a class='btn1 not' href='javascript:;'>已发货</a>";
+                                    html=="</td></tr>"
+                                }
+                                if(item.robStatus=="2"){
+                                    html3+="<tr><td><input type='checkbox' /><label class='check'></label></td>";
+                                    html3+="<td>"+item.activityName+"</td>"
+                                    html3+="<td>"+item.consignee+"</td>";
+                                    html3+="<td>"+item.phone+"</td>";
+                                    html3+="<td>"+item.type+"</td>";
+                                    html3+="<td>"+item.address+"</td>";
+									/*html3+="<td><a class='btn2 delete' href='javascript:cancel(&quot;"+item.exchangeId+"&quot;);'>删除</a>";*/
+                                    html3+="<td><a class='btn1' href='javascript:translate(&quot;"+item.robId+"&quot;);'>发货</a>";
+									/*html3+="<a class='btn2 add' href='javascript:;'>编辑</a>";*/
+                                    html3=="</td></tr>"
+									/*html+="<td><a class='btn2 delete' href='javascript:cancel(&quot;"+item.exchangeId+"&quot;);'>删除</a>";*/
+                                    html+="<td><a class='btn1' href='javascript:translate(&quot;"+item.robId+"&quot;);'>发货</a>";
+									/*html+="<a class='btn2 add' href='javascript:showEdit(&quot;"+item.exchangeId+"&quot;);'>编辑</a>";*/
+                                    html=="</td></tr>"
+                                }
+                            })
+                            $("#tb1").html("");
+                            $("#tb1").append(html);
+                            $("#tb2").html("");
+                            $("#tb2").append(html2);
+                            $("#tb3").html("");
+                            $("#tb3").append(html3);
+                        }
+                    }
+                })
+            }
+            function translate(robId){
+                $.ajax({
+                    url: "/zsh/rob/update.do",
+                    type: "post",
+                    data: {
+                        robId: robId,
+                        robStatus: '3',
+                        deliveryDate:getNowFormatDate()
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if(data.status=="0"){
+                            alert("发货成功");
+                            location.reload();
+                        }else{
+                            alert("发货失败请重试");
+                        }
+                    }
+                })
+            }
+            function showEdit(exchangeId) {
+                $(".edit").show();
+            }
+            function getNowFormatDate() {
+                var date = new Date();
+                var seperator1 = "-";
+                var seperator2 = ":";
+                var month = date.getMonth() + 1;
+                var strDate = date.getDate();
+                if (month >= 1 && month <= 9) {
+                    month = "0" + month;
+                }
+                if (strDate >= 0 && strDate <= 9) {
+                    strDate = "0" + strDate;
+                }
+                var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+                    + " " + date.getHours() + seperator2 + date.getMinutes()
+                    + seperator2 + date.getSeconds();
+                return currentdate;
+            }
+
+		</script>
+	</head>
+	<body>
+		<!--编辑/新增弹框-->
+		<div class="pop edit">
+			<div class="centerDiv">
+				<a class="close" href="javascript:;"></a>
+				<div class="tip">
+					<label>收货人</label>
+					<input type="text" />
+				</div>
+				<div class="tip">
+					<label>收货人手机号</label>
+					<input type="text" />
+				</div>
+				<div class="tip">
+					<label>派发方式</label>
+					<select>
+						<option>自提</option>
+						<option>物流派送</option>
+					</select>
+				</div>
+				<div class="tip">
+					<label>收货地址</label>
+					<input type="text" />
+				</div>
+				<div class="btn">
+					<a class="btn1" href="javascript:;">新增</a>
+					<a class="btn2" href="javascript:;">取消</a>
+				</div>
+			</div>
+		</div>
+		<!--提示弹框-->
+		<div class="pop hint">
+			<div class="centerDiv">
+				<a class="close" href="javascript:;"></a>
+				<h1>是否要产出该信息</h1>
+				<div class="btn">
+					<a class="btn2" href="javascript:;">否</a>
+					<a class="btn1" href="javascript:;">是</a>
+				</div>
+			</div>
+		</div>
+		
+		<!--head-->
+		<div class="head">
+			<a href="javascript:logout();">注销</a>
+			<!--<a href="javascript:;">登录</a>-->
+			<p>欢迎<span id="userName">管理员</span></p>
+		</div>
+		<!--main-->
+		<div class="main">
+			<!--main-left-->
+			<div class="main_left">
+				<ul>
+					<li>
+						<a href="javascript:;">人员管理</a>
+						<ul>
+							<li><a href="index.html">员工管理</a></li>
+							<li><a href="customer_manage.html">客户管理</a></li>
+						</ul>
+					</li>
+					<li><a href="price.html">油价管理</a></li>
+					<li class="active">
+						<a href="javascript:;">秒杀管理</a>
+						<ul style="display: block;">
+							<li><a href="seckill.html">活动名单</a></li>
+							<li><a href="seckill_manage.html">活动编辑</a></li>
+							<li><a class="cur" href="javascript:;">发货管理</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">积分管理</a>
+						<ul>
+							<li><a href="prize.html">奖品管理</a></li>
+							<li><a href="prize_order.html">订单管理</a></li>
+							<li><a href="prize_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:;">签到管理</a></li>
+					<li><a href="javascript:;">配送管理</a></li>
+					<li><a href="javascript:;">明星榜单</a></li>
+					<li><a href="daily.html">日报管理</a></li>
+					<li><a href="recommend.html">客户推荐</a></li>
+				</ul>
+			</div>
+			<!--main-right-->
+			<div class="main_right">
+				<div class="bread">
+					<div class="operate">
+						<a href="javascritp:;">秒杀管理</a>
+						<a href="javascript:;">发货管理</a>
+					</div>
+				</div>
+				<div class="search">
+					<input type="text" placeholder="输入收货人查询" id="search"/>
+					<button class="magnifier"></button>
+					<!--<a class="btn1" href="javascript:;">批量发货</a>
+					<a class="btn2" href="javascript:;">批量导出</a>
+					<a class="btn2" href="javascript:;">批量删除</a>-->
+				</div>
+				<ul class="tab">
+					<li class="cur" id="sec2">全部</li>
+					<li id="sec1">已发货</li>
+					<li id="sec3">未发货</li>
+				</ul>
+				<!--第一页-->
+				<div class="page" style="display: block;">
+					<table class="staff">
+						<colgroup>
+							<col width="8%" />
+							<col width="13%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="20%" />
+							<col width="23%" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th>
+								<input type="checkbox" />
+								<label class="check"></label>
+							</th>
+							<th>名称</th>
+							<th>收货人</th>
+							<th>收货人手机号</th>
+							<th>派送方式</th>
+							<th>收货地址</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody id="tb1">
+
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbara"></div>-->
+				</div>
+				<!--第一页 end-->
+				<!--第二页-->
+				<div class="page">
+					<table class="staff">
+						<colgroup>
+							<col width="8%" />
+							<col width="13%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="20%" />
+							<col width="23%" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th>
+								<input type="checkbox" />
+								<label class="check"></label>
+							</th>
+							<th>名称</th>
+							<th>收货人</th>
+							<th>收货人手机号</th>
+							<th>派送方式</th>
+							<th>收货地址</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody id="tb2">
+
+
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbarb"></div>-->
+				</div>
+				<!--第二页 end-->
+				<!--第三页-->
+				<div class="page">
+					<table class="staff">
+						<colgroup>
+							<col width="8%" />
+							<col width="13%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="20%" />
+							<col width="23%" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th>
+								<input type="checkbox" />
+								<label class="check"></label>
+							</th>
+							<th>名称</th>
+							<th>收货人</th>
+							<th>收货人手机号</th>
+							<th>派送方式</th>
+							<th>收货地址</th>
+							<th>操作</th>
+						</tr>
+						</thead>
+						<tbody id="tb3">
+
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbarc"></div>-->
+				</div>
+				<!--第三页 end-->
+			</div>
+		</div>
+		<!--<script type="text/javascript">
+			//默认第一页开始
+			var pageIndex = 1;
+			//标识
+			var mark = 0; 
+			var mark1 = 0;
+			var mark2 = 0;
+			init();
+			//初始化页面数据
+			function init(){
+				$.ajax({
+					url:"/zsh/good/queryGood.do",
+					type:"post",
+					data:{"pageIndex":pageIndex},
+					dataType:"json",
+					success:function(data){ 
+						if(data.status==0){
+							$("#tb2").html("");
+							var list = data.data.list;
+							var count = data.data.total;
+							var html = "";
+							$.each(list,function(i,field){
+								html +="<tr>" 
+									    + "<td>"
+								+ "<input type='checkbox' />"
+								+ "<label class='check'></label>"
+							+ "</td>"
+							+ "<td>"+field.goodName+"</td>"
+							+ "<td>"+field.integration+"</td>"
+							+ "<td>"+field.receive+"</td>"
+							+ "<td>"+field.inventory+"</td>";
+							
+							if(field.goodState==1){
+								html +="<td>"
+								+ "<a class='btn2' href='javascript:;'>删除</a>"
+								+ "<a class='btn2' href='javascript:;'>下架</a>"
+								+ "<a class='btn1' href='javascript:;'>编辑</a>"
+							+ "</td>";
+							}
+							if(field.goodState==2){
+								html +="<td>"
+									+ "<a class='btn2' href='javascript:;'>删除</a>"
+									+ "<a class='btn2' href='javascript:;'>上架</a>"
+									+ "<a class='btn1' href='javascript:;'>编辑</a>"
+								+ "</td>";
+							}
+							
+						html += "</tr>";
+							});
+							
+							if(mark==0){
+								$('#pageToolbara').Paging({pagesize:10,count:count,callback:function(page){
+									   pageIndex = page;
+									   }});
+							}
+							mark=1;
+							$("#tb1").append(html);
+						}
+					}
+				});
+			}
+			
+			//售量高到底
+			$("#sec1").click(function(){
+				pageIndex = 1;
+				$.ajax({
+					url:"/zsh/good/queryGood.do",
+					type:"post",
+					data:{"pageIndex":pageIndex,"mark":"receive DESC"},
+					dataType:"json",
+					success:function(data){
+						if(data.status==0){
+							$("#tb2").html("");
+							var list = data.data.list;
+							var count = data.data.total;
+							var html = "";
+							$.each(list,function(i,field){
+								html +="<tr>" 
+									    + "<td>"
+								+ "<input type='checkbox' />"
+								+ "<label class='check'></label>"
+							+ "</td>"
+							+ "<td>"+field.goodName+"</td>"
+							+ "<td>"+field.integration+"</td>"
+							+ "<td>"+field.receive+"</td>"
+							+ "<td>"+field.inventory+"</td>";
+							
+							if(field.goodState==1){
+								html +="<td>"
+								+ "<a class='btn2' href='javascript:;'>删除</a>"
+								+ "<a class='btn2' href='javascript:;'>下架</a>"
+								+ "<a class='btn1' href='javascript:;'>编辑</a>"
+							+ "</td>";
+							}
+							if(field.goodState==2){
+								html +="<td>"
+									+ "<a class='btn2' href='javascript:;'>删除</a>"
+									+ "<a class='btn2' href='javascript:;'>上架</a>"
+									+ "<a class='btn1' href='javascript:;'>编辑</a>"
+								+ "</td>";
+							}
+							
+						html += "</tr>";
+							});
+							
+							if(mark1==0){
+								$('#pageToolbarb').Paging({pagesize:10,count:count,callback:function(page){
+									   pageIndex = page;
+									   }});
+							}
+							mark1=1;
+							$("#tb2").append(html);
+						}
+					}
+				});
+				
+			});
+			//库存有底到高
+			$("#sec3").click(function(){
+				pageIndex = 1;
+				$.ajax({
+					url:"/zsh/good/queryGood.do",
+					type:"post",
+					data:{"pageIndex":pageIndex,"mark":"inventory asc"},
+					dataType:"json",
+					success:function(data){
+						if(data.status==0){
+							$("#tb3").html("");
+							var list = data.data.list;
+							var count = data.data.total;
+							var html = "";
+							$.each(list,function(i,field){
+								html +="<tr>" 
+									    + "<td>"
+								+ "<input type='checkbox' />"
+								+ "<label class='check'></label>"
+							+ "</td>"
+							+ "<td>"+field.goodName+"</td>"
+							+ "<td>"+field.integration+"</td>"
+							+ "<td>"+field.receive+"</td>"
+							+ "<td>"+field.inventory+"</td>";
+							
+							if(field.goodState==1){
+								html +="<td>"
+								+ "<a class='btn2' href='javascript:;'>删除</a>"
+								+ "<a class='btn2' href='javascript:;'>下架</a>"
+								+ "<a class='btn1' href='javascript:;'>编辑</a>"
+							+ "</td>";
+							}
+							if(field.goodState==2){
+								html +="<td>"
+									+ "<a class='btn2' href='javascript:;'>删除</a>"
+									+ "<a class='btn2' href='javascript:;'>上架</a>"
+									+ "<a class='btn1' href='javascript:;'>编辑</a>"
+								+ "</td>";
+							}
+							
+						html += "</tr>";
+							});
+							
+							if(mark1==0){
+								$('#pageToolbarc').Paging({pagesize:10,count:count,callback:function(page){
+									   pageIndex = page;
+									   }});
+							}
+							mark1=1;
+							$("#tb3").append(html);
+						}
+					}
+				});
+				
+			});
+		</script>-->
+	</body>
+</html>

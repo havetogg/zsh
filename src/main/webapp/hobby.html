@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>个人爱好</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <link type="text/css" href="css/point.css" rel="stylesheet">
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+</head>
+
+<body>
+<div class="zoomer">
+	<div class="hobby">
+		<h1>选择你的爱好吧 (可多选)</h1>
+		<ul>
+			<li>足球</li>
+			<li>篮球</li>
+			<li>羽毛球</li>
+			<li>乒乓</li>
+			<li>游泳</li>
+			<li>钓鱼</li>
+			<li>影视</li>
+			<li>音乐</li>
+			<li>绘画</li>
+			<li>书法</li>
+			<li>读书会</li>
+			<li>购物</li>
+			<li>户外</li>
+			<li>旅游</li>
+			<li>健身</li>
+			<li>摄影</li>
+			<li>棋牌</li>
+		</ul>
+		<a class="btn" href="user.html">取消</a>
+		<a class="btn like" >喜欢</a>
+		   <!--href="user.html"-->
+
+	</div>
+</div>
+<script>
+	var hobbies=new Array();
+	$(".hobby li").click(function(){
+		$(this).toggleClass("cur");
+		if($(this).attr("class")=='cur'){
+			hobbies.push($(this).html())
+		}
+	})
+	$(function(){
+		var hobby=getUrlParam("hobby");
+		if(hobby==''||hobby==null){
+			$("li").removeClass("cur");
+		}else{
+			hobby=decodeURI(hobby);
+			var hobbies=hobby.split("、");
+			$.each(hobbies,function(index,hb){
+				$.each($(".hobby li"),function(index,item){
+					var sub=$(item).html();
+					if(sub==hb){
+						$(item).addClass("cur");
+					}
+				})
+			});
+		}
+	})
+	$(".like").click(function(){
+		var hobbies='';
+		$.each($(".hobby li"),function(index,item){
+			var clazz=$(item).attr("class");
+			if(clazz!=undefined&&clazz!=null&&clazz!=''){
+				hobbies+=$(item).html()+"、";
+			}
+		})
+		if(hobbies.length == 0){
+		    alert("请选择爱好");
+		    return;
+		}
+		hobbies=hobbies.substring(0,hobbies.length-1);
+		$.ajax({
+			url:"/zsh/customer/updateCust.do",
+			type:"post",
+			data:{"hobby":hobbies},
+			dataType:"json",
+			success:function(data){
+				console.log(data);
+				location.href="user.html";
+			}
+		});
+	});
+
+</script>
+</body>
+	
+</html>

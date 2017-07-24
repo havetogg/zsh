@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>我要签到</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <!--<link type="text/css" href="css/index.css" rel="stylesheet">-->
+    <!--<script type="text/javascript" src="js/common/jquery-1.7.2.min.js"></script>-->
+    <!--<script type="text/javascript" src="js/common/m.tool.juxinbox.com.js"></script>-->
+
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+    <script type="text/javascript" src="js/common/m.tool.juxinbox.com.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-1.0.0.js"></script>
+
+    <!--<script type="text/javascript" src="js/index.js"></script>-->
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <style>
+    	*{
+    		margin: 0;
+    		padding: 0;
+    	}
+    	.contents{
+    		width: 640px;
+    		min-height: 1065px;
+    		position: absolute;
+    		background: #edf0f0;
+    	}
+    	.cont{
+    		width: 640px;
+    		background: #fff;
+    	}
+    	.xinxi{
+    		width: 640px;
+    		height: 90px;
+    		border-bottom: solid #D9D9D9 1px;
+    	}
+    	.info-name{
+    		width: 150px;
+    		height: 40px;
+    		font-size: 30px;
+    		margin-left: 30px;
+    		line-height: 90px;
+    		float: left;
+    	}
+    	.info-txt{
+    		width: 450px;
+    		height: 88px;
+    		font-size: 30px;
+    		border: none;
+    	}
+    	.locat-txt{
+    		width: 440px;
+    		height: 90px;
+    		font-size: 30px;
+    		border: none;
+    		float: left;
+    		z-index: 9999;
+    		position: absolute;
+    		background: none;
+    	}
+    	.card1{
+    		width: 640px;
+    		height: 90px;
+    	}
+    	.card-name{
+    		width: 150px;
+    		height: 40px;
+    		font-size: 30px;
+    		margin-left: 30px;
+    		line-height: 90px;
+    		float: left;
+    		color: #999999;
+    	}
+    	.card-txt{
+    		width: 176px;
+    		height: 90px;
+    		font-size: 30px;
+    		line-height: 90px;
+    		border: none;
+    		margin-left: 445px;
+    		text-align: right;
+    	}
+    	.name-txt{
+    		width: 114px;
+    		height: 90px;
+    		font-size: 30px;
+    		line-height: 90px;
+    		border: none;
+    		margin-left: 505px;
+    		text-align: right;
+    	}
+    	.dizhi-txt{
+    		width:412px;
+    		height: 90px;
+    		font-size: 30px;
+    		line-height: 90px;
+    		border: none;
+    		margin-left: 209px;
+    		text-align: right;
+    	}
+    	.person-txt{
+    		width:224px;
+    		height: 90px;
+    		font-size: 30px;
+    		line-height: 90px;
+    		border: none;
+    		margin-left: 397px;
+    		text-align: right;
+    	}
+    	.tel-txt{
+    		width:201px;
+    		height: 90px;
+    		font-size: 30px;
+    		line-height: 90px;
+    		border: none;
+    		margin-left: 422px;
+    		text-align: right;
+    	}
+    	select option:nth-child(2n){
+    		background: #EDF0F0;
+        }
+    	.pic{
+    		width: 32px;
+    		height: 23px;
+    		position: absolute;
+    		margin-left: 590px;
+    		margin-top: 30px;
+    	}
+    	.map{
+    		width: 450px;
+    		height: 90px;
+    		font-size: 30px;
+    		line-height: 90px;
+    		color: #e53037;
+    	}
+    	.photo{
+    		width: 640px;
+    		height: 173px;
+    	}
+    	.photo-txt{
+    		width: 128px;
+    		height: 128px;
+    		margin-top: 20px;
+    		float: left;
+    	}
+    	.pictxt2{
+    		width: 128px;
+    		height: 128px;
+    		margin-top: 20px;
+    		float: left;
+    		margin-left: 50px;
+    	}
+    	.btn1{
+    		width: 600px;
+    		height: 88px;
+    		margin: 50px auto;
+    	}
+    	.btn2{
+    		width: 600px;
+    		height: 88px;
+    		margin: 40px auto;
+    	}
+    	.list1{
+    		width: 600px;
+    		height:88px ;
+    		border-bottom: solid #D9D9D9 1px;
+    	}
+    	.list-num{
+    		width: 140px;
+    		height: 70px;
+    		font-size: 30px;
+    		line-height: 90px;
+    		float: left;
+    		margin-left: 30px;
+    	}
+    	.num-txt{
+    		width: 400px;
+    		height: 80px;
+    		font-size: 30px;
+    		border: none;
+    		line-height: 89px;
+    	}
+    	.buttons{
+    		width: 560px;
+    		height: 88px;
+    		margin-left: 20px;
+    		margin-top: 30px;
+    	}
+    	.title{
+    		width: 640px;
+    		height:50px;
+    		font-size: 30px;
+    		line-height: 54px;
+    		text-indent: 1em;
+    	}
+    	.button1{
+    		width: 270px;
+    		height: 68px;
+    		border: solid #e53036 2px;
+    		border-radius: 10px;
+    		color: #E53036;
+    		font-size: 30px;
+    		text-align: center;
+    		line-height: 67px;
+    		float: left;
+    	}
+    	.button2{
+    		width: 270px;
+    		height: 68px;
+    		background: #E53036;
+    		border-radius: 10px;
+    		color: white;
+    		font-size: 30px;
+    		text-align: center;
+    		line-height: 67px;
+    		float: left;
+    		margin-left: 16px;
+    	}
+    </style>
+	</head>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=ch2NFqfiG742syDbKHkx5oMKgyZeItb5"></script>
+	<script type="text/javascript">
+	
+			//初始化页面数据
+			$.ajax({
+				url:"/zsh/sign/getUserInfo.do",
+				type:"get",
+				dataType:"json",
+				success:function(data){
+					if(data.status==2){
+						window.location.href="/zsh/wc/oauth.do?redUrl=/zsh/index.html";
+					}
+					if(data.status==3){
+						window.location,href="/zsh/fail.html";
+					}
+				}
+			});
+	
+			var longitude;
+			var latitude;
+			var address;
+			var signInfo =null;
+			var signId = "";
+            $(function(){
+//                loading("start");
+                 getLocation();
+                //定位
+                function getLocation() {
+
+					var map = new BMap.Map("allmap");
+					var point = new BMap.Point(116.331398,39.897445);
+					map.centerAndZoom(point,12);
+
+					var geolocation = new BMap.Geolocation();
+					geolocation.getCurrentPosition(function(r){
+						if(this.getStatus() == BMAP_STATUS_SUCCESS){
+							var mk = new BMap.Marker(r.point);
+							map.addOverlay(mk);
+							map.panTo(r.point);
+							//alert('您的位置2：'+r.point.lng+','+r.point.lat);
+							onSuccess(r.point.lng,r.point.lat);
+						}
+						else {
+							alert('failed'+this.getStatus());
+						}        
+					},{enableHighAccuracy: true})
+                } 
+                //成功时
+
+                function onSuccess(lng,lat) {
+                    //返回用户位置
+                    //经度
+                    longitude = lng;
+                    //纬度
+                    latitude = lat;
+                    //显示具体银行网点地址
+                    var map = new BMap.Map("allmap");
+                    var point = new BMap.Point(longitude, latitude);
+                    var gc = new BMap.Geocoder();
+                    gc.getLocation(point, function (rs) {
+                        var addComp = rs.addressComponents;
+                        address = addComp.city + addComp.district + addComp.street + addComp.streetNumber;
+                        getaddressList(longitude,latitude);
+                        $(".map").html(address);
+                        $.ajax({
+            				url:"/zsh/sign/query.do",
+            				type:"get",
+            				success:function(data){
+            					if(data.status==0){
+            						signInfo = data.data;
+            						$(".btn2").find("img").attr("src","img/4_.png");
+            						var map = $(".map").text();
+            						if(signInfo.signCoordinate!=map){
+            							alert("当前地址无法签到");
+            							$(".btn2").find("img").hide();
+            							$("#uploadfile").attr("disabled","disabled");
+            						}
+            					}
+            				}
+            			});
+                    });
+
+                }
+//失败时
+                function onError(error) {
+                    switch (error.code) {
+                        case 1:
+                            alert("位置服务被拒绝");
+                            break;
+                        case 2:
+                            alert("暂时获取不到位置信息");
+                            break;
+                        case 3:
+                            alert("获取信息超时");
+                            break;
+                        case 4:
+                            alert("未知错误");
+                            break;
+                    }
+                }
+            });
+
+         // 取得下拉list
+            function getaddressList(longitude,latitude){
+               $.ajax({
+                    url: getRootPath() + "/waiqinqiandaoMng/getaddressList.htm",               //获得用户游戏和刷分状态
+                    data: {"longitude":longitude,"latitude":latitude},
+                    dataType: "json",
+                    type: "post",
+                    success: function (data) {
+        	            
+        	            var html="";
+        				$(".dizhi").html("");   //清空
+                    	if(data.code !=0 ){
+                    		queryKaoqin_outside_addresslist=data.resultList;
+                    		$(queryKaoqin_outside_addresslist).each(function(i, n) {
+                    			 html=html+'<option value=\"'+n.AGENCY_NAME+'\">'+n.AGENCY_NAME+'</option>'
+                    		})
+                    		$(".dizhi").append(html);
+                    	}else{
+                    		alert(date.msg);
+                    	}
+                    }
+                });  
+            };
+   
+		//签到
+		$(function(){
+			
+			$(".btn2").find("img").click(function(){
+				//获取
+				var json = {};
+				var info = $(".info-txt").val();
+				if(info!=""){
+					json.signMarks = info;
+				}
+				var address = $(".locat-txt").val();
+				json.signAddress = address;
+				var zb = $(".map").text();
+				json.signCoordinate = zb
+				var card=$(".card").val();
+            	var name=$(".name").val();
+            	var locat=$(".locat").val();
+            	var person=$(".person").val();
+            	var tel=$(".tel").val();
+            	if(zb == "获取地理位置"){
+            		alert("暂未定位到位置");
+            		return ;
+            	}
+				if(card!=""){
+					json.customerCode = card;
+				}
+				if(name !=""){
+					json.customerName = name;
+				}
+				if(locat !=""){
+					json.customerAddress = locat;
+				}
+				if(person!=""){
+					json.phonePerson = person
+				}
+				if(tel!=""){
+					json.phone = tel;
+				}
+				if(signInfo==null){
+					json.signType = 1;
+				}else{
+					json.signType = 2;
+				}
+				if(signId ==""){
+					$.ajax({
+						url:"/zsh/sign/add.do",
+						type:"post",
+						data:json,
+						dataType:"json",
+						success:function(data){
+							if(data.status==0){
+								window.location.reload();
+							}else{
+								alert(data.describe);
+							}
+						}
+					});
+				}
+				if(signId !=""){
+					json.signId = signId;
+					$.ajax({
+						url:"/zsh/sign/update.do",
+						type:"post",
+						data:json,
+						dataType:"json",
+						success:function(data){
+							if(data.status==0){
+								window.location.reload();
+							}else{
+								alert(data.describe);
+							}
+						}
+					})
+				}
+			});
+		});
+	$(function(){
+		 $('input[name="file"]').on('change', function () {
+        if (typeof this.files == 'undefined') {
+            return;
+        }
+        var img = this.files[0];//获取图片信息
+        var type = img.type;//获取图片类型，判断使用
+        var url = getObjectURL(this.files[0]);//使用自定义函数，获取图片本地url
+        var fd = new FormData();//实例化表单，提交数据使用
+        fd.append('file', img);//将img追加进去
+        var date = new Date();
+        $('.pic1').attr('src', url).show();//展示图片
+        if (type.substr(0, 5) != 'image') {//无效的类型过滤
+            //alert('非图片类型，无法上传！');
+            return;
+        }
+		
+    					
+           	 //开始ajax请求，后台用的tp
+        $.ajax({
+            type: 'post',
+            url: "/zsh/sign/upload.do",
+            data: fd,
+            sysn:false,
+            processData: false,  // tell jQuery not to process the data  ，这个是必须的，否则会报错
+            contentType: false,   // tell jQuery not to set contentType
+            dataType: 'text',
+            xhr: function () {//这个是重点，获取到原始的xhr对象，进而绑定upload.onprogress
+                var xhr = jQuery.ajaxSettings.xhr();
+                xhr.upload.onprogress = function (ev) {
+                    //这边开始计算百分比
+                    var parcent = 0;
+                    if (ev.lengthComputable) {
+                        percent = 100 * ev.loaded / ev.total;
+                        percent = parseFloat(percent).toFixed(2);
+                        $('.bgpro').css('width', percent + '%').html(percent + '%');
+                    }
+                };
+                return xhr;
+            },
+            success: function (data) {
+            	var data1 = JSON.parse(data);
+                if(data1.status==0){
+                	signId = data1.data.signId;
+                }
+                if(data.status==1){
+                	alert(data.describe);
+                }
+                }
+            
+        });
+       
+
+    });
+	});
+	//自定义获取图片路径函数
+    function getObjectURL(file) {
+        var url = null;
+        if (window.createObjectURL != undefined) { // basic
+            url = window.createObjectURL(file);
+        } else if (window.URL != undefined) { // mozilla(firefox)
+            url = window.URL.createObjectURL(file);
+        } else if (window.webkitURL != undefined) { // webkit or chrome
+            url = window.webkitURL.createObjectURL(file);
+        }
+        return url;
+    }
+</script>
+
+	<script>
+	    var card;
+	    var name;
+	    var locat;
+	    var person;
+	    var tel;
+       	 var startX, startY, endX, endY;
+
+
+           $(function(){
+           	 $(".pictxt").on("touchstart", function (e) {
+              var  start_x = e.originalEvent.targetTouches[0].clientX-180;
+               var start_y = e.originalEvent.targetTouches[0].clientY-180;
+                e.preventDefault();
+               $(this).css("left", start_x);
+                //console.log(start_x);
+                //console.log(start_y);
+
+            });
+            $(".pictxt").on("touchmove", function (e) {
+                $(this).removeClass("slow_action");
+                var xx = (e.originalEvent.targetTouches[0].clientX+180)*0.4;
+               var end_x = e.originalEvent.targetTouches[0].clientX-180;
+                var end_y = e.originalEvent.targetTouches[0].clientY-180;
+                //end_x = e.originalEvent.targetTouches[0].clientX -140;
+                $(this).css("left", end_x);
+                $(this).css("top", end_y);
+
+
+            });
+            $(".pictxt").on("touchend", function () {
+                $(this).addClass("slow_action");
+                e.preventDefault();
+
+
+            });
+            $(".pictxt").click(function(){
+                nn=2222;
+                alert(nn)
+            })
+            
+            $(".map").click(function(){
+            	location.href="map.html"
+            })
+            $(".btn1").click(function(){
+            	$(".alertTips1").css("display","block")
+            })
+            $(".button1").click(function(){
+            	$(".alertTips1").css("display","none")
+            })
+            $(".button2").click(function(){
+            	card=$(".card").val();
+            	name=$(".name").val();
+            	locat=$(".locat").val();
+            	person=$(".person").val();
+            	tel=$(".tel").val();
+            	if(card<2){
+            		alerw("请输入您的客户代码");
+            	}else if(name<2){
+            		alerw("请输入您的正确姓名");
+            	}else if(locat<2){
+            		alerw("请输入您的地址");
+            	}else if(person<2){
+            		alerw("请输入联系人");
+            	}else if(tel<11||jxTool.isNumber(tel)==false){
+            		alerw("请输入您的联系电话");
+            	}else{
+            		
+            		$(".alertTips1").hide();
+            		$("#xz").show();
+            		$(".card-txt").text(card);
+            		$(".name-txt").text(name);
+            		$(".dizhi-txt").text(locat);
+            		$(".person-txt").text(person);
+            		$(".tel-txt").text(tel);
+            	}
+            });
+           });
+    </script>
+	
+	<body>
+	<div class="zoomer">
+			<div class="contents">
+				<div class="cont">
+					<div class="xinxi">
+						<div class="info-name">备注信息</div>
+						<input type="text" placeholder="请输入备注信息" class="info-txt"/>
+					</div>
+					<div class="xinxi">
+						<div class="info-name">签到地址</div>
+						<select class="locat-txt dizhi">
+							<option>中华门地铁站</option>
+							<option>中华门地铁站</option>
+							<option>中华门地铁站</option>
+							<option>中华门地铁站</option>
+						</select>
+						<div class="pic"><img src="img/1.png"></div>
+					</div>
+					<div class="xinxi">
+						<div class="info-name">地理位置</div>
+						<span class="map">获取地理位置</span>
+					</div>
+					<div class="photo">
+						<div class="info-name">现场照片</div>
+						<input type="file" id="uploadfile" name="file" style="display: none;"/>
+			            <div class="photo-txt car" onclick="javascript:$('#uploadfile').click()" alt="" id="image-wrap"><img class="pic1"  width="128" height="128"  src="img/2.png"></div>
+						<div class="pictxt2"><img src="img/3.png"></div>
+					</div>
+					<div id="allmap" style="display:none"></div>
+				</div>
+				<div id="xz" style="display: none;">
+				<div class="title">新增客户</div>
+				<div class="con">
+					<div class="card1">
+						<div class="card-name">客户代码</div>
+						<div class="card-txt">0001</div>
+					</div>
+					<div class="card1">
+						<div class="card-name">姓名</div>
+						<div class="name-txt">王先生</div>
+					</div>
+					<div class="card1">
+						<div class="card-name">地址</div>
+						<div class="dizhi-txt">南京市秦淮区</div>
+					</div>
+					<div class="card1">
+						<div class="card-name">联系人</div>
+						<div class="person-txt">张依依</div>
+					</div>
+					<div class="card1">
+						<div class="card-name">联系电话</div>
+						<div class="tel-txt">13833882299</div>
+					</div>
+				</div>
+				</div>
+				<div>
+				<div class="btn1"><img src="img/4.png"></div>
+				<div class="btn2"><img src="img/5.png"></div>
+			</div>
+			</div>
+			
+		</div>
+		<div class="alertTips1"style="background-color: rgba(10, 10, 10, 0.6); width: 100%; height: 100%; position: fixed; top: 0; left: 0; z-index: 1100;display: none;">
+		    <div class="tips1" style="background: #FFFFFF; width:600px; height: 580px; border-radius: 10px; position: absolute; top: 50%; left: 50%; margin: -408px -289px">
+		       <div class="list1">
+		       	<div class="list-num">客户代码</div>
+		       	<input type="text" class="num-txt card" placeholder="请输入客户代码"/>
+		       </div>
+		       <div class="list1">
+		       	<div class="list-num">姓名</div>
+		       	<input type="text" class="num-txt name" placeholder="请输入姓名" maxlength="4"/>
+		       </div>
+		       <div class="list1">
+		       	<div class="list-num">地址</div>
+		       	<input type="text" class="num-txt locat" placeholder="请输入地址"/>
+		       </div>
+		       <div class="list1">
+		       	<div class="list-num">联系人</div>
+		       	<input type="text" class="num-txt person" placeholder="请输入联系人"/>
+		       </div>
+		       <div class="list1">
+		       	<div class="list-num">联系电话</div>
+		       	<input type="text" class="num-txt tel" placeholder="请输入联系电话" maxlength="11"/>
+		       </div>
+		       <div class="buttons">
+		       	<div class="button1">取消</div>
+		       	<div class="button2">确定</div>
+		       </div>
+		    </div>
+		</div>
+		
+<script type="text/javascript">
+var name;
+var tel;
+var web;
+var congratulate;
+
+
+    var shareData = {};
+    var shareFriends={};
+    
+    var images = {
+    	    localId: [],
+    	    serverId: []
+    	  };
+    $(".part133").click(function(){
+ 	    wx.getLocation({
+ 	      type: 'wgs84', 
+ 	      success: function (res) {
+ 	        var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+ 	        var longitude = res.longitude ; // 经度，浮点数，范围为180 ~ -180。
+ 	        var speed = res.speed; // 速度，以米/每秒计
+ 	        var accuracy = res.accuracy; // 位置精度
+ 	      }
+ 	    });
+ 	  });
+    
+    // 选择并上传图片
+    $(".part3").click(function(){
+ 	    wx.chooseImage({
+ 	      count: 1, 
+ 	      success: function (res) {
+ 	    	 if(res.localIds.length>1){
+ 	    		 alert("只能选择一张图片!");
+ 	    		 return;
+ 	    	 }
+ 	        images.localId = res.localIds;
+            $("#selectedimg").attr("src",images.localId);
+	  	          wx.uploadImage({
+		  	          localId: images.localId[0],
+		  	          success: function (res) {
+		  	          images.serverId.push(res.serverId);
+		  	        },
+		  	        fail: function (res) {
+		  	          alert(JSON.stringify(res));
+		  	        }
+		  	      });
+ 	      }
+ 	    });
+ 	  });
+    
+	$(".lijiqiandao").click(function(){
+			name = $(".name").val();
+			customeraddress=$(".dizhi").val();
+ 	        if(images.localId.length<1){
+	             alerw("请选择图片!");
+	            return;
+	        }else  
+	        if(name.length<2||jxTool.isChinese(name)==false){
+	            alerw("请填客户名称！");
+	        }else if(jxTool.isNull(address)){
+	            alerw("还没有定位到你的地址，请等待！");
+	        }else{
+	        	saveImg();
+	        }
+
+        });
+    
+	// 保存用户信息
+    function saveUserInfo(mapurl){
+       $.ajax({
+            url: getRootPath() + "/waiqinqiandaoMng/waiqinqiandaosave.htm",               //获得用户游戏和刷分状态
+            data: {"CUSTOMERNAME": name ,"CUSTOMERADDRESS":customeraddress,"PIC_URL":mapurl,"ADDRESS":address,"RECIVE_USER_ID":"test"},
+            dataType: "json",
+            type: "post",
+            success: function (data) {
+            	if(data.code !=0 ){
+	          	    location.href = getRootPath() + "/waiqinqiandaoMng/qiandaojilulist.htm";  // 详细页面
+            	}else{
+            		alert(date.msg);
+            	}
+            }
+        });  
+    };
+
+  
+    function getRootPath() {
+        // 获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+        var curWwwPath = window.document.location.href;
+        // 获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        // 获取主机地址，如： http://localhost:8083
+        var localhostPaht = curWwwPath.substring(0, pos);
+        // 获取带"/"的项目名，如：/uimcardprj
+        var projectName = pathName
+                .substring(0, pathName.substr(1).indexOf('/') + 1);
+        return (localhostPaht + projectName);
+    }
+
+</script>
+</body>
+</html>

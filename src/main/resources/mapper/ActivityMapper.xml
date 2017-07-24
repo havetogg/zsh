@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.jumutang.zsh.dao.ActivityDaoI">
+    <resultMap id="BaseResultMap" type="org.jumutang.zsh.model.ActivityModel">
+        <id column="activity_id" property="activityId" jdbcType="VARCHAR"></id>
+        <result column="theme" property="theme" jdbcType="VARCHAR"/>
+        <result column="picurl" property="picurl" jdbcType="VARCHAR"/>
+        <result column="detail_pic_url" property="detailPicUrl" jdbcType="VARCHAR"/>
+        <result column="illustrate" property="illustrate" jdbcType="VARCHAR"/>
+        <result column="num" property="num" jdbcType="INTEGER"/>
+        <result column="integral" property="integral" jdbcType="INTEGER"/>
+        <result column="activity_date" property="activityDate" jdbcType="DATE"/>
+        <result column="picurl" property="picurl" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="DATE"/>
+    </resultMap>
+
+    <sql id="insertYs">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="activityId !=null">
+                activity_id,
+            </if>
+            <if test="theme !=null">
+                theme,
+            </if>
+            <if test="picurl !=null">
+                picurl,
+            </if>
+            <if test="illustrate !=null">
+                illustrate,
+            </if>
+            <if test="num !=null">
+                num,
+            </if>
+            <if test="integral !=null">
+                integral,
+            </if>
+            <if test="activityDate !=null">
+                activity_date,
+            </if>
+            <if test="detailPicUrl !=null">
+                detail_pic_url,
+            </if>
+            <if test="createDate !=null">
+                create_date,
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="insertValue">
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="activityId !=null">
+                #{activityId},
+            </if>
+            <if test="theme !=null">
+                #{theme},
+            </if>
+            <if test="picurl !=null">
+                #{picurl},
+            </if>
+            <if test="illustrate !=null">
+                #{illustrate},
+            </if>
+            <if test="num !=null">
+                #{num},
+            </if>
+            <if test="integral !=null">
+                #{integral},
+            </if>
+            <if test="activityDate !=null">
+                #{activityDate},
+            </if>
+            <if test="detailPicUrl !=null">
+                #{detailPicUrl},
+            </if>
+            <if test="createDate !=null">
+                #{createDate},
+            </if>
+        </trim>
+    </sql>
+
+    <sql id="queryWhere">
+        <where>
+            <if test="activityId!=null">
+              activity_id = #{activityId}
+            </if>
+            <if test="activityDate!=null">
+                activity_date = #{activityDate}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="addActivity" parameterType="org.jumutang.zsh.model.ActivityModel">
+        INSERT INTO activity
+        <include refid="insertYs"/>
+        VALUES
+        <include refid="insertValue"/>
+    </insert>
+
+    <select id="queryActivity" parameterType="org.jumutang.zsh.model.ActivityModel" resultMap="BaseResultMap">
+        SELECT * FROM activity
+        <where>
+            <if test="activityDate!=null">
+                date_format(activity_date,'%Y-%m-%d') = #{activityDate}
+            </if>
+            <if test="activityId!=null">
+                activity_id = #{activityId}
+            </if>
+        </where>
+        ORDER BY create_date DESC
+    </select>
+
+    <update id="updateActivity" parameterType="org.jumutang.zsh.model.ActivityModel">
+        UPDATE activity
+        <set>
+            <if test="theme !=null">
+                theme = #{theme},
+            </if>
+            <if test="num !=null">
+                num = #{num},
+            </if>
+            <if test="integral !=null">
+                integral = #{integral},
+            </if>
+        </set>
+        <where>
+            activity_id = #{activityId}
+        </where>
+    </update>
+</mapper>

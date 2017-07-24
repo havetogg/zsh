@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>奖品管理</title>
+		<link rel="stylesheet" href="css/backstage.css" />
+		<script type="text/javascript" src="js/jQuery-1.11.3.js" ></script>
+		<script type="text/javascript" src="js/ajaxfileupload.js" ></script>
+		<!--分页-->
+		<script type="text/javascript" src="js/query.js" ></script>
+		<script type="text/javascript" src="js/paging.js" ></script>
+		<!--批量上传-->
+		<link rel="stylesheet" href="css/webuploader.css" />
+		<script type="text/javascript" src="js/webuploader.js" ></script>
+		<script type="text/javascript" src="js/upload.js" ></script>
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script type="text/javascript">
+            var path = "";
+            var editGoodId = "";
+            var details = [];
+            var totalArr = [];
+            $(function(){
+                checkLogin();
+                //售量高到底
+                $("#sec1").click(function(){
+					$("#search").hide();
+                    $(".magnifier").hide();
+                    pageIndex = 1;
+                    $.ajax({
+                        url:"/zsh/good/queryGood.do",
+                        type:"post",
+                        data:{"pageIndex":pageIndex,"mark":"receive DESC"},
+                        dataType:"json",
+                        success:function(data){
+                            if(data.status==0){
+                                $("#tb2").html("");
+                                var list = data.data.list;
+                                var count = data.data.total;
+                                var html = "";
+                                $.each(list,function(i,field){
+                                    html +="<tr>"
+                                        //+ "<td>"
+                                        //+ "<input type='checkbox' />"
+                                        //+ "<label class='check'></label>"
+                                        //+ "</td>"
+                                        + "<td>"+field.goodName+"</td>"
+                                        + "<td>"+field.integration+"</td>"
+                                        + "<td>"+field.receive+"</td>"
+                                        + "<td>"+field.inventory+"</td>";
+
+                                    if(field.goodState==1){
+                                        html +="<td>"
+												/*+ "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;3&quot;);'>删除</a>"*/
+                                            + "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;2&quot;);'>下架</a>"
+                                            + "<a class='btn1' href='javascript:edit(&quot;"+field.goodId+"&quot;)'>编辑</a>"
+                                            + "</td>";
+                                    }
+                                    if(field.goodState==2){
+                                        html +="<td>"
+												/*+ "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;3&quot;);'>删除</a>"*/
+                                            + "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;1&quot;);'>上架</a>"
+                                            + "<a class='btn1' href='javascript:edit(&quot;"+field.goodId+"&quot;)'>编辑</a>"
+                                            + "</td>";
+                                    }
+
+                                    html += "</tr>";
+                                });
+
+                                if(mark1==0){
+                                    $('#pageToolbarb').Paging({pagesize:10,count:count,callback:function(page){
+                                        pageIndex = page;
+                                    }});
+                                }
+                                mark1=1;
+                                $("#tb2").append(html);
+                            }
+                        }
+                    });
+
+                });
+                //库存有底到高
+                $("#sec3").click(function(){
+                    $("#search").hide();
+                    $(".magnifier").hide();
+                    pageIndex = 1;
+                    $.ajax({
+                        url:"/zsh/good/queryGood.do",
+                        type:"post",
+                        data:{"pageIndex":pageIndex,"mark":"inventory asc"},
+                        dataType:"json",
+                        success:function(data){
+                            if(data.status==0){
+                                $("#tb3").html("");
+                                var list = data.data.list;
+                                var count = data.data.total;
+                                var html = "";
+                                $.each(list,function(i,field){
+                                    html +="<tr>"
+                                        //+ "<td>"
+                                        //+ "<input type='checkbox' />"
+                                        //+ "<label class='check'></label>"
+                                        //+ "</td>"
+                                        + "<td>"+field.goodName+"</td>"
+                                        + "<td>"+field.integration+"</td>"
+                                        + "<td>"+field.receive+"</td>"
+                                        + "<td>"+field.inventory+"</td>";
+
+                                    if(field.goodState==1){
+                                        html +="<td>"
+												/* + "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;3&quot;);'>删除</a>"*/
+                                            + "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;2&quot;);'>下架</a>"
+                                            + "<a class='btn1' href='javascript:edit(&quot;"+field.goodId+"&quot;)'>编辑</a>"
+                                            + "</td>";
+                                    }
+                                    if(field.goodState==2){
+                                        html +="<td>"
+												/*+ "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;3&quot;);'>删除</a>"*/
+                                            + "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;1&quot;);'>上架</a>"
+                                            + "<a class='btn1' href='javascript:edit(&quot;"+field.goodId+"&quot;)'>编辑</a>"
+                                            + "</td>";
+                                    }
+
+                                    html += "</tr>";
+                                });
+
+                                if(mark1==0){
+                                    $('#pageToolbarc').Paging({pagesize:10,count:count,callback:function(page){
+                                        pageIndex = page;
+                                    }});
+                                }
+                                mark1=1;
+                                $("#tb3").append(html);
+                            }
+                        }
+                    });
+
+                });
+
+                $("#sec2").click(function(){
+                    $("#search").show();
+                    $(".magnifier").show();
+                });
+                //上传图片及预览
+                $("#file0").change(function(){
+                    var objUrl = getObjectURL(this.files[0]) ;
+                    console.log("objUrl = "+objUrl) ;
+                    if (objUrl) {
+                        $("#img0").attr("src", objUrl) ;
+                    }
+                    if(objUrl!=undefined||objUrl!=null||objUrl!=""){
+                        $.ajaxFileUpload
+                        (
+                            {
+                                url: "/zsh/good/importPicFile.do", //用于文件上传的服务器端请求地址
+                                secureuri: false, //是否需要安全协议，一般设置为false
+                                fileElementId: 'file0', //文件上传域的ID
+                                dataType: 'HTML', //返回值类型 一般设置为json
+                                success: function (data,status)  //服务器成功响应处理函数
+                                {
+                                    var data = JSON.parse(data);
+                                    console.log(data);
+                                    if(data.result=="success"){
+                                        alert("上传成功");
+                                        console.log(data.path);
+                                        path = data.path;
+                                        initPicsUpload();
+                                    }
+                                    if (typeof (data.error) != 'undefined') {
+                                        if (data.error != '') {
+                                            alert(data.error);
+                                        } else {
+                                            alert(data.msg);
+                                        }
+                                    }
+                                },
+                                error: function (data, status, e)//服务器响应失败处理函数
+                                {
+                                    alert(e);
+                                }
+                            }
+                        )
+                    }
+                });
+                //新增按钮
+                $(".add").click(function () {
+                    if($("#filePicker").text() != "点击选择文件"){
+                        uploader.destroy();
+                    }
+                    editGoodId="";
+                    $("#edit_name").val("");
+                    $("#img0").attr("src","");
+                    $("#edit_inventory").val("");
+                    $("#edit_integration").val("");
+                    $(".edit").show();
+                });
+                //保存按钮
+                $("#edit_add").click(function (){
+                    if($.trim($("#edit_name").val())==""){
+                        alert("请输入奖品名称");
+                        return;
+                    }
+                    if($.trim($("#img0").attr("src"))==""||path==""){
+                        alert("请先上传图片");
+                        return;
+                    }
+                    if($.trim($("#edit_inventory").val())==""){
+                        alert("请输入库存");
+                        return;
+                    }
+                    if($.trim($("#edit_integration").val())==""){
+                        alert("请输入积分价格");
+                        return;
+                    }
+                    if(details.length == 0){
+                        alert("请上传商品详情");
+                        return;
+                    }
+                    if(editGoodId==""){
+                        $.ajax({
+                            url: "/zsh/good/addGood.do",
+                            type: "post",
+                            dataType: "json",
+                            data:{
+                                goodName:$("#edit_name").val(),
+                                inventory:parseInt($("#edit_inventory").val()),
+                                integration:$("#edit_integration").val(),
+                                picUrl:path,
+                                detailPicUrl:JSON.stringify(details)
+                            },
+                            success: function (data) {
+                                if(data.status=="0"){
+                                    alert("新增成功");
+                                    $(".edit").hide();
+                                    location.reload();
+                                }else{
+                                    alert("新增失败请重试");
+                                }
+                            }
+                        })
+                    }else{
+                        $.ajax({
+                            url: "/zsh/good/updateGood.do",
+                            type: "post",
+                            dataType: "json",
+                            data:{
+                                goodId:editGoodId,
+                                goodName:$("#edit_name").val(),
+                                inventory:parseInt($("#edit_inventory").val()),
+                                integration:$("#edit_integration").val(),
+                                picUrl:path,
+                                detailPicUrl:JSON.stringify(details)
+                            },
+                            success: function (data) {
+                                if(data.status=="0"){
+                                    alert("修改成功");
+                                    $(".edit").hide();
+                                    location.reload();
+                                }else{
+                                    alert("修改失败请重试");
+                                }
+                            }
+                        })
+                    }
+                });
+                //新增取消按钮
+                $("#edit_cancel").click(function () {
+                    $(".edit").hide();
+                })
+
+                $(".magnifier").click(function () {
+                    if(totalArr.length>0&&$.trim($("#search").val()) != ""){
+                        var html="";
+                        $.each(totalArr,function(i,field){
+                            if(field.goodName.indexOf($.trim($("#search").val()))>=0) {
+                                html += "<tr>"
+                                    //+ "<td>"
+                                    //+ "<input type='checkbox' />"
+                                    //+ "<label class='check'></label>"
+                                    //+ "</td>"
+                                    + "<td>" + field.goodName + "</td>"
+                                    + "<td>" + field.integration + "</td>"
+                                    + "<td>" + field.receive + "</td>"
+                                    + "<td>" + field.inventory + "</td>";
+
+                                if (field.goodState == 1) {
+                                    html += "<td>"
+											/*+ "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;3&quot;);'>删除</a>"*/
+                                        + "<a class='btn2' href='javascript:status(&quot;" + field.goodId + "&quot;,&quot;2&quot;);'>下架</a>"
+                                        + "<a class='btn1' href='javascript:edit(&quot;" + field.goodId + "&quot;)'>编辑</a>"
+                                        + "</td>";
+                                }
+                                if (field.goodState == 2) {
+                                    html += "<td>"
+											/*+ "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;3&quot;);'>删除</a>"*/
+                                        + "<a class='btn2' href='javascript:status(&quot;" + field.goodId + "&quot;,&quot;1&quot;);'>上架</a>"
+                                        + "<a class='btn1' href='javascript:edit(&quot;" + field.goodId + "&quot;)'>编辑</a>"
+                                        + "</td>";
+                                }
+
+                                html += "</tr>";
+                            }
+                        });
+                        $("#tb1").html("");
+                        $("#tb1").html(html);
+                    }else{
+                        init();
+                    }
+                })
+            })
+            function checkLogin(){
+                $.ajax({
+                    url:"/zsh/wc/checkPCLoginInfo.do",
+                    type:"get",
+                    success:function(data){
+                        if(data.status == 0){
+                            if(data.data.role == 0){
+                                init();
+                            }
+                        }else{
+                            window.location.href="/zsh/fail.html";
+                        }
+                    }
+                })
+            }
+            //默认第一页开始
+            var pageIndex = 1;
+            //标识
+            var mark = 0;
+            var mark1 = 0;
+            var mark2 = 0;
+
+            //初始化页面数据
+            function init(){
+                $.ajax({
+                    url:"/zsh/good/queryGood.do",
+                    type:"post",
+                    data:{"pageIndex":pageIndex},
+                    dataType:"json",
+                    success:function(data){
+                        if(data.status==0){
+                            $("#tb2").html("");
+                            var list = data.data.list;
+                            totalArr = list;
+                            var count = data.data.total;
+                            var html = "";
+                            $.each(list,function(i,field){
+                                html +="<tr>"
+                                    //+ "<td>"
+                                    //+ "<input type='checkbox' />"
+                                    //+ "<label class='check'></label>"
+                                    //+ "</td>"
+                                    + "<td>"+field.goodName+"</td>"
+                                    + "<td>"+field.integration+"</td>"
+                                    + "<td>"+field.receive+"</td>"
+                                    + "<td>"+field.inventory+"</td>";
+
+                                if(field.goodState==1){
+                                    html +="<td>"
+                                        /*+ "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;3&quot;);'>删除</a>"*/
+                                        + "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;2&quot;);'>下架</a>"
+                                        + "<a class='btn1' href='javascript:edit(&quot;"+field.goodId+"&quot;)'>编辑</a>"
+                                        + "</td>";
+                                }
+                                if(field.goodState==2){
+                                    html +="<td>"
+                                        /*+ "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;3&quot;);'>删除</a>"*/
+                                        + "<a class='btn2' href='javascript:status(&quot;"+field.goodId+"&quot;,&quot;1&quot;);'>上架</a>"
+                                        + "<a class='btn1' href='javascript:edit(&quot;"+field.goodId+"&quot;)'>编辑</a>"
+                                        + "</td>";
+                                }
+
+                                html += "</tr>";
+                            });
+
+                            if(mark==0){
+                                $('#pageToolbara').Paging({pagesize:10,count:count,callback:function(page){
+                                    pageIndex = page;
+                                }});
+                            }
+                            mark=1;
+                            $("#tb1").html(html);
+                        }
+                    }
+                });
+            }
+
+            //建立一個可存取到該file的url
+            function getObjectURL(file) {
+                var url = null ;
+                if (window.createObjectURL!=undefined) { // basic
+                    url = window.createObjectURL(file) ;
+                } else if (window.URL!=undefined) { // mozilla(firefox)
+                    url = window.URL.createObjectURL(file) ;
+                } else if (window.webkitURL!=undefined) { // webkit or chrome
+                    url = window.webkitURL.createObjectURL(file) ;
+                }
+                return url ;
+            }
+
+            //status
+			function status(goodId,type){
+                $.ajax({
+                    url:"/zsh/good/updateGood.do",
+                    type:"post",
+                    data:{
+						goodId:goodId,
+                        goodState:type
+                    },
+                    dataType:"json",
+                    success:function(data){
+                        if(data.status=="0"){
+                            if(type=="1"){
+                                alert("上架成功");
+							}else if(type=="2"){
+                                alert("下架成功");
+							}else{
+							 	alert("删除成功");
+							}
+                            location.reload();
+						}else{
+                            alert("请重试");
+						}
+                    }
+				})
+            }
+
+            function edit(goodId){
+                $(".edit").show();
+                if($("#filePicker").text() != "点击选择文件"){
+                    uploader.destroy();
+                }
+                $.ajax({
+                    url:"/zsh/good/queryGood.do",
+                    type:"post",
+                    dataType:"json",
+                    data:{
+                        pageIndex:1,
+                        pageSize:10,
+                        goodId:goodId
+                    },
+                    success:function(data){
+                        if(data.data.list.length>0){
+                            editGoodId = data.data.list[0].goodId;
+                            $("#edit_name").val(data.data.list[0].goodName);
+							var picUrl = data.data.list[0].picUrl;
+							path = picUrl;
+							if(picUrl != undefined&&picUrl !=""&&picUrl !=null){
+                                var url = document.location.href;
+                                url = url.substring(0,url.indexOf("zsh")+3);
+                                $("#img0").attr("src",url+picUrl);
+                                initPicsUpload();
+							}
+                            $("#edit_inventory").val(data.data.list[0].inventory);
+                            $("#edit_integration").val(data.data.list[0].integration);
+                        }
+                    }
+                })
+			}
+		</script>
+	</head>
+	<body>
+		<!--编辑/新增弹框-->
+		<div class="pop edit">
+			<div class="centerDiv">
+				<a class="close" href="javascript:;"></a>
+				<div class="tip">
+					<label>奖品名称</label>
+					<input type="text" id="edit_name"/>
+				</div>
+				<div class="tip">
+					<label>奖品图片</label>
+					<img src="" id="img0" >
+					<a class="btn2 file" href="javascript:;">上传
+						<input type="file" name="file0" id="file0" multiple="multiple" />
+					</a>
+				</div>
+				<div class="tip">
+					<label>奖品详情</label>
+					<div class="uploader2">
+						<!--上传组件-->
+						<div id="uploader">
+			                <div class="queueList">
+			                    <div id="dndArea" class="placeholder">
+			                        <div id="filePicker">点击选择文件</div>
+			                        <p>或将照片拖到这里，单次最多可选300张</p>
+			                    </div>
+			                </div>
+			                <div class="statusBar" style="display:none;">
+			                    <div class="progress">
+			                        <span class="text">0%</span>
+			                        <span class="percentage"></span>
+			                    </div><div class="info"></div>
+			                    <div class="btns">
+			                        <div id="filePicker2">继续添加</div><div class="uploadBtn">开始上传</div>
+			                    </div>
+			                </div>
+			            </div>
+					</div>
+					
+				</div>
+				<div class="tip">
+					<label>库存</label>
+					<input type="text" id="edit_inventory"/>
+				</div>
+				<div class="tip">
+					<label>积分价格</label>
+					<input type="text" id="edit_integration"/>
+				</div>
+				<div class="btn">
+					<a class="btn1" href="javascript:;" id="edit_add">新增</a>
+					<a class="btn2" href="javascript:;" id="edit_cancel">取消</a>
+				</div>
+			</div>
+		</div>
+		<!--提示弹框-->
+		<div class="pop hint">
+			<div class="centerDiv">
+				<a class="close" href="javascript:;"></a>
+				<h1>是否要产出该信息</h1>
+				<div class="btn">
+					<a class="btn2" href="javascript:;">否</a>
+					<a class="btn1" href="javascript:;">是</a>
+				</div>
+			</div>
+		</div>
+		
+		<!--head-->
+		<div class="head">
+			<a href="javascript:logout();">注销</a>
+			<!--<a href="javascript:;">登录</a>-->
+			<p>欢迎<span id="userName">管理员</span></p>
+		</div>
+		<!--main-->
+		<div class="main">
+			<!--main-left-->
+			<div class="main_left">
+				<ul>
+					<li>
+						<a href="javascript:;">人员管理</a>
+						<ul>
+							<li><a href="index.html">员工管理</a></li>
+							<li><a href="customer_manage.html">客户管理</a></li>
+						</ul>
+					</li>
+					<li><a href="price.html">油价管理</a></li>
+					<li>
+						<a href="javascript:;">秒杀管理</a>
+						<ul>
+							<li><a href="seckill.html">活动名单</a></li>
+							<li><a href="seckill_manage.html">活动编辑</a></li>
+							<li><a href="seckill_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li class="active">
+						<a href="javascript:;">积分管理</a>
+						<ul style="display: block;">
+							<li><a class="cur" href="javascript:;">奖品管理</a></li>
+							<li><a href="prize_order.html">订单管理</a></li>
+							<li><a href="prize_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:;">签到管理</a></li>
+					<li><a href="javascript:;">配送管理</a></li>
+					<li><a href="javascript:;">明星榜单</a></li>
+					<li><a href="daily.html">日报管理</a></li>
+					<li><a href="recommend.html">客户推荐</a></li>
+				</ul>
+			</div>
+			<!--main-right-->
+			<div class="main_right">
+				<div class="bread">
+					<div class="operate">
+						<a href="javascritp:;">积分管理</a>
+						<a href="javascript:;">奖品管理</a>
+					</div>
+				</div>
+				<div class="search">
+					<input type="text" placeholder="输入关键字查询" id="search"/>
+					<button class="magnifier"></button>
+					<a class="btn1 add" href="javascript:;">新增奖品</a>
+					<!--<a class="btn2" href="javascript:;">批量导出</a>
+					<a class="btn2" href="javascript:;">批量删除</a>-->
+				</div>
+				<ul class="tab">
+					<li class="cur" id="sec2">全部</li>
+					<li id="sec1">销量由高到低</li>
+					<li id="sec3">库存由低到高</li>
+				</ul>
+				<!--第一页-->
+				<div class="page" style="display: block;">
+					<table class="staff">
+						<colgroup>
+							<!--<col width="8%" />-->
+							<col width="20%" />
+							<col width="19%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="23%" />
+						</colgroup>
+						<thead>
+							<tr>
+								<!--<th>
+									<input type="checkbox" />
+									<label class="check"></label>
+								</th>-->
+								<th>名称</th>
+								<th>积分</th>
+								<th>兑换量</th>
+								<th>库存</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tb1">
+
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbara"></div>-->
+				</div>
+				<!--第一页 end-->
+				<!--第二页-->
+				<div class="page">
+					<table class="staff">
+						<colgroup>
+							<!--<col width="8%" />-->
+							<col width="20%" />
+							<col width="19%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="23%" />
+						</colgroup>
+						<thead>
+							<tr>
+								<!--<th>
+									<input type="checkbox" />
+									<label class="check"></label>
+								</th>-->
+								<th>名称</th>
+								<th>积分</th>
+								<th>兑换量</th>
+								<th>库存</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tb2">
+						
+							
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbarb"></div>-->
+				</div>
+				<!--第二页 end-->
+				<!--第三页-->
+				<div class="page">
+					<table class="staff">
+						<colgroup>
+							<!--<col width="8%" />-->
+							<col width="20%" />
+							<col width="19%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="23%" />
+						</colgroup>
+						<thead>
+							<tr>
+								<!--<th>
+									<input type="checkbox" />
+									<label class="check"></label>
+								</th>-->
+								<th>名称</th>
+								<th>积分</th>
+								<th>兑换量</th>
+								<th>库存</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tb3">
+
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbarc"></div>-->
+				</div>
+				<!--第三页 end-->
+				
+			</div>
+		</div>
+	</body>
+</html>

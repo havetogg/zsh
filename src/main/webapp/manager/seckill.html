@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>活动名单</title>
+		<link rel="stylesheet" href="css/backstage.css" />
+		<script type="text/javascript" src="js/jQuery-1.11.3.js" ></script>
+		<!--分页-->
+		<script type="text/javascript" src="js/query.js" ></script>
+		<script type="text/javascript" src="js/paging.js" ></script>
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script>
+			var totalArr = [];
+            $(function () {
+                checkLogin();
+                $(".magnifier").click(function () {
+                    if(totalArr.length>0&&$.trim($("#search").val()) != ""){
+                        var str="";
+                        var i=1;
+                        $.each(totalArr,function(i,item){
+                            if(item.customerName.indexOf($.trim($("#search").val()))>=0){
+                                str+="<tr><td><input type='checkbox' /><label class='check'></label></td>"+
+                                    "<td>"+i+"</td>"+
+                                    "<td>"+item.theme+"</td>"+
+                                    "<td>"+item.customerName+"</td>"+
+                                    "<td>"+item.customerPhone+"</td>"+
+                                    "<td>"+item.robDate+"</td>"+
+                                    "</tr>"
+                                i+=1;
+                            }
+                        })
+                        $("#tbody").html("");
+                        $("#tbody").append(str);
+                    }else{
+                        initRobInfo();
+                    }
+                })
+                //全选框
+                $("#checkbox").on("click",function(){
+                    if ($(this).siblings("input").is(':checked')) {
+                        $(".staff input[type='checkbox']").prop("checked",false);
+                    }else{
+                        $(".staff input[type='checkbox']").prop("checked",true);
+                    }
+
+                });
+
+				$(".btn1").click(function () {
+                    //批量取消
+                    $(".staff input:checked").each(function(){
+                        if($(this).siblings("label").attr("id")!="checkbox"){
+                            var robId = $(this).attr("id");
+                            console.log(robId);
+                            if(robId!=null||robId!=undefined||robId!=""){
+                                $.ajax({
+                                    url: "/zsh/rob/update.do",
+                                    type: "post",
+                                    data: {
+                                        robId: robId,
+                                        robStatus: '4',
+                                    },
+                                    dataType: "json",
+                                    success: function (data) {
+                                        console.log(data);
+                                        if(data.status=="0"){
+                                            alert("取消成功成功");
+                                            location.reload();
+                                        }else{
+                                            alert("取消失败请重试");
+                                        }
+                                    }
+                                })
+                            }else{
+                                alert("获取id失败");
+                            }
+                        }
+                    })
+                })
+            })
+            function checkLogin(){
+                $.ajax({
+                    url:"/zsh/wc/checkPCLoginInfo.do",
+                    type:"get",
+                    success:function(data){
+                        if(data.status == 0){
+                            if(data.data.role == 0){
+                                initRobInfo();
+                            }
+                        }else{
+                            window.location.href="/zsh/fail.html";
+                        }
+                    }
+                })
+            }
+            function initRobInfo(){
+                $.ajax({
+                    url:"/zsh/rob/queryCombination.do",
+                    type:"post",
+                    dataType:"json",
+                    success:function(data){
+                        var arr = data.data;
+                        if(arr!=undefined&&arr.length>0){
+                            totalArr = arr;
+                            var str="";
+                            var i=1;
+                            $.each(arr,function(i,item){
+                                str+="<tr><td><input type='checkbox' id="+item.robId+" /><label class='check'></label></td>"+
+                                    "<td>"+i+"</td>"+
+                                    "<td>"+item.theme+"</td>"+
+                                    "<td>"+item.customerName+"</td>"+
+                                    "<td>"+item.customerPhone+"</td>"+
+                                    "<td>"+item.robDate+"</td>"+
+                                    "</tr>"
+                                i+=1;
+							})
+                            $("#tbody").html("");
+							$("#tbody").append(str);
+						}
+                    }
+                });
+			}
+		</script>
+	</head>
+	<body>
+		<!--提示弹框-->
+		<div class="pop hint">
+			<div class="centerDiv">
+				<a class="close" href="javascript:;"></a>
+				<h1>是否要取消订单</h1>
+				<div class="btn">
+					<a class="btn2" href="javascript:;">否</a>
+					<a class="btn1" href="javascript:;">是</a>
+				</div>
+			</div>
+		</div>
+		
+		<!--head-->
+		<div class="head">
+			<a href="javascript:logout();">注销</a>
+			<!--<a href="javascript:;">登录</a>-->
+			<p>欢迎<span id="userName">管理员</span></p>
+		</div>
+		<!--main-->
+		<div class="main">
+			<!--main-left-->
+			<div class="main_left">
+				<ul>
+					<li>
+						<a href="javascript:;">人员管理</a>
+						<ul>
+							<li><a href="index.html">员工管理</a></li>
+							<li><a href="customer_manage.html">客户管理</a></li>
+						</ul>
+					</li>
+					<li><a href="price.html">油价管理</a></li>
+					<li class="active">
+						<a href="javascript:;">秒杀管理</a>
+						<ul style="display: block;">
+							<li><a class="cur" href="javascript:;">活动名单</a></li>
+							<li><a href="seckill_manage.html">活动编辑</a></li>
+							<li><a href="seckill_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">积分管理</a>
+						<ul>
+							<li><a href="prize.html">奖品管理</a></li>
+							<li><a href="prize_order.html">订单管理</a></li>
+							<li><a href="prize_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:;">签到管理</a></li>
+					<li><a href="javascript:;">配送管理</a></li>
+					<li><a href="javascript:;">明星榜单</a></li>
+					<li><a href="daily.html">日报管理</a></li>
+					<li><a href="recommend.html">客户推荐</a></li>
+				</ul>
+			</div>
+			<!--main-right-->
+			<div class="main_right">
+				<div class="bread">
+					<div class="operate">
+						<a href="javascritp:;">秒杀管理</a>
+						<a href="javascript:;">活动名单</a>
+					</div>
+				</div>
+				<div class="search">
+					<input type="text" placeholder="输入姓名查询" id="search"/>
+					<button class="magnifier"></button>
+					<!--<a class="btn1" href="javascript:;">导出excel</a>-->
+					<a class="btn2 delete" href="javascript:;">取消订单</a>
+				</div>
+				<table class="staff staff2">
+					<colgroup>
+						<col width="8%" />
+						<col width="10%" />
+						<col width="21%" />
+						<col width="21%" />
+						<col width="20%" />
+						<col width="20%" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>
+								<input type="checkbox"/>
+								<label class="check" id="checkbox"></label>
+							</th>
+							<th>序号</th>
+							<th>秒杀主题</th>
+							<th>姓名</th>
+							<th>手机</th>
+							<th>秒杀时间</th>
+						</tr>
+					</thead>
+					<tbody id="tbody">
+
+					</tbody>
+				</table>
+				<!--分页-->
+				<!--<div id="pageToolbar"></div>-->
+			</div>
+		</div>
+		
+	</body>
+</html>

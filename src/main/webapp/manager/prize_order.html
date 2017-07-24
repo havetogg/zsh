@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>订单管理</title>
+		<link rel="stylesheet" href="css/backstage.css" />
+		<script type="text/javascript" src="js/jQuery-1.11.3.js" ></script>
+		<!--分页-->
+		<script type="text/javascript" src="js/query.js" ></script>
+		<script type="text/javascript" src="js/paging.js" ></script>
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script type="text/javascript">
+            var totalArr = [];
+            $(function () {
+                checkLogin();
+                $(".magnifier").click(function () {
+                    if(totalArr.length>0&&$.trim($("#search").val()) != ""){
+                        var html="";
+                        $.each(totalArr,function(i,item) {
+                            if(item.goodName.indexOf($.trim($("#search").val()))>=0) {
+                                html += "<tr>";
+                                //html+="<td><input type='checkbox' /><label class='check'></label></td>";
+                                html += "<td>" + item.goodName + "</td>";
+                                html += "<td>" + item.integration + "</td>";
+                                html += "<td>" + item.exchangeDate + "</td>";
+                                html += "<td>" + item.customerName + "</td>";
+                                html += "<td>" + item.orderNum + "</td>";
+                                if (item.exchangeStatus == "3") {
+                                    html += "<td><a class='btn1 delete not' href='javascript:;'>取消</a></td></tr>";
+                                }
+                                if (item.exchangeStatus == "2") {
+                                    html += "<td><a class='btn1 delete' href='javascript:cancel(&quot;" + item.exchangeId + "&quot;);'>取消</a></td></tr>";
+                                }
+                            }
+                        })
+                        $("#tbody1").html("");
+                        $("#tbody1").html(html);
+                    }else{
+                        init();
+                    }
+                })
+                $('.tab li').on("click",function () {
+                    var index = $(this).index();
+                    if(index == 0){
+                        $("#search").show();
+                        $(".magnifier").show();
+					}else{
+                        $("#search").hide();
+                        $(".magnifier").hide();
+					}
+                })
+            })
+
+            function checkLogin(){
+                $.ajax({
+                    url:"/zsh/wc/checkPCLoginInfo.do",
+                    type:"get",
+                    success:function(data){
+                        if(data.status == 0){
+                            if(data.data.role == 0){
+                                $("#userName").html(data.data.name);
+                                init();
+                            }
+                        }else{
+                            window.location.href="/zsh/fail.html";
+                        }
+                    }
+                })
+            }
+            var pageIndex = 1;
+            var pageSize = 10;
+            var mark = 0;
+            //初始化页面数据
+            function init(){
+                $.ajax({
+                    url:"/zsh/exchange/queryByPage.do",
+                    type:"post",
+                    data:{
+                        pageIndex:1,
+                        pageSize:500000
+                    },
+                    dataType:"json",
+                    success:function(data){
+                        if(data.status=="0"){
+                            var arr = data.data.list;
+                            totalArr = arr;
+                            if(arr.length>0){
+                                var html ="";
+                                var html2="";
+                                var html3="";
+                                $.each(arr,function(i,item){
+                                    html+="<tr>";
+                                    //html+="<td><input type='checkbox' /><label class='check'></label></td>";
+                                    html+="<td>"+item.goodName+"</td>";
+                                    html+="<td>"+item.integration+"</td>";
+                                    html+="<td>"+item.exchangeDate+"</td>";
+                                    html+="<td>"+item.customerName+"</td>";
+                                    html+="<td>"+item.orderNum+"</td>";
+                                    if(item.exchangeStatus=="3"){
+                                        html2+="<tr>";
+                                        //html+="<td><input type='checkbox' /><label class='check'></label></td>";
+                                        html2+="<td>"+item.goodName+"</td>";
+                                        html2+="<td>"+item.integration+"</td>";
+                                        html2+="<td>"+item.exchangeDate+"</td>";
+                                        html2+="<td>"+item.customerName+"</td>";
+                                        html2+="<td>"+item.orderNum+"</td>";
+                                        html2+="<td><a class='btn1 delete not' href='javascript:;'>取消</a></td></tr>";
+                                        html+="<td><a class='btn1 delete not' href='javascript:;'>取消</a></td></tr>";
+									}
+                                    if(item.exchangeStatus=="2"){
+                                        html3+="<tr>";
+                                        //html+="<td><input type='checkbox' /><label class='check'></label></td>";
+                                        html3+="<td>"+item.goodName+"</td>";
+                                        html3+="<td>"+item.integration+"</td>";
+                                        html3+="<td>"+item.exchangeDate+"</td>";
+                                        html3+="<td>"+item.customerName+"</td>";
+                                        html3+="<td>"+item.orderNum+"</td>";
+                                        html3+="<td><a class='btn1 delete' id="+item.exchangeId+" href='javascript:cancel(&quot;"+item.exchangeId+"&quot;);'>取消</a></td></tr>";
+                                        //html3+="<td><a class='btn1 delete' href='javascript:cancel(&quot;"+item.exchangeId+"&quot;);'>取消</a></td></tr>";
+                                        html+="<td><a class='btn1 delete' href='javascript:cancel(&quot;"+item.exchangeId+"&quot;);'>取消</a></td></tr>";
+                                    }
+                                })
+                                $("#tbody1").html("");
+                                $("#tbody2").html("");
+                                $("#tbody3").html("");
+                                $("#tbody1").html(html);
+                                $("#tbody2").html(html2);
+                                $("#tbody3").html(html3);
+                            }
+                        }
+                    }
+                });
+            }
+			function cancel(exchangeId){
+                $.ajax({
+                    url: "/zsh/exchange/updateExchange.do",
+                    type: "post",
+                    data: {
+                        exchangeId: exchangeId,
+                        exchangeStatus: '4'
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if(data.status == 0){
+                            alert("修改成功");
+                            $("#" +exchangeId).parent().parent().remove();
+
+						}
+                    }
+                })
+                //alert($("#" +exchangeId).html());
+			}
+		</script>
+	</head>
+	<body>
+		<!--弹框-->
+		<div class="pop hint">
+			<div class="centerDiv">
+				<a class="close" href="javascript:;"></a>
+				<h1>是否要产出该信息</h1>
+				<div class="btn">
+					<a class="btn2" href="javascript:;">否</a>
+					<a class="btn1" href="javascript:;">是</a>
+				</div>
+			</div>
+		</div>
+		
+		<!--head-->
+		<div class="head">
+			<a href="javascript:logout();">注销</a>
+			<!--<a href="javascript:;">登录</a>-->
+			<p>欢迎<span id="userName">管理员</span></p>
+		</div>
+		<!--main-->
+		<div class="main">
+			<!--main-left-->
+			<div class="main_left">
+				<ul>
+					<li>
+						<a href="javascript:;">人员管理</a>
+						<ul>
+							<li><a href="index.html">员工管理</a></li>
+							<li><a href="customer_manage.html">客户管理</a></li>
+						</ul>
+					</li>
+					<li><a href="price.html">油价管理</a></li>
+					<li>
+						<a href="javascript:;">秒杀管理</a>
+						<ul>
+							<li><a href="seckill.html">活动名单</a></li>
+							<li><a href="seckill_manage.html">活动编辑</a></li>
+							<li><a href="seckill_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li class="active">
+						<a href="javascript:;">积分管理</a>
+						<ul style="display: block;">
+							<li><a href="prize.html">奖品管理</a></li>
+							<li><a class="cur" href="javascript:;">订单管理</a></li>
+							<li><a href="prize_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:;">签到管理</a></li>
+					<li><a href="javascript:;">配送管理</a></li>
+					<li><a href="javascript:;">明星榜单</a></li>
+					<li><a href="daily.html">日报管理</a></li>
+					<li><a href="recommend.html">客户推荐</a></li>
+				</ul>
+			</div>
+			<!--main-right-->
+			<div class="main_right">
+				<div class="bread">
+					<div class="operate">
+						<a href="/zsh/manager/prize.html">积分管理</a>
+						<a href="javascript:;">订单管理</a>
+					</div>
+				</div>
+				<div class="search">
+					<input type="text" placeholder="输入关键字查询" id="search"/>
+					<button class="magnifier"></button>
+					<!--<a class="btn1" href="javascript:;">批量导出</a>
+					<a class="btn2" href="javascript:;">批量取消</a>-->
+				</div>
+				<ul class="tab">
+					<li class="cur">全部</li>
+					<li>已发货</li>
+					<li>未发货</li>
+				</ul>
+				<!--第一页-->
+				<div class="page" style="display: block;">
+					<table class="staff staff2">
+						<colgroup>
+							<!--<col width="8%" />-->
+							<col width="15%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="16%" />
+						</colgroup>
+						<thead>
+							<tr>
+								<!--<th>
+									<input type="checkbox" />
+									<label class="check"></label>
+								</th>-->
+								<th>名称</th>
+								<th>积分</th>
+								<th>兑换时间</th>
+								<th>兑换人</th>
+								<th>订单编号</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tbody1">
+
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbar"></div>-->
+				</div>
+				<!--第一页 end-->
+				<!--第二页-->
+				<div class="page">
+					<table class="staff staff2">
+						<colgroup>
+							<!--<col width="8%" />-->
+							<col width="15%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="16%" />
+						</colgroup>
+						<thead>
+							<tr>
+								<!--<th>
+									<input type="checkbox" />
+									<label class="check"></label>
+								</th>-->
+								<th>名称</th>
+								<th>积分</th>
+								<th>兑换时间</th>
+								<th>兑换人</th>
+								<th>订单编号</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tbody2">
+
+							
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbar2"></div>-->
+				</div>
+				<!--第二页 end-->
+				<!--第三页-->
+				<div class="page">
+					<table class="staff staff2">
+						<colgroup>
+							<!--<col width="8%" />-->
+							<col width="15%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="15%" />
+							<col width="16%" />
+						</colgroup>
+						<thead>
+							<tr>
+								<!--<th>
+									<input type="checkbox" />
+									<label class="check"></label>
+								</th>-->
+								<th>名称</th>
+								<th>积分</th>
+								<th>兑换时间</th>
+								<th>兑换人</th>
+								<th>订单编号</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tbody3">
+
+						</tbody>
+					</table>
+					<!--分页-->
+					<!--<div id="pageToolbar3"></div>-->
+				</div>
+				<!--第三页 end-->
+				
+			</div>
+		</div>
+	</body>
+</html>

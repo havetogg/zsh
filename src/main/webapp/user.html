@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+	<meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+	<meta content="yes" name="apple-mobile-web-app-capable">
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<meta content="telephone=no" name="format-detection">
+	<title>我的信息</title>
+	<link type="text/css" href="css/common/common.css" rel="stylesheet">
+	<link type="text/css" href="css/point.css" rel="stylesheet">
+	<script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+	<script type="text/javascript" src="js/common/common.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
+	<script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+	<style>
+		.contents{
+			width: 640px;
+			min-height: 1065px;
+			background: url(img/picbg_02.png) no-repeat;
+			position: absolute;
+			background-size:100% 100% ;
+		}
+		.user{
+			width: 600px;
+			height: 600px;
+			margin: 187px auto 0px ;
+		}
+		.touxiang{
+			width: 123px;
+			height: 123px;
+			border-radius: 50%;
+			overflow: hidden;
+			position: absolute;
+			margin-left: 260px;
+			margin-top: 60px;
+			border: solid 3px #e5e5e5;
+		}
+		.godlen{
+			width: 29px;
+			height: 29px;
+			position: absolute;
+			margin:145px 354px;
+		}
+		.man{
+			font-size: 30px;
+			color: #e53037 !important;
+		}
+	</style>
+</head>
+<script>
+	$(function(){
+		initUserInfo();
+
+
+	});
+
+	function initUserInfo(){
+		$.ajax({
+			url:"/zsh/customer/query.do",
+			type:"post",
+			dataType:"json",
+			success:function(data){
+				var data=data.data[0];
+				$(".name").html(data.customerName);
+				$("p.no").html(data.phone);
+				$(".integral").html(data.customerIntegral);
+				$("#head").attr("src",""+data.customerHead);
+				var hobby=data.hobby;
+				if(hobby.length>11){
+					hobby=hobby.substring(0,11)+"...";
+				}
+				$(".hobbies").html(hobby);
+				$(".hobby_href").attr("href","hobby.html?hobby="+encodeURI(encodeURI(data.hobby==null?"":data.hobby)));
+				$(".birthday").html(data.birthday);
+				$(".birthday_href").attr("href","birthday.html?birthday="+encodeURI(encodeURI(data.birthday==null?"":data.birthday)));
+				var str = ""
+				if(data.manager!=null){
+				    str+=data.manager;
+				}
+				if(data.managerPhone!=null){
+                	str+="<span class='floatR'>"+data.managerPhone +"</span>"
+                    $("#phone").attr("href","tel:"+data.managerPhone);
+				}
+
+				$(".manager").html(str);
+				$(".address").html(data.customerAddress);
+			}
+		});
+	}
+</script>
+
+<body>
+<div class="zoomer">
+	<div class="contents">
+		<div class="touxiang"><img width="120" height="120" src="" id="head"></div>
+		<div class="godlen"><img src="img/pic17.png"></div>
+		<div class="user">
+		<ul>
+			<li>
+				<label>个人姓名</label>
+				<p class="name"></p>
+			</li>
+			<li >
+				<label>手机号码</label>
+				<p class="no"></p>
+			</li>
+			<li>
+				<a href="integral_detail.html">
+					<label>积分总数</label>
+					<p class="integral"></p>
+				</a>
+			</li>
+			<li>
+				<a class="hobby_href" href="hobby.html">
+					<label>个人爱好</label>
+					<p class="hobbies"></p>
+				</a>
+			</li>
+			<li>
+				<a class="birthday_href" href="birthday.html">
+					<label>生日日期</label>
+					<p class="birthday"></p>
+				</a>
+			</li>
+			<li class="phone">
+				<a id="phone" href="">
+					<label>客户经理</label>
+					<p class="manager"></p>
+				</a>
+			</li>
+			<li>
+				<a href="shouhuodizhi-list.html">
+					<label>收货地址</label>
+					<p class="address"></p>
+				</a>
+			</li>
+		</ul>
+	</div>
+	</div>
+	
+</div>
+</body>
+
+</html>

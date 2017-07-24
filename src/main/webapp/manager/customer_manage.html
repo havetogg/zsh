@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>客户管理</title>
+		<link rel="stylesheet" href="css/backstage.css" />
+		<script type="text/javascript" src="js/jQuery-1.11.3.js" ></script>
+		<script type="text/javascript" src="js/ajaxfileupload.js" ></script>
+		<!--分页-->
+		<script type="text/javascript" src="js/query.js" ></script>
+		<script type="text/javascript" src="js/paging.js" ></script>
+		
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script>
+			$(function () {
+                checkLogin();
+            })
+            //默认第一页开始
+            var pageIndex = 1;
+            //标志
+            var mark = 0;
+
+            function checkLogin(){
+                $.ajax({
+                    url:"/zsh/wc/checkPCLoginInfo.do",
+                    type:"get",
+                    success:function(data){
+                        if(data.status == 0){
+                            if(data.data.role == 0){
+                                init();
+                                //全选框
+                                $("#checkbox").on("click",function(){
+                                    if ($(this).siblings("input").is(':checked')) {
+                                        $(".staff input[type='checkbox']").prop("checked",false);
+                                    }else{
+                                        $(".staff input[type='checkbox']").prop("checked",true);
+                                    }
+                                });
+                                //分页方式
+                                $('#pageToolbar').click(function(){
+                                    init();
+                                });
+                                //上传文件及预览
+                                $("#file0").change(function() {
+                                    var obj = this.files[0];
+                                    if(obj!=undefined||obj!=null||obj!=""){
+                                        $.ajaxFileUpload
+                                        (
+                                            {
+                                                url: "/zsh/uploadCustomerExcel.do", //用于文件上传的服务器端请求地址
+                                                secureuri: false, //是否需要安全协议，一般设置为false
+                                                fileElementId: 'file0', //文件上传域的ID
+                                                dataType: 'JSON', //返回值类型 一般设置为json
+                                                success: function (data,status)  //服务器成功响应处理函数
+                                                {
+                                                    var data = JSON.parse(data);
+                                                    if(data.result=="success"){
+                                                        alert("上传成功");
+                                                    }else{
+                                                        alert("上传失败请重试");
+                                                    }
+                                                },
+                                                error: function (data, status, e)//服务器响应失败处理函数
+                                                {
+                                                    alert(e);
+                                                }
+                                            }
+                                        )
+                                    }
+                                });
+                                $(".magnifier").click(function () {
+                                    init();
+                                });
+                                $(".structure>ul>li li").on("click",function(){
+                                    $(this).siblings().removeClass("cur");  //单选
+                                    $(this).toggleClass("cur");
+                                    init();
+                                });
+                            }
+                        }else{
+                            window.location.href="/zsh/fail.html";
+                        }
+                    }
+                })
+            }
+            //初始化页面数据
+            function init(){
+                $("#tb").html("");
+                var keyWord = $.trim($("#key_word").val());
+                var hobby = $.trim($(".structure .cur").html());
+                if(hobby == "全部"){
+                    hobby = "";
+				}
+                $.ajax({
+                    url:"/zsh/customer/queryByCustomer.do",
+                    type:"post",
+                    data:{
+                        "pageIndex":pageIndex,
+                        "keyWord":keyWord,
+						"hobby":hobby
+					},
+                    dataType:"json",
+                    success:function(data){
+                        $("#tb").html("");
+                        var html = "";
+                        if(data.status==0){
+                            var obj = data.data;
+                            var list = obj.list;
+                            var total = obj.total
+                            if(list.length==0){
+                                html +="<tr><td>暂无数据</td></tr>";
+                                $("#tb").append(html);
+                                return;
+                            }
+                            $.each(list,function(i,field){
+                                if(field.phonePerson==null){
+                                    field.phonePerson="无";
+								}
+                                if(field.phone==null){
+                                    field.phone="无";
+                                }
+                                if(field.birthday==null){
+                                    field.birthday="无";
+                                }
+                                if(field.manager==null){
+                                    field.manager="无";
+                                }
+                                html +="<tr>"
+                                    +"<td>"
+                                    +"<input type='checkbox'/>"
+                                    +"<label class='check'></label>"
+                                    +"</td>"
+                                    +"<td>"+(i+1)+"</td>"
+                                    +"<td>"+field.customerName+"</td>"
+                                    +"<td>"+field.phonePerson+"</td>"
+                                    +"<td>"+field.customerIntegral+"</td>"
+                                    +"<td>"+field.phone+"</td>"
+                                    +"<td>"+field.customerType+"</td>"
+                                    +"<td>"+field.birthday+"</td>"
+                                	+"<td>"+field.manager+"</td>";
+                                if(field.customerStatus==1){
+                                    html +="<td>"
+                                        /*+ "<a class='btn2' href='javascript:;'>冻结</a>"
+                                        + "<a class='btn2' href='javascript:;'>授权</a>"*/
+                                        + "<a class='btn1 compile' href='javascript:show(&quot;"+field.customerId+"&quot;);'>编辑</a>"
+                                        +	"</td>";
+                                }else if(field.customerStatus==2){
+                                    html +="<td>"
+                                        /*+ "<a class='btn2' href='javascript:;'>解冻</a>"
+                                        + "<a class='btn2' href='javascript:;'>授权</a>"*/
+                                        + "<a class='btn1 compile' href='javascript:show(&quot;"+field.customerId+"&quot;);'>编辑</a>"
+                                        +	"</td>";
+                                }
+                                html +="</tr>";
+                            });
+                            if(mark==0){
+                                $('#pageToolbar').Paging({pagesize:10,count:total,callback:function(page){
+                                    pageIndex = page;
+                                }});
+                            }
+                            mark=1;
+                            $("#tb").append(html);
+                        }
+                    }
+                });
+            }
+			//弹出编辑成
+            var globalCustomerId = "";
+            function show(customerId) {
+                globalCustomerId = customerId;
+                $("#edit_name").val("");
+                $("#edit_phonePerson").val("");
+                $("#edit_customerIntegral").val("");
+                $("#edit_phone").val("");
+                $("#edit_manager").val("");
+                $.ajax({
+                    url: "/zsh/customer/find.do",
+                    type: "post",
+                    data: {
+                        customerId: globalCustomerId
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if(data.status=="0"){
+                            if(data.data.length>0){
+                                $("#edit_name").val(data.data[0].customerName);
+                                $("#edit_phonePerson").val(data.data[0].phonePerson);
+                                $("#edit_customerIntegral").val(data.data[0].customerIntegral);
+                                $("#edit_phone").val(data.data[0].phone);
+                                $("#edit_manager").val(data.data[0].manager);
+                                $(".edit").show();
+                            }
+                        }else{
+                            alert(data.describe);
+                        }
+                    }
+                })
+            }
+
+            //新增编辑删除
+            function status(type){
+                //新增
+                if(type==1){
+                    var name = $("#add_name").val();
+                    var phonePerson = $("#add_phonePerson").val();
+                    var customerIntegral = $("#add_customerIntegral").val();
+                    var phone = $("#add_phone").val();
+                    var manager = $("#add_manager").val();
+                    if(!IsTel(phone)){
+                        alert("请输入正确的手机号");
+                        return false;
+					}
+                    $("#add_name").val("");
+                    $("#add_phonePerson").val("");
+                    $("#add_customerIntegral").val("");
+                    $("#add_phone").val("");
+                    $("#add_manager").val("");
+                    $.ajax({
+                        url: "/zsh/customer/add.do",
+                        type: "post",
+                        data: {
+                            customerName:name,
+                            customerType:1,
+                            phone:phone,
+                            phonePerson:phonePerson,
+                            customerIntegral:customerIntegral,
+                            manager:manager
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            if(data.status=="0"){
+                                alert("新增成功");
+                                $(".addDiv").hide();
+                                location.reload();
+                            }else{
+                                alert(data.describe);
+                                $(".addDiv").hide();
+                                location.reload();
+							}
+                        }
+                    })
+                    //编辑
+                }else if(type==2){
+                    var name = $("#edit_name").val();
+                    var phonePerson = $("#edit_phonePerson").val();
+                    var customerIntegral = $("#edit_customerIntegral").val();
+                    var phone = $("#edit_phone").val();
+                    var manager = $("#edit_manager").val();
+                    if(!IsTel(phone)){
+                        alert("请输入正确的手机号");
+                        return false;
+                    }
+                    $.ajax({
+                        url: "/zsh/customer/updateCustClient.do",
+                        type: "post",
+                        data: {
+                            customerName:name,
+                            customerType:1,
+                            phone:phone,
+                            phonePerson:phonePerson,
+                            customerIntegral:customerIntegral,
+                            manager:manager,
+                            customerId:globalCustomerId
+                        },
+                        dataType: "json",
+                        success: function (data) {
+                            if(data.status=="0"){
+                                globalCustomerId="";
+                                alert("修改成功");
+                                $(".edit").hide();
+                                location.reload();
+                            }else{
+                                alert(data.describe);
+                                $(".edit").hide();
+                                location.reload();
+                            }
+                        }
+                    })
+                    //删除
+                }else if(type==3){
+                    $(".staff input:checked").each(function(){
+                        if($(this).siblings("label").attr("id")!="checkbox"){
+                            var phone = $(this).parent().parent().find("td").eq(5).html();
+                            if(phone!=null||phone!=undefined||phone!=""){
+                                $.ajax({
+                                    url: "/zsh/customer/updateCustClient.do",
+                                    type: "post",
+                                    data: {
+                                        phone:phone,
+                                        customerStatus:3
+                                    },
+                                    dataType: "json",
+                                    success: function (data) {
+                                        if(data.status=="0"){
+                                            alert("删除成功");
+                                            location.reload();
+                                        }else{
+                                            alert(data.describe);
+                                            location.reload();
+										}
+                                    }
+                                })
+                            }else{
+                                alert("请编辑该客户手机号");
+                            }
+                        }
+                    })
+                }
+            }
+
+            function cancelAdd(){
+                $(".addDiv").hide();
+            }
+            function cancelEdit() {
+                $(".edit").hide();
+            }
+            function cancelHint() {
+                $(".hint").hide();
+            }
+            function exportExcel() {
+                var url = "/zsh/exportCustomerExcel.do";
+                $('<form method="post" action="' + url + '"></form>').appendTo('body').submit().remove();
+            }
+            function IsTel(Tel){
+                var re=new RegExp(/^((\d{11})|^((\d{7,8})|(\d{4}|\d{3})-(\d{7,8})|(\d{4}|\d{3})-(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1})|(\d{7,8})-(\d{4}|\d{3}|\d{2}|\d{1}))$)$/);
+                var retu=Tel.match(re);
+                if(retu){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+		</script>
+	</head>
+	<body>
+		<!--新增弹框-->
+		<div class="pop addDiv">
+			<div class="centerDiv">
+				<a class="close" href="javascript:;"></a>
+				<div class="tip">
+					<label>客户名称</label>
+					<input type="text" id="add_name"/>
+				</div>
+				<div class="tip">
+					<label>经办人</label>
+					<input type="text" id="add_phonePerson"/>
+				</div>
+				<div class="tip">
+					<label>积分</label>
+					<input type="text" id="add_customerIntegral"/>
+				</div>
+				<div class="tip">
+					<label>手机</label>
+					<input type="text" id="add_phone"/>
+				</div>
+				<div class="tip">
+					<label>客户经理</label>
+					<input type="text" id="add_manager"/>
+				</div>
+				<div class="btn">
+					<a class="btn1" href="javascript:status(1)">新增</a>
+					<a class="btn2" href="javascript:cancelAdd();">取消</a>
+				</div>
+			</div>
+		</div>
+		
+		<!--编辑弹框-->
+		<div class="pop edit">
+			<div class="centerDiv">
+				<a class="close" href="javascript:;"></a>
+				<div class="tip">
+					<label>客户名称</label>
+					<input type="text" id="edit_name"/>
+				</div>
+				<div class="tip">
+					<label>经办人</label>
+					<input type="text" id="edit_phonePerson"/>
+				</div>
+				<div class="tip">
+					<label>积分</label>
+					<input type="text" id="edit_customerIntegral"/>
+				</div>
+				<div class="tip">
+					<label>手机</label>
+					<input type="text" id="edit_phone"/>
+				</div>
+				<div class="tip">
+					<label>客户经理</label>
+					<input type="text" id="edit_manager"/>
+				</div>
+				<div class="btn">
+					<a class="btn1" href="javascript:status(2)">编辑</a>
+					<a class="btn2" href="javascript:cancelEdit();">取消</a>
+				</div>
+			</div>
+		</div>
+		<!--提示弹框-->
+		<div class="pop hint">
+			<div class="centerDiv">
+				<a class="close" href="javascript:;"></a>
+				<h1>是否要删除该信息</h1>
+				<div class="btn">
+					<a class="btn2" href="javascript:cancelHint();">否</a>
+					<a class="btn1" href="javascript:status(3);">是</a>
+				</div>
+			</div>
+		</div>
+		
+		<!--head-->
+		<div class="head">
+			<a href="javascript:logout();">注销</a>
+			<!--<a href="javascript:;">登录</a>-->
+			<p>欢迎<span id="userName">管理员</span></p>
+		</div>
+		<!--main-->
+		<div class="main">
+			<!--main-left-->
+			<div class="main_left">
+				<ul>
+					<li class="active">
+						<a href="javascript:;">人员管理</a>
+						<ul style="display: block;">
+							<li><a href="index.html">员工管理</a></li>
+							<li><a class="cur" href="javascript:;">客户管理</a></li>
+						</ul>
+					</li>
+					<li><a href="price.html">油价管理</a></li>
+					<li>
+						<a href="javascript:;">秒杀管理</a>
+						<ul>
+							<li><a href="seckill.html">活动名单</a></li>
+							<li><a href="seckill_manage.html">活动编辑</a></li>
+							<li><a href="seckill_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">积分管理</a>
+						<ul>
+							<li><a href="prize.html">奖品管理</a></li>
+							<li><a href="prize_order.html">订单管理</a></li>
+							<li><a href="prize_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:;">签到管理</a></li>
+					<li><a href="javascript:;">配送管理</a></li>
+					<li><a href="javascript:;">明星榜单</a></li>
+					<li><a href="daily.html">日报管理</a></li>
+					<li><a href="recommend.html">客户推荐</a></li>
+				</ul>
+			</div>
+			<!--main-right-->
+			<div class="main_right">
+				<div class="bread">
+					<a class="btn1 pos_rel" href="javascript:;">批量导入
+						<input type="file" name="file0" id="file0" multiple="multiple" />
+					</a>
+					<a class="btn2 delete" href="javascript:;">删除</a>
+					<div class="operate">
+						<a href="javascritp:;">人员管理</a>
+						<a href="javascript:;">客户管理</a>
+					</div>
+				</div>
+				<div class="structure">
+					<h1>组织架构</h1>
+					<ul>
+						<li>
+							<a href="javascript:;">兴趣</a>
+							<ul>
+								<li class="cur">全部</li>
+								<li>足球</li>
+								<li>篮球</li>
+								<li>羽毛球</li>
+								<li>乒乓</li>
+								<li>游泳</li>
+								<li>钓鱼</li>
+								<li>影视</li>
+								<li>音乐</li>
+								<li>绘画</li>
+								<li>书法</li>
+								<li>读书会</li>
+								<li>购物</li>
+								<li>户外</li>
+								<li>旅游</li>
+								<li>健身</li>
+								<li>摄影</li>
+								<li>棋牌</li>
+							</ul>
+						</li>
+						<!--<li>
+							<a href="javascript:;">年龄</a>
+							<ul>
+								<li>20-30</a></li>
+								<li>30-40</li>
+								<li>40以上</li>
+							</ul>
+						</li>-->
+					</ul>
+				</div>
+				<div class="customer_manage">
+					<div class="search">
+						<input type="text" placeholder="输入经办人查询" id="key_word"/>
+						<button class="magnifier"></button>
+						<a class="btn1 add" href="javascript:;">新增成员</a>
+						<a class="btn2" href="javascript:exportExcel();">导出通讯录</a>
+					</div>
+					<table class="staff staff2">
+						<colgroup>
+							<col width="8%" />
+							<col width="8%" />
+							<col width="10%" />
+							<col width="12%" />
+							<col width="12%" />
+							<col width="10%" />
+							<col width="10%" />
+							<col width="10%" />
+							<col width="10%" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th>
+									<input type="checkbox" />
+									<label class="check" id="checkbox"></label>
+								</th>
+								<th>序号</th>
+								<th>客户名称</th>
+								<th>经办人</th>
+								<th>积分</th>
+								<th>手机</th>
+								<th>客户类型</th>
+								<th>生日</th>
+								<th>客户经理</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody id="tb">
+
+						</tbody>
+					</table>
+					<!--分页-->
+					<div id="pageToolbar"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

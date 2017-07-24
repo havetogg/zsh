@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.jumutang.zsh.dao.SignDaoI">
+	<resultMap id="BaseResultMap" type="org.jumutang.zsh.model.SignModel">
+		<id column="signid" property="signId" jdbcType="VARCHAR"></id>
+		<result column="openid" property="openId" jdbcType="VARCHAR"/>
+		<result column="username" property="userName" jdbcType="VARCHAR"/>
+		<result column="signdate" property="signDate" jdbcType="DATE"/>
+		<result column="signmarks" property="signMarks" jdbcType="VARCHAR"/>
+		<result column="signaddress" property="signAddress" jdbcType="VARCHAR"/>
+		<result column="signcoordinate" property="signCoordinate" jdbcType="VARCHAR"/>
+		<result column="scenephotos" property="scenePhotos" jdbcType="VARCHAR"/>
+		<result column="signtype" property="signType" jdbcType="SMALLINT"/>
+		<result column="signstatus" property="signStatus" jdbcType="SMALLINT"/>
+	</resultMap>
+	
+	<sql id="insertys">
+		<trim  prefix="(" suffix=")" suffixOverrides=",">
+			<if test=" signId !=null">
+				signid,
+			</if>
+			<if test="openId !=null">
+					openid,
+			</if>
+			<if test="userName !=null">
+					username,
+			</if>
+			<if test="signDate !=null">
+					signdate,
+			</if>
+			<if test="signMarks !=null">
+					signmarks,
+			</if>
+			<if test="signAddress !=null">
+					signaddress,
+			</if>
+			<if test="signCoordinate !=null">
+					signcoordinate,
+			</if>
+			<if test="scenePhotos !=null">
+					scenephotos,
+			</if>
+			<if test="signType !=null">
+					signtype,
+			</if>
+			<if test="signStatus !=null">
+					signstatus,
+			</if>
+		</trim>
+	</sql>
+	<sql id="insertValues">
+		<trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+			<if test=" signId !=null">
+				#{signId},
+			</if>
+			<if test="openId !=null">
+					#{openId},
+			</if>
+			<if test="userName !=null">
+					#{userName},
+			</if>
+			<if test="signDate !=null">
+					#{signDate},
+			</if>
+			<if test="signMarks !=null">
+					#{signMarks},
+			</if>
+			<if test="signAddress !=null">
+					#{signAddress},
+			</if>
+			<if test="signCoordinate !=null">
+					#{signCoordinate},
+			</if>
+			<if test="scenePhotos !=null">
+					#{scenePhotos},
+			</if>
+			<if test="signType !=null">
+					#{signType},
+			</if>
+			<if test="signStatus !=null">
+					#{signStatus},
+			</if>
+		</trim>
+	</sql>
+	
+	<sql id="queryWhere">
+	<where>
+		<if test="signDate !=null">
+				AND signdate = #{signDate}
+		</if>
+		<if test="openId !=null">
+				AND openid = #{openId}
+		</if>
+		<if test="signStatus !=null">
+				AND signstatus = #{signStatus}
+		</if>
+	</where>
+	</sql>
+	<sql id="updateSet">
+		<set>
+			<if test="signMarks !=null">
+				 signmarks = #{signMarks},
+			</if>
+			<if test = "signAddress !=null" >
+				 signaddress= #{signAddress},
+			</if>
+			<if test="signCoordinate !=null">
+				 signcoordinate = #{signCoordinate},
+			</if>
+		</set>
+	
+	</sql>
+	
+	<insert id="addSign" parameterType="org.jumutang.zsh.model.SignModel">
+			INSERT INTO sign
+			
+				<include refid="insertys"/>
+			
+				<include refid="insertValues"/>
+	</insert>
+	
+	<select id="querySign" parameterType="org.jumutang.zsh.model.SignModel" resultMap="BaseResultMap">
+		SELECT * FROM sign
+		<include refid="queryWhere"/>
+	</select>
+	
+	<!-- 更新签到状态！ -->
+	<update id="updateSignStatus" parameterType="map">
+			UPDATE sign 
+			<set>
+				signstatus = #{signStatus}
+			</set>
+			<where>
+				openid =  #{openId} AND signdate = #{signDate} AND signStatus = #{oldStatus}
+			</where>
+	</update>
+	
+	<update id="updateSigne" parameterType="org.jumutang.zsh.model.SignModel">
+		UPDATE sign 
+		<include refid="updateSet"/>
+		<where>
+			signid = #{signId}
+		</where>
+	</update>
+	
+	<!-- 分页查询签到信息 -->
+	<select id="queryByPage" parameterType="map" resultMap="BaseResultMap">
+			SELECT * FROM sign
+			<where>
+				signtype = #{signType}
+			</where>
+			limit #{pageIndex},#{pageSize}
+	</select>
+	
+	<!-- 统计数据条数 -->
+	<select id="countSign" parameterType = "map" resultType="int">
+		SELECT COUNT(1) FROM sign
+		<where>
+			signtype = #{signType}
+		</where>
+	</select>
+</mapper>
+
+
+

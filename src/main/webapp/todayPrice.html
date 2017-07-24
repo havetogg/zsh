@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>今日油价</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <link type="text/css" href="css/app.css" rel="stylesheet">
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/zsh/todayPrice.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+</head>
+<body>
+<div class="zoomer">
+    <!--<div class="zsh_oilPrice_top">
+        执行日期: 2016/16/01
+    </div>-->
+    <div class="zsh_oilPrice">
+        <div>
+            <span><img src="img/oilIcon.png" alt="" class="zsh_oilPrice_img"></span>
+            <span class="zsh_oilPrice_guonei">我司报价</span><span class="zsh_oilPrice_guoneiT">(今日指导价)</span>
+        </div>
+        <table class="table1" id="oil1">
+        	<thead>
+				<tr>
+					<td>92#汽油</td>
+					<td>95#汽油</td>
+					<td>0#普柴</td>
+					<td>0#车柴</td>
+				</tr>
+			</thead>
+			<tbody id="tbody1">
+
+			</tbody>
+        </table>
+
+        <div class="tip" id="notes"></div>
+    </div>
+
+    <div class="zsh_oilPrice">
+        <div>
+            <span><img src="img/oilIcon2.png" alt="" class="zsh_oilPrice_img"></span>
+            <span class="zsh_oilPrice_guonei">国际油价</span><span class="zsh_oilPrice_guoneiT">(今日指导价)</span>
+        </div>
+        <table class="table2" id="oil3">
+            <thead>
+				<tr>
+					<td>布伦特<br/>期货</td>
+					<td>WTI期货</td>
+					<td>阿曼期货</td>
+					<td>原油波动变化率</td>
+				</tr>
+			</thead>
+			<tbody id="tbody2">
+
+			</tbody>
+        </table>
+    </div>
+
+    <div class="hint" id="remarks">
+    	<img src="img/tips.png" />
+    </div>
+    <div class="zsh_oilPrice_call">
+		<a href="tel:86405543">电话咨询 025-86405543</a>
+    </div>
+</div>
+</body>
+</html>

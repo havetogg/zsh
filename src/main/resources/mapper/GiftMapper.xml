@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.jumutang.zsh.dao.GiftDaoI">
+	<resultMap id="BaseResultMap" type="org.jumutang.zsh.model.GiftModel">
+		<id column="giftid" property="giftId" jdbcType="VARCHAR"></id>
+		<result column="giftname" property="giftName" jdbcType="VARCHAR"/>
+		<result column="openid" property="openId" jdbcType="VARCHAR"/>
+		<result column="giftstatus" property="giftStatus" jdbcType="SMALLINT"/>
+		<result column="giftdate" property="giftDate" jdbcType="DATE"/>
+	</resultMap>
+	
+	<sql id="insertys">
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="giftId !=null">
+			giftid,
+			</if>
+			<if test="giftName !=null">
+			giftname,
+			</if>
+			<if test="openId !=null">
+			openid,
+			</if>
+			<if test="giftStatus !=null">
+			giftstatus,
+			</if>
+			<if test="giftDate !=null">
+			giftdate,
+			</if>
+		</trim>
+	</sql>
+	<sql id="insertValue">
+		<trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+			<if test="giftId !=null">
+			#{giftId},
+			</if>
+			<if test="giftName !=null">
+			#{giftName},
+			</if>
+			<if test="openId !=null">
+			#{openId},
+			</if>
+			<if test="giftStatus !=null">
+			#{giftStatus},
+			</if>
+			<if test="giftDate !=null">
+			#{giftDate},
+			</if>
+		</trim>
+	</sql>
+	
+	<sql id="queryWhere">
+	<where>
+	<if test="giftId !=null">
+			AND giftid = #{giftId}
+			</if>
+			<if test="giftName !=null">
+			 AND giftname like #{giftName}'%'
+			</if>
+			<if test="openId !=null">
+			 AND openid = #{openId}
+			</if>
+			<if test="giftStatus !=null">
+			AND giftstatus = #{giftStatus}
+			</if>
+			<if test="giftDate !=null">
+			AND giftdate = #{giftDate}
+			</if>
+			</where>
+	</sql>
+	
+	<insert id="addGift" parameterType="org.jumutang.zsh.model.GiftModel">
+				INSERT INTO gift
+				<include refid="insertys"/>
+				<include refid="insertValue"/>
+				
+	</insert>
+	
+	<select id="queryGift" parameterType="org.jumutang.zsh.model.GiftModel" resultMap="BaseResultMap"> 
+		select * from gift
+		<include refid="queryWhere"/>
+	</select>
+	
+	
+</mapper>
+
+
+

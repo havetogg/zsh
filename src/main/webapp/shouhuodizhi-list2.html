@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <!--如果IE用户安装了Chrome Frame插件，则使用这个插件渲染页面，否则用IE最新的、最好的引擎来渲染页面-->
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>收货地址</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <!--<link type="text/css" href="css/common.css" rel="stylesheet">-->
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+    <script type="text/javascript" src="js/common/m.tool.juxinbox.com.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-1.0.0.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <style>
+        span {
+            display: inline-block;
+        }
+
+        .contents {
+            background-color: #edf0f0;
+            width: 640px;
+            min-height: 1065px;
+        }
+
+        .zoomer {
+            background: #f5f1f4 !important;
+        }
+
+        .top1 {
+            width: 640px;
+            background: white;
+            height: 70px;
+        }
+
+        .tip1 {
+            color: #666666;
+            font-size: 36px;
+            position: absolute;
+            margin: 25px 1px;
+        }
+
+        .top2 {
+            width: 640px;
+            height: 160px;
+            background: white;
+            margin: 30px 0px;
+        }
+
+        .tip21 {
+            color: #666666;
+            font-size: 30px;
+            width: 300px;
+            margin: 0px 20px;
+            border-bottom: 1px solid #f2eff3;
+            height: 70px;
+            line-height: 77px;
+            text-indent: 0px;
+            float: left;
+        }
+
+        select {
+            width: 250px;
+            height: 70px;
+            border: none;
+            font-size: 30px;
+            background: #FFFFFF url(img/1.png) no-repeat 100% center;
+            background-size: 18px 14px;
+        }
+
+        /*自提默认选中状态样式*/
+        .quan {
+            width: 41px;
+            height: 40px;
+            background: url("img/moren.png");
+            position: absolute;
+            margin: 21px 17px;
+        }
+
+        /*自提未选择状态样式*/
+        .notQuan {
+            width: 50px;
+            height: 50px;
+            background: url("img/nomoren.png");
+            position: absolute;
+            margin: 17px 14px;
+        }
+
+        .mo {
+            font-size: 26px;
+            color: #999999;
+            position: absolute;
+            margin: 33px 78px;
+        }
+
+        .parts {
+            width: 640px;
+            height: 200px;
+            background: white;
+            margin: 33px auto;
+
+        }
+
+        .kuang {
+            position: absolute;
+            margin: 85px 0px;
+        }
+
+        .part1 {
+            width: 640px;
+            height: 120px;
+            border-bottom: 1px solid #f2eff3;
+            margin: 0px auto;
+
+        }
+
+        .pe {
+            margin: 29px 24px;
+            position: absolute;
+        }
+
+        .name {
+            font-size: 30px;
+            position: absolute;
+            color: #666666;
+            width: 200px;
+            margin: 32px 75px;
+        }
+
+        .tel {
+            position: absolute;
+            margin: 13px 280px;
+        }
+
+        .telNum {
+            font-size: 30px;
+            color: #666;
+            position: absolute;
+            margin: 35px 336px;
+        }
+
+        .icoditu {
+            position: absolute;
+            margin: 55px 21px;
+        }
+
+        .adree {
+            width: 560px;
+            height: 32px;
+            font-size: 30px;
+            line-height: 38px;
+            color: #666;
+            position: absolute;
+            margin: 57px 74px;
+            overflow: auto;
+        }
+
+        .shangchu {
+            position: absolute;
+            margin: 20px 446px;
+            width: 65px;
+            height: 45px;
+            border-right: 1px solid #dcd6d6;
+        }
+
+        .bianxie {
+            position: absolute;
+            margin: 20px 546px;
+        }
+
+        .add {
+            width: 100%;
+            height: 88px;
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 34px;
+            line-height: 70px;
+            position: fixed;
+            bottom: 0px;
+            background: #E53037;
+            border-top: solid 2px #B3B3B3;
+        }
+
+        .add1 {
+            width: 100%;
+            height: 88px;
+            color: #fff;
+            text-align: center;
+            font-size: 34px;
+            line-height: 86px;
+            float: left;
+        }
+
+        body {
+            background: #f5f1f4 !important;
+        }
+
+
+    </style>
+    <script type="text/javascript">
+        var rid=new Array();
+        var defaultId='';
+        $(function () {
+            initAddressList();
+        })
+        var quanNum = 0;
+        var address={};
+        address.data={};
+        function quan() {
+            $(".quan").each(function () {
+                quanNum = quanNum + 1;
+            })
+        }
+        function ziti(dom) {
+            var dom=$(dom).attr("name");
+            if(dom=='ziti'){
+                $(".ziti").removeClass("notQuan").addClass("quan");
+                address.type = 0;
+                /*address.rAddress =*/
+                $.each(rid,function(index,item){
+                    $("."+item).removeClass("quan").addClass("notQuan");
+                })
+                defaultId='';
+                address.type=1;
+                address.data.rId="";
+                address.data.name="";
+                address.data.telNum="";
+                address.data.address=$("#select option:selected").val();
+            }else{
+                $.each(rid,function(index,item){
+                    if(item==dom){
+                        $("."+item).removeClass("notQuan").addClass("quan");
+                        defaultId=item;
+                    }else{
+                        $("."+item).removeClass("quan").addClass("notQuan");
+                    }
+                })
+                $(".ziti").removeClass("quan").addClass("notQuan");
+                address.type=2;
+                address.data.rId=$(".quan").attr("name");
+                address.data.name=$(".quan").parent().parent().parent().find('.name').text();
+                address.data.telNum=$(".quan").parent().parent().parent().find('.telNum').text();
+                address.data.address=$(".quan").parent().parent().parent().find('.adree').text();
+
+            }
+        }
+        function initAddressList() {
+            $.ajax({
+                url: "/zsh/customer/queryReceiveAddress.do",
+                type: "post",
+                dataType: "json",
+                success: function (data) {
+                    var res = data.data;
+                    var hasAddr = false;
+                    var hasDefault = false;
+                    if(res.length!=0){
+                        hasAddr=true;
+                        var str='';
+                        var i=0;
+                        $.each(res,function(index,item){
+                            rid.push(item.rId)
+                            str+='<div class="parts"> <div class="part1"><img class="pe" src="img/37.png" alt=""/>';
+                            str+='<span class="name">'+item.rName+'</span>';
+                            str+='<span><img class="tel" src="img/38.png" alt=""/></span>';
+                            str+=' <span class="telNum">'+item.rPhone+'</span> <div class="ditu">';
+                            str+='<img class="icoditu" src="img/36.png" alt=""/>';
+                            str+='<span class="adree">'+item.rAddress+'</span> </div> </div>';
+                            str+=' <div class="part2"><input type="checkbox" id="ziti2" hidden="hidden"/>';
+                            if(item.isDefault=='1'){
+                                hasDefault = true;
+                                str+=' <label for="ziti"><div onclick="ziti(this)" class="quan '+item.rId+'" name="'+item.rId+'"></div></label>';
+                                defaultId=item.rId;
+                                i++;
+                            }else{
+                                str+=' <label for="ziti"><div onclick="ziti(this)" class="notQuan '+item.rId+'" name="'+item.rId+'"></div></label>';
+                            }
+                            str+='<div class="mo">选择该地址</div><div class="shangchu"><img src="img/shanchu.png" alt=""  onclick="removeAddress(\''+item.rId+'\')" /></div><div class="xian"></div>';
+                            str+='<div class="bianxie"><img src="img/bianxie.png" onclick="editAddress(\''+item.rId+'\')" alt=""/></div></div></div>';
+                        });
+                        if(i==0){
+                            $(".ziti").removeClass("notQuan").addClass("quan");
+                        }
+                    }else{
+                        defaultId='';
+                        $(".ziti").removeClass("notQuan").addClass("quan");
+                    }
+                    $(".kuang").html(str);
+                    if($(".quan").html()!=undefined){
+                        if(hasAddr){
+                            if(hasDefault){
+                                address.type=2;
+                                address.data.rId=$(".quan").attr("name");
+                                address.data.name=$(".quan").parent().parent().parent().find('.name').text();
+                                address.data.telNum=$(".quan").parent().parent().parent().find('.telNum').text();
+                                address.data.address=$(".quan").parent().parent().parent().find('.adree').text();
+                            }else{
+                                address.type=1;
+                                address.data.rId="";
+                                address.data.name="";
+                                address.data.telNum="";
+                                address.data.address=$("#select option:selected").val();
+                            }
+                        }else{
+                            address.type=1;
+                            address.data.rId="";
+                            address.data.name="";
+                            address.data.telNum="";
+                            address.data.address=$("#select option:selected").val();
+                        }
+                    }
+                }
+            });
+        }
+        function editAddress(id){
+            location.href = "shouhuo-dizhi-update.html?rId="+id;
+        }
+        function removeAddress(id){
+            var address=new Object();
+            address.isDelete='1';
+            address.rId=id;
+            updateDefault(address);
+            alert("删除成功");
+            location.reload();
+        }
+        function updateDefault(address){
+            //defaultId 地址ID
+            $.ajax({
+                url: "/zsh/customer/updateReceiveAddress.do",
+                type: "post",
+                data:address,
+                dataType: "json",
+                success: function (data) {
+                }
+            });
+        }
+        function confirmAddress(){
+            localStorage.setItem("address",JSON.stringify(address));
+            window.location.href='dingdan-tijiao.html';
+        }
+    </script>
+</head>
+<body>
+<div class="zoomer">
+    <div class="contents">
+        <div class="top1">
+            <img src="img/40.png" style="margin: 20px 22px;" alt=""/>
+            <span class="tip1">我的收货地址</span>
+        </div>
+
+        <div class="top2">
+            <div class="tip21">我要自提</div>
+            <select id="select">
+                <option>石鼓路加油站</option>
+                <option>中山东路加油站</option>
+                <option>双龙大道加油站</option>
+            </select>
+            <div class="tip22">
+                <input type="checkbox" id="ziti" checked="checked" hidden="hidden"/>
+                <label for="ziti">
+                    <div id="d3" onclick="ziti(this,3)" name="ziti" class="notQuan ziti"></div>
+                </label>
+                <div class="mo">选择该地址</div>
+            </div>
+
+            <div class="kuang">
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="add">
+    <div class="add1" onclick="confirmAddress()">确认</div>
+</body>
+</html>

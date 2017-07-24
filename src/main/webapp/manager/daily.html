@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>员工管理</title>
+		<link rel="stylesheet" href="css/backstage.css" />
+		<script type="text/javascript" src="js/jQuery-1.11.3.js" ></script>
+		<script type="text/javascript" src="js/ajaxfileupload.js" ></script>
+		<!--分页-->
+		<script type="text/javascript" src="js/query.js" ></script>
+		<script type="text/javascript" src="js/paging.js" ></script>
+		
+		<script type="text/javascript" src="js/index.js" ></script>
+		<script type="text/javascript">
+			$(function () {
+                checkLogin();
+                //上传文件及预览
+                $("#file0").change(function() {
+                    var obj = this.files[0];
+                    if(obj!=undefined||obj!=null||obj!=""){
+                        $.ajaxFileUpload
+                        (
+                            {
+                                url: "/zsh/daily/uploadExcel.do", //用于文件上传的服务器端请求地址
+                                secureuri: false, //是否需要安全协议，一般设置为false
+                                fileElementId: 'file0', //文件上传域的ID
+                                dataType: 'JSON', //返回值类型 一般设置为json
+                                success: function (data,status)  //服务器成功响应处理函数
+                                {
+                                    var data = JSON.parse(data);
+                                    if(data.result=="success"){
+                                        alert("上传成功");
+                                    }else{
+                                        alert(data.describe);
+                                    }
+                                },
+                                error: function (data, status, e)//服务器响应失败处理函数
+                                {
+                                    alert(e);
+                                }
+                            }
+                        )
+                    }
+                })
+
+				$(".advanced").click(function(){
+				    init();
+				})
+            })
+            function checkLogin(){
+                $.ajax({
+                    url:"/zsh/wc/checkPCLoginInfo.do",
+                    type:"get",
+                    success:function(data){
+                        if(data.data.role == 0){
+                            init();
+                        }else{
+                            window.location.href="/zsh/fail.html";
+                        }
+                    }
+                })
+            }
+			function init() {
+                var createDate = "";
+                if($("#time").val() != ""){
+                    createDate = $("#time").val();
+				}else{
+                 	createDate = getNowFormatDate();
+				}
+				//查询数据
+                $.ajax({
+                    url: "/zsh/daily/query.do",
+                    type: "get",
+					data:{
+                        createDate:createDate
+					},
+                    success: function (data) {
+						if(data.status == "0"){
+                            $("#date").html(createDate);
+                            $("#import").html("已导入");
+						}else{
+							$("#date").html(createDate);
+                            $("#import").html("未导入");
+						}
+                    }
+                })
+            }
+            function getNowFormatDate() {
+                var date = new Date();
+                var seperator1 = "-";
+                var seperator2 = ":";
+                var month = date.getMonth() + 1;
+                var strDate = date.getDate();
+                if (month >= 1 && month <= 9) {
+                    month = "0" + month;
+                }
+                if (strDate >= 0 && strDate <= 9) {
+                    strDate = "0" + strDate;
+                }
+                var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+                return currentdate;
+            }
+		</script>
+	</head>
+	<body>
+
+		<!--head-->
+		<div class="head">
+			<a href="javascript:logout();">注销</a>
+			<!--<a href="javascript:;">登录</a>-->
+			<p>欢迎<span id="userName">管理员</span></p>
+		</div>
+		<!--main-->
+		<div class="main">
+			<!--main-left-->
+			<div class="main_left">
+				<ul>
+					<li>
+						<a href="javascript:;">人员管理</a>
+						<ul>
+							<li><a href="index.html">员工管理</a></li>
+							<li><a href="customer_manage.html">客户管理</a></li>
+						</ul>
+					</li>
+					<li><a href="price.html">油价管理</a></li>
+					<li>
+						<a href="javascript:;">秒杀管理</a>
+						<ul>
+							<li><a href="seckill.html">活动名单</a></li>
+							<li><a href="seckill_manage.html">活动编辑</a></li>
+							<li><a href="seckill_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li>
+						<a href="javascript:;">积分管理</a>
+						<ul>
+							<li><a href="prize.html">奖品管理</a></li>
+							<li><a href="prize_order.html">订单管理</a></li>
+							<li><a href="prize_send.html">发货管理</a></li>
+						</ul>
+					</li>
+					<li><a href="javascript:;">签到管理</a></li>
+					<li><a href="javascript:;">配送管理</a></li>
+					<li><a href="javascript:;">明星榜单</a></li>
+					<li class="active"><a href="daily.html">日报管理</a></li>
+					<li><a href="recommend.html">客户推荐</a></li>
+				</ul>
+			</div>
+			<!--main-right-->
+			<div class="main_right">
+				<div class="bread">
+					<a class="btn1 pos_rel" href="javascript:;">批量导入
+						<input type="file" name="file0" id="file0" multiple="multiple" />
+					</a>
+					<!--<a class="btn2 delete" href="javascript:;">删除</a>-->
+					<div class="operate">
+						<a href="javascritp:;">日报管理</a>
+					</div>
+				</div>
+				<div class="search">
+					<input class="time" type="date" id="time"/>
+					<button class="btn1 advanced">搜索</button>
+				</div>
+				<table class="staff">
+					<colgroup>
+						<col width="50%" />
+						<col width="50%" />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>时间</th>
+							<th>状态</th>
+						</tr>
+					</thead>
+					<tbody id="tb">
+						<tr>
+							<th id="date"></th>
+							<th id="import"></th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>

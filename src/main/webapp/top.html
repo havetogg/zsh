@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>明星榜单</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <link type="text/css" href="css/app.css" rel="stylesheet">
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/zsh/top.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+</head>
+<body>
+<div class="zoomer">
+    <div class="zsh_top">
+        <div class="zsh_menu">
+            <ul class="flex">
+                <li class="flex-1 menu_selected" onclick="selectTab(this)">服务之星</li>
+                <li class="flex-1" onclick="selectTab(this)">销售之星</li>
+                <li class="flex-1" onclick="selectTab(this)">明日之星</li>
+                <li class="flex-1" onclick="selectTab(this)">其他<img src="img/arrow_down.png" alt="" style="vertical-align: middle;"></li>
+            </ul>
+        </div>
+        <div class="zsh_content" id="d1">
+            
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.jumutang.zsh.dao.CustomerDaoI">
+	<resultMap id="BaseResultMap" type="org.jumutang.zsh.model.CustomerModel">
+		<id column="customer_id" property="customerId" jdbcType="VARCHAR"></id>
+		<result column="customer_code" property="customerCode" jdbcType="VARCHAR"/>
+		<result column="customer_name" property="customerName" jdbcType="VARCHAR"/>
+		<result column="customer_integral" property="customerIntegral" jdbcType="INTEGER"/>
+		<result column="customer_head" property="customerHead" jdbcType="VARCHAR"/>
+		<result column="customer_level" property="customerLevel" jdbcType="SMALLINT"/>
+		<result column="customer_status" property="customerStatus" jdbcType="SMALLINT"/>
+		<result column="customer_phone" property="phone" jdbcType="VARCHAR"/>
+		<result column="customer_openId" property="customerOpenId" jdbcType="VARCHAR"/>
+		<result column="customer_type" property="customerType" jdbcType="SMALLINT"/>
+		<result column="customer_address" property="customerAddress" jdbcType="VARCHAR"/>
+		<result column="phone_person" property="phonePerson" jdbcType="VARCHAR"/>
+		<result column="employee_id" property="employeeId" jdbcType="VARCHAR"/>
+		<result column="employee_no" property="employeeNo" jdbcType="VARCHAR"/>
+		<result column="position" property="position" jdbcType="VARCHAR"/>
+		<result column="achievement" property="achievement" jdbcType="VARCHAR"/>
+		<result column="oil_station" property="oilStation" jdbcType="VARCHAR"/>
+		<result column="email" property="email" jdbcType="VARCHAR"/>
+		<result column="weixinid" property="weiXinId" jdbcType="VARCHAR"/>
+		<result column="birthday" property="birthday" jdbcType="VARCHAR"/>
+		<result column="manager" property="manager" jdbcType="VARCHAR"/>
+		<result column="manager_phone" property="managerPhone" jdbcType="VARCHAR"/>
+		<result column="hobby" property="hobby" jdbcType="VARCHAR"/>
+		<result column="gender" property="gender" jdbcType="VARCHAR"/>
+		<result column="one_household" property="oneHousehold" jdbcType="VARCHAR"/>
+		<result column="oil_push" property="oilPush" jdbcType="SMALLINT"/>
+	</resultMap>
+	
+	<sql id="insertYs">
+			<trim prefix="(" suffix=")" suffixOverrides=",">
+				<if test="customerId !=null">
+					customer_id,
+				</if>
+				<if test="customerCode !=null">
+					customer_code,
+				</if>
+				<if test="customerName !=null">
+					customer_name,
+				</if>
+				<if test="customerIntegral !=null">
+					customer_integral,
+				</if>
+				<if test="customerHead !=null">
+					customer_head,
+				</if>
+				<if test="customerStatus !=null">
+					customer_status,
+				</if>
+				<if test="phone !=null">
+					customer_phone,
+				</if>
+				<if test="customerOpenId !=null">
+					customer_openId,
+				</if>
+				<if test="customerType !=null">
+					customer_type,
+				</if>
+				<if test="customerAddress !=null">
+					customer_address,
+				</if>
+				<if test="phonePerson !=null">
+					phone_person,
+				</if>
+				<if test="employeeId !=null">
+					employee_id,
+				</if>
+				<if test="employeeNo !=null">
+					employee_no,
+				</if>
+				<if test="position !=null">
+					position,
+				</if>
+				<if test="email !=null">
+					email,
+				</if>
+				<if test="weiXinId !=null">
+					weixinid,
+				</if>
+				<if test="birthday !=null">
+					birthday,
+				</if>
+				<if test="manager !=null">
+					manager,
+				</if>
+				<if test="managerPhone !=null">
+					manager_phone,
+				</if>
+				<if test="hobby !=null">
+					hobby,
+				</if>
+				<if test="gender !=null">
+					gender,
+				</if>
+				<if test="oilStation !=null">
+					oil_station,
+				</if>
+				<if test="oneHousehold !=null">
+					one_household,
+				</if>
+				<if test="oilPush !=null">
+					oil_push,
+				</if>
+			</trim>
+	</sql>
+	<sql id="insertValue">
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="customerId !=null">
+					#{customerId},
+				</if>
+				<if test="customerCode !=null">
+					#{customerCode},
+				</if>
+				<if test="customerName !=null">
+					#{customerName},
+				</if>
+				<if test="customerIntegral !=null">
+					#{customerIntegral},
+				</if>
+				<if test="customerHead !=null">
+					#{customerHead},
+				</if>
+				<if test="customerStatus !=null">
+					#{customerStatus},
+				</if>
+				<if test="phone !=null">
+					#{phone},
+				</if>
+				<if test="customerOpenId !=null">
+					#{customerOpenId},
+				</if>
+				<if test="customerType !=null">
+					#{customerType},
+				</if>
+				<if test="customerAddress !=null">
+					#{customerAddress},
+				</if>
+				<if test="phonePerson !=null">
+					#{phonePerson},
+				</if>
+				<if test="employeeId !=null">
+					#{employeeId},
+				</if>
+				<if test="employeeNo !=null">
+					#{employeeNo},
+				</if>
+				<if test="position !=null">
+					#{position},
+				</if>
+				<if test="email !=null">
+					#{email},
+				</if>
+				<if test="weiXinId !=null">
+					#{weiXinId },
+				</if>
+				<if test="birthday !=null">
+					#{birthday},
+				</if>
+				<if test="manager !=null">
+					#{manager},
+				</if>
+				<if test="managerPhone !=null">
+					#{managerPhone},
+				</if>
+				<if test="hobby!=null">
+					#{hobby},
+				</if>
+				<if test="gender!=null">
+					#{gender},
+				</if>
+				<if test="oilStation!=null">
+					#{oilStation},
+				</if>
+				<if test="oneHousehold!=null">
+					#{oneHousehold},
+				</if>
+				<if test="oilPush !=null">
+					#{oilPush},
+				</if>
+		</trim>
+	</sql>
+	
+	<sql id="queryWhere">
+		<where>
+			<if test="customerId!=null">
+				AND customer_id = #{customerId}
+			</if>
+			<if test="customerCode!=null">
+				AND customer_code = #{customerCode}
+			</if>
+			<if test="customerOpenId !=null">
+				AND customer_openId = #{customerOpenId}
+			</if>
+			<if test="customerType !=null">
+				AND customer_type = #{customerType}
+			</if>
+			<if test="phone !=null">
+				AND customer_phone = #{phone}
+			</if>
+			<if test="manager !=null">
+				AND manager = #{manager}
+			</if>
+				AND customer_status != 3
+		</where>
+   </sql>
+	
+	<select id="queryCustomer" parameterType="org.jumutang.zsh.model.CustomerModel" resultMap="BaseResultMap">
+		SELECT * FROM customer
+		<include refid="queryWhere"/>
+	</select>
+	
+	<insert id="addCustomer" parameterType="org.jumutang.zsh.model.CustomerModel">
+			INSERT INTO customer
+				<include refid="insertYs"/>
+			VALUES
+				<include refid="insertValue"/>		
+	</insert>
+	
+	<update id="updateCustomer" parameterType="org.jumutang.zsh.model.CustomerModel">
+		update customer
+		<set>
+			<if test="customerName !=null">
+				customer_name = #{customerName},
+			</if>
+			<if test="phone !=null">
+				customer_phone = #{phone},
+			</if>
+			<if test="customerCode !=null">
+				customer_code = #{customerCode},
+			</if>
+			<if test="customerAddress !=null">
+				customer_address = #{customerAddress},
+			</if>
+			<if test="phonePerson !=null">
+				phone_person = #{phonePerson},
+			</if>
+			<if test="customerIntegral!=null">
+				customer_integral = #{customerIntegral},
+			</if>
+			<if test="customerStatus!=null">
+				customer_status = #{customerStatus},
+			</if>
+			<if test="manager!=null">
+				manager = #{manager},
+			</if>
+			<if test="managerPhone!=null">
+				manager_phone = #{managerPhone},
+			</if>
+			<if test="birthday !=null">
+				birthday = #{birthday},
+			</if>
+			<if test="hobby !=null">
+				hobby = #{hobby},
+			</if>
+			<if test="employeeNo !=null">
+				employee_no = #{employeeNo},
+			</if>
+			<if test="gender !=null">
+				gender = #{gender},
+			</if>
+			<if test="email !=null">
+				email = #{email},
+			</if>
+			<if test="oilStation !=null">
+				oil_station = #{oilStation},
+			</if>
+			<if test="position !=null">
+				position = #{position},
+			</if>
+			<if test="achievement !=null">
+				achievement = #{achievement},
+			</if>
+			<if test="oneHousehold !=null">
+				one_household = #{oneHousehold},
+			</if>
+			<if test="oilPush !=null">
+				oil_push = #{oilPush},
+			</if>
+		</set>
+		<where>
+			customer_id = #{customerId}
+		</where>
+	</update>
+
+	<!-- 更新生日,爱好 -->
+	<update id="updateCustomerInfo" parameterType="org.jumutang.zsh.model.CustomerModel">
+		UPDATE customer
+		<set>
+			<if test="birthday !=null">
+				birthday = #{birthday},
+			</if>
+			<if test="manager !=null">
+				manager = #{manager},
+			</if>
+			<if test="hobby !=null">
+				hobby = #{hobby},
+			</if>
+		</set>
+		<where>
+			customer_openId = #{customerOpenId}
+		</where>
+	</update>
+
+	<!-- 更新状态 -->
+	<update id="updateStatus" parameterType="org.jumutang.zsh.model.CustomerModel">
+		UPDATE customer
+		<set>
+			<if test="customerStatus !=null">
+				customer_status = #{customerStatus},
+			</if>
+		</set>
+		<where>
+			customer_phone = #{phone}
+		</where>
+	</update>
+
+	<!-- 根据部门查询客户信息-->
+	<select id="quertByType" parameterType="map" resultMap="BaseResultMap">
+		SELECT * FROM customer
+		where customer_type in
+			<foreach collection="list" item="obj" open="(" separator="," close=")">
+				#{obj}
+			</foreach>
+			AND customer_status != 3
+			<if test="customerName!=null">
+				AND customer_name like concat('%',#{customerName},'%')
+			</if>
+			<if test="phonePerson!=null">
+				AND phone_person like concat('%',#{phonePerson},'%')
+			</if>
+			<if test="hobby!=null">
+				AND hobby like concat('%',#{hobby},'%')
+			</if>
+			order by employee_no
+			limit #{pageIndex},#{pageSize}
+	</select>
+	
+	<!-- 统计信息条数 -->
+	<select id="countCustomer" parameterType="map" resultType="int">
+		SELECT COUNT(1) FROM customer
+		where customer_type in 
+			<foreach collection="list" item="obj" open="(" separator="," close=")">
+				#{obj}
+			</foreach>
+			AND customer_status != 3
+			<if test="customerName!=null">
+				AND customer_name like concat('%',#{customerName},'%')
+			</if>
+			<if test="phonePerson!=null">
+				AND phone_person like concat('%',#{phonePerson},'%')
+			</if>
+			<if test="hobby!=null">
+				AND hobby like concat('%',#{hobby},'%')
+			</if>
+	</select>
+</mapper>
+
+
+

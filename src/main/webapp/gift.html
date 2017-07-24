@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5">
+		<meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta content="telephone=no" name="format-detection">
+		<title>积分派兑</title>
+		<link rel="stylesheet" href="css/common/common.css" />
+		<link rel="stylesheet" href="css/point.css" />
+		<script type="text/javascript" src="js/common/jQuery-1.11.3.js" ></script>
+		<script type="text/javascript" src="js/common/jWeChat-Adaptive.js" ></script>
+	</head>
+	<body class="bg_gray">
+		<div class="zoomer">
+			<form   method="post">
+			<div class="gift">
+				<p>请输入您想要的礼品名称，我们将为您特别定制专属礼品，提交成功后，我们的工作人员尽快与您联系，感谢您的关注~</p>
+				<div class="gift_text">
+					<label>我想要</label>
+					<input type="text" id="tex" placeholder="请输入您想要的礼品名称" />
+				</div>
+			</div>
+			<a class="btn_submit" href="javascript:;" id="submit">提交</a>
+			</form>
+		</div>
+		<script type="text/javascript">
+		//初始化页面数据
+		$.ajax({
+			url:"/zsh/gift/getUserInfo.do",
+			type:"get",
+			dataType:"json",
+			success:function(data){
+				if(data.status==2){
+					window.location.href="window.location.href=/zsh/wc/oauth.do?redUrl=/zsh/gift.html";
+				}
+				if(data.status==3){
+					window.location,href="/zsh/fail.html";
+				}
+			}
+		});
+		
+		
+		
+				$("#submit").click(function(){
+					var text = $("#tex").val();
+					if(text==""){
+						alert("请输入内容");
+						return ;
+					}
+					$.ajax({
+						url:"/zsh/gift/add.do",
+						type:"post",
+						data:{"giftName":text},
+						dataType:"json",
+						success:function(data){
+							if(data.status==0){
+								window.location.href="/zsh/memberCenter.html";
+							}
+							if(data.status==1){
+								alert(data.describe);
+							}
+							if(data.status==2){
+								window.location.href="/zsh/wc/oauth.do?redUrl=/zsh/gift.html";
+							}
+							if(data.status==3){
+								window.location.href="/zsh/fail.html;
+							}
+						}
+					});
+				});
+		
+		</script>
+	</body>
+</html>

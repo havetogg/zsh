@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.jumutang.zsh.dao.RobDaoI">
+	<resultMap id="BaseResultMap" type="org.jumutang.zsh.model.Rob">
+		<id column="rob_id" property="robId" jdbcType="VARCHAR"></id>
+		<result column="openid" property="openId" jdbcType="VARCHAR"/>
+		<result column="activityid" property="activityId" jdbcType="VARCHAR"/>
+		<result column="robdate" property="robDate" jdbcType="DATE"/>
+		<result column="receivestatus" property="receiveStatus" jdbcType="SMALLINT"/>
+		<result column="robstatus" property="robStatus" jdbcType="SMALLINT"/>
+		<result column="deliverydate" property="deliveryDate" jdbcType="DATE"/>
+		<result column="addressid" property="addressId" jdbcType="VARCHAR"/>
+		<result column="pickupaddress" property="pickupAddress" jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="insertys">
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="robId !=null">
+			rob_id,
+			</if>
+			<if test="openId !=null">
+			openid,
+			</if>
+			<if test="activityId !=null">
+			activityid,
+			</if>
+			<if test="robDate !=null">
+			robdate,
+			</if>
+			<if test="receiveStatus !=null">
+				receivestatus,
+			</if>
+			<if test="robStatus !=null">
+				robstatus,
+			</if>
+			<if test="deliveryDate !=null">
+				deliverydate,
+			</if>
+			<if test="addressId !=null">
+				addressid,
+			</if>
+			<if test="pickupAddress !=null">
+				pickupaddress,
+			</if>
+		</trim>
+	</sql>
+	<sql id="insertValue">
+		<trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+			<if test="robId !=null">
+			#{robId},
+			</if>
+			<if test="openId !=null">
+			#{openId},
+			</if>
+			<if test="activityId !=null">
+			#{activityId},
+			</if>
+			<if test="robDate !=null">
+			#{robDate},
+			</if>
+			<if test="receiveStatus !=null">
+				#{receiveStatus},
+			</if>
+			<if test="robStatus !=null">
+				#{robStatus},
+			</if>
+			<if test="deliveryDate !=null">
+				#{deliveryDate},
+			</if>
+			<if test="addressId !=null">
+				#{addressId},
+			</if>
+			<if test="pickupAddress !=null">
+				#{pickupAddress},
+			</if>
+		</trim>
+	</sql>
+	
+	<sql id="queryWhere">
+		<where>
+			<if test="robId !=null">
+			AND rob_id = #{robId}
+			</if>
+			<if test="openId !=null">
+			 AND openid = #{openId}
+			</if>
+			<if test="activityId !=null">
+			 AND activityid = #{activityId}
+			</if>
+			<if test="robDate !=null">
+			AND robdate = #{robDate}
+			</if>
+			AND robstatus != 4
+		</where>
+	</sql>
+	
+	<insert id="addRob" parameterType="org.jumutang.zsh.model.Rob">
+				INSERT INTO rob
+				<include refid="insertys"/>
+				<include refid="insertValue"/>
+				
+	</insert>
+	
+	<select id="countRob" resultType="int">
+		select	count(1) from rob
+		<include refid="queryWhere"/>
+	</select>
+	
+	<select id="queryRob" parameterType="org.jumutang.zsh.model.Rob" resultMap="BaseResultMap">
+		SELECT * FROM rob
+		<include refid="queryWhere"/>
+	</select>
+
+	<!-- 更新 -->
+	<update id="updateRob" parameterType="org.jumutang.zsh.model.GoodModel">
+		UPDATE rob
+		<set>
+			<if test="openId !=null">
+				openId = #{openId},
+			</if>
+			<if test="activityId !=null">
+				activityid = #{activityId},
+			</if>
+			<if test="robDate !=null">
+				robdate = #{robDate},
+			</if>
+			<if test="receiveStatus !=null">
+				receivestatus = #{receiveStatus},
+			</if>
+			<if test="robStatus !=null">
+				robstatus = #{robStatus},
+			</if>
+			<if test="deliveryDate !=null">
+				deliverydate = #{deliveryDate},
+			</if>
+			<if test="addressId !=null">
+				addressid = #{addressId},
+			</if>
+			<if test="pickupAddress !=null">
+				pickupaddress = #{pickupAddress},
+			</if>
+		</set>
+		<where>
+			rob_id = #{robId}
+		</where>
+	</update>
+
+	<select id="queryAll" resultMap="BaseResultMap">
+		SELECT * FROM rob
+		<where>
+			robstatus != 4
+		</where>
+	</select>
+
+</mapper>
+
+
+

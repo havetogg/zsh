@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=0.5,maximum-scale=0.5,minimum-scale=0.5, width=640, target-densitydpi=device-dpi">
+    <meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <title>生日</title>
+    <link type="text/css" href="css/common/common.css" rel="stylesheet">
+    <link type="text/css" href="css/point.css" rel="stylesheet">
+    <script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/common/common.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/common/jWeChat-Adaptive.js"></script>
+</head>
+
+<body>
+<div class="zoomer">
+	<div class="hobby">
+		<h1 style="margin-top: 40px;">选择你的生日日期</h1>
+		<input class="time" type="date" />
+		<a class="btn" href="user.html">取消</a>
+		<a class="btn like">确定</a>
+	</div>
+</div>
+</body>
+<script>
+    $(function(){
+        var birthday=getUrlParam("birthday");
+        if(birthday==''||birthday==null){
+            $(".time").val("");
+        }else{
+            birthday=decodeURI(birthday);
+            $(".time").val(birthday);
+        }
+
+        $(".like").on("click",function(){
+            var time=$(".time").val();
+            if(time==null||time==''){
+                alert("请选择你的出生日期!")
+                return ;
+            }
+            $.ajax({
+                url:"/zsh/customer/updateCust.do",
+                type:"post",
+                data:{"birthday":time},
+                dataType:"json",
+                success:function(data){
+                    console.log(data);
+                    location.href="user.html";
+                }
+            });
+        });
+    })
+</script>
+	
+</html>

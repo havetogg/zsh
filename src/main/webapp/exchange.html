@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5">
+		<meta http-eqiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+		<meta content="yes" name="apple-mobile-web-app-capable">
+		<meta content="black" name="apple-mobile-web-app-status-bar-style">
+		<meta content="telephone=no" name="format-detection">
+		<title>积分派兑</title>
+		<link rel="stylesheet" href="css/common/common.css" />
+		<link rel="stylesheet" href="css/point.css" />
+		<script type="text/javascript" src="js/common/jQuery-1.11.3.js" ></script>
+		<script type="text/javascript" src="js/common/jWeChat-Adaptive.js" ></script>
+		<script type="text/javascript" src="js/common/jQuery-1.11.3.js"></script>
+		<!-- <script type="text/javascript" src="js/zsh/exchange.js" ></script> -->
+		<style>
+		.contents{
+			width: 640px;
+			min-height: 1065px;
+			background: #edf0f0;
+			position: absolute;
+		}
+			.goodpic{
+				width: 24px;
+				height: 24px;
+				float: left;
+				margin-right: 10px;
+			}
+			.top{
+				width: 100%;
+				height: 80px;
+				background: #fff;
+			}
+			.toppic img{
+				width: 31px;
+				height: 37px;
+				margin: 20px 10px 0px 20px;
+				float: left;
+			}
+			.top-title{
+				height: 80px;
+				font-size: 30px;
+				line-height: 80px;
+				float: left;
+			}
+			.top-txt{
+				font-size: 30px;
+				line-height: 80px;
+				color: #E53037;
+			}
+		</style>
+		<script>
+            $(function(){
+                initUserInfo();
+            });
+            function initUserInfo(){
+                $.ajax({
+                    url:"/zsh/customer/query.do",
+                    type:"post",
+                    dataType:"json",
+                    success:function(data){
+                        var data=data.data[0];
+                        $("#integer").html(data.customerIntegral);
+                        initGoodInfo();
+                    }
+                });
+            }
+            function initGoodInfo(){
+                $.ajax({
+                    url:"/zsh/good/queryGood.do",
+                    type:"post",
+                    dataType:"json",
+                    data:{
+                        pageIndex:1,
+                        pageSize:10
+					},
+                    success:function(data){
+                        var arr = data.data.list;
+                        if(arr.length!=0){
+                            var str='';
+                            $.each(arr,function(index,item){
+                                var picUrl = item.picUrl;
+                                var url = document.location.href;
+                                url = url.substring(0,url.indexOf("zsh")+3);
+								str+="<li> <div class='goods_img'>";
+								str+="<img src='"+url+picUrl+"' /></div> <div class='goods_text'>";
+								str+="<h2>"+item.goodName+"</h2>";
+								str+="<p><span class='f36'>"+item.integration+"</span>油滴</p>";
+								str+="<div class='c_gray ml20'>x"+item.inventory+"库存</div>";
+								str+="<a href='/zsh/shangpingxiangqing.html?goodId="+item.goodId+"' class='change'> 立即兑换</a>";
+								str+="</div></li>";
+                            })
+                            $(".goods_list").append(str);
+						}
+                    }
+                });
+			}
+		</script>
+	</head>
+	<body class="bg_gray">
+		<div class="zoomer">
+			<div class="contents">
+				<div class="top">
+					<div class="toppic"><img src="img/pic18.png"></div>
+					<div class="top-title">可用油滴：</div>
+					<div class="top-txt" id="integer"></div>
+				</div>
+			<div class="exchange">
+				<!--<h1>可用积分:<span id="integer" style="font-size: 35px">0</span> <a class="toExchange" href="gift.html">我要兑换</a></h1>-->
+				<ul class="goods_list">
+					<!--<li>
+						<div class="goods_img">
+							<img src="img/goods1.jpg" />
+						</div>
+						<div class="goods_text">
+							<div class="goodpic"><img src="img/pic19.png"></div>
+							<h2>西谱绵羊奶粉P系列1段双</h2>
+							<p><span class="f36">7000</span>油滴</p>
+							<div class="c_gray ml20">x2库存</div>
+							<a href="/zsh/shangpingxiangqing.html" class="change">立即兑换</a>
+						</div>
+					</li>
+					<li>
+						<div class="goods_img">
+							<img src="img/goods2.jpg" />
+						</div>
+						<div class="goods_text">
+							<div class="goodpic"><img src="img/pic20.png"></div>
+							<h2>全自动破壁无渣豆浆机</h2>
+							<p><span class="f36">7000</span>油滴</p>
+							<div class="c_gray ml20">x2库存</div>
+							<a href="/zsh/shangpingxiangqing.html" class="change"> 立即兑换</a>
+						</div>
+					</li>-->
+				</ul>
+			</div>
+			</div>
+		</div>
+	</body>
+</html>
